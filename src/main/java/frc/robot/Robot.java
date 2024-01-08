@@ -4,7 +4,17 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
+
+import java.io.File;
+
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
+import com.pathplanner.lib.pathfinding.Pathfinding;
+
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -14,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -25,8 +35,34 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
+    Pathfinding.setPathfinder(new LocalADStarAK());
+    // Record metadata
+    Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+    Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+    Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+    Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+    Logger.recordMetadata("Lobstah Bots", "2023 Swerve Offseason");
+    if (Robot.isReal()) {
+      // Logger.addDataReceiver(new WPILOGWriter("/U")); // Log to a USB stick
+      // File log = new File (Filesystem.getOperatingDirectory(), "log");
+      // String logPath = log.getAbsolutePath();
+      // System.out.println(logPath);
+      // logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+      // Logger.addDataReceiver(new WPILOGWriter(logPath)); // Save outputs to a new log
+      Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+  } else {
+      setUseTiming(false); // Run as fast as possible
+      File log = new File (Filesystem.getOperatingDirectory(), "log");
+      String logPath = log.getAbsolutePath();
+      // System.out.println(logPath);
+      // logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+      Logger.addDataReceiver(new WPILOGWriter(logPath)); // Save outputs to a new log
+  }
+  
+  // Logger.getInstance().disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
+   Logger.start();
+
     m_robotContainer = new RobotContainer();
   }
 
