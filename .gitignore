@@ -2,6 +2,8 @@
 # If you remove items from this file, intellisense might break.
 
 ### C++ ###
+.wpilog
+
 # Prerequisites
 *.d
 
