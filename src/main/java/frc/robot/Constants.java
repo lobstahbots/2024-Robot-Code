@@ -124,7 +124,7 @@ public final class Constants {
   }
   public static class IntakeConstants {
     public static final double INTAKE_SPEED = 1;
-    public static final int INTAKE_ID = 0;
+    public static final int INTAKE_MOTOR_ID = 0;
   } 
   public static class SimConstants {
     public static final double LOOP_TIME = 0.01;
