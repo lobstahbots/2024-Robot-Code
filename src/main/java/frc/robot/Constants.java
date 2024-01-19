@@ -122,7 +122,10 @@ public final class Constants {
     public static final double TURN_PID_D = 0;
     public static final double TURN_PID_FF = 0;
   }
-
+  public static class IntakeConstants {
+    public static final double INTAKE_SPEED = 1;
+    public static final int INTAKE_MOTOR_ID = 0;
+  } 
   public static class SimConstants {
     public static final double LOOP_TIME = 0.01;
   }
