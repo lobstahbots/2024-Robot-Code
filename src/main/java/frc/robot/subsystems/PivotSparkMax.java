@@ -55,9 +55,9 @@ public class PivotSparkMax implements PivotIO {
    * Rotate both motors.
    * @param speed The speed at which to rotate the motors.
    */
-  public void rotatePivot(double speed) {
-    leftController.setReference(speed, ControlType.kDutyCycle);
-    rightController.setReference(speed, ControlType.kDutyCycle);
+  public void rotatePivot(double speedLeft, double speedRight) {
+    leftController.setReference(speedLeft, ControlType.kDutyCycle);
+    rightController.setReference(speedRight, ControlType.kDutyCycle);
   }
 
   /** Stop both motors.
@@ -75,6 +75,14 @@ public class PivotSparkMax implements PivotIO {
     inputs.motorRightRotation = Rotation2d.fromRotations(rightEncoder.getPosition());
     inputs.motorRightAppliedVolts = rightMotor.getAppliedOutput() * rightMotor.getBusVoltage();
     inputs.motorRightCurrentAmps = rightMotor.getOutputCurrent();
+  }
+
+  public double getLeftPositionRadians() {
+    return Rotation2d.fromRotations(leftEncoder.getPosition()).getRadians();
+  }
+
+  public double getRightPositionRadians() {
+    return Rotation2d.fromRotations(rightEncoder.getPosition()).getRadians();
   }
 
   public void periodic() {

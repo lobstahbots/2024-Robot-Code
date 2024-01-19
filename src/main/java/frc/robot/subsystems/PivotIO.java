@@ -26,9 +26,13 @@ public interface PivotIO {
    * Rotate both motors.
    * @param speed The speed at which to rotate the motors.
    */
-  public default void rotatePivot(double speed) {}
+  public default void rotatePivot(double speedLeft, double speedRight) {}
 
   /** Stop both motors.
    */
   public default void stopPivot() {}
+
+  public double getLeftPositionRadians();
+
+  public double getRightPositionRadians();
 }
