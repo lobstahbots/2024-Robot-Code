@@ -132,5 +132,9 @@ public final class Constants {
     public static final double PID_I = 0;
     public static final double PID_D = 0;
     public static final double PID_FF = 0;
+
+    public static final double KS = 0;
+    public static final double KV = 0;
+    public static final double KA = 0;
   }
 }

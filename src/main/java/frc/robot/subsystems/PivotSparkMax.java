@@ -17,7 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.PivotConstants;
 
-public class PivotReal implements PivotIO {
+public class PivotSparkMax implements PivotIO {
   private final CANSparkMax leftMotor;
   private final CANSparkMax rightMotor;
   private final AbsoluteEncoder leftEncoder;
@@ -26,7 +26,7 @@ public class PivotReal implements PivotIO {
   private final SparkMaxPIDController rightController;
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
   /** Creates a new PivotReal. */
-  public PivotReal(int leftMotorID, int rightMotorID) {
+  public PivotSparkMax(int leftMotorID, int rightMotorID) {
     this.leftMotor = new CANSparkMax(leftMotorID, MotorType.kBrushless);
     this.rightMotor = new CANSparkMax(rightMotorID, MotorType.kBrushless);
     
