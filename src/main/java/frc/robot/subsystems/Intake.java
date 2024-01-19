@@ -13,7 +13,7 @@ public class Intake extends SubsystemBase{
         this.iMotor = new CANSparkMax(iMotorID, MotorType.kBrushless);
         this.iMotor.setIdleMode(IdleMode.kBrake);
         this.iMotor.setInverted(false);
-        this.iMotor.setSmartCurrentLimit(25);
+        this.iMotor.setSmartCurrentLimit(40);
     }
 
 //we have a Intake.setIMotorSpeed to... set the intake speed!
