@@ -9,23 +9,21 @@ import frc.robot.subsystems.Intake;
 
 public class StopIntakeCommand extends Command {
   private final Intake intake;
+  
   /**
    * Command to stop {@link Intake}.
    * @param intake The intake subsystem.
    */
   public StopIntakeCommand(Intake intake) {
     this.intake = intake;
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     intake.stopMotor();
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
