@@ -7,41 +7,57 @@ package frc.robot.subsystems;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PivotConstants;;
 
 public class Pivot extends SubsystemBase {
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
-  private PivotSparkMax hardware;
+  private PivotSparkMax pivotMotor;
   private final ArmFeedforward feedforward = new ArmFeedforward(
     PivotConstants.KS, PivotConstants.KV, PivotConstants.KA
   );
+  private final ProfiledPIDController controller = new ProfiledPIDController(
+    PivotConstants.PID_P,
+    PivotConstants.PID_I,
+    PivotConstants.PID_D,
+    new TrapezoidProfile.Constraints(PivotConstants.MAX_VELOCITY, PivotConstants.MAX_ACCELERATION)
+  );
   /** Creates a new Pivot. */
-  public Pivot(PivotSparkMax hardware) {
-    this.hardware = hardware;
+  public Pivot(PivotSparkMax pivotMotor) {
+    this.pivotMotor = pivotMotor;
   }
 
   /**
    * Stop the pivot.
    */
   public void stopPivot() {
-    hardware.stopPivot();
+    pivotMotor.stopPivot();
   }
 
   /**
-   * Rotate the pivot at speed `speed`, which is a duty-cycle value (in [-1, 1]).
-   * @param speed
+   * Set the desired angle (in radians).
+   * @param angle The desired angle
    */
-  public void rotatePivot(double speed) {
-    hardware.rotatePivot(
-      feedforward.calculate(hardware.getLeftPositionRadians(), speed),
-      feedforward.calculate(hardware.getRightPositionRadians(), speed)
-    );
+  public void setDesiredAngle(double angle) {
+    double pidOutput = controller.calculate(pivotMotor.getPositionRadians(), angle);
+    State setpoint = controller.getSetpoint();
+    double feedforwardOutput = feedforward.calculate(setpoint.position, setpoint.velocity);
+    pivotMotor.setSpeed(pidOutput + feedforwardOutput);
+  }
+
+  /**
+   * Reset the PID controller error.
+   */
+  public void resetControllerError() {
+    controller.reset(pivotMotor.getPositionRadians());
   }
 
   @Override
   public void periodic() {
-    hardware.updateInputs(inputs);
+    pivotMotor.updateInputs(inputs);
     Logger.processInputs("Pivot", inputs);
   }
 }
