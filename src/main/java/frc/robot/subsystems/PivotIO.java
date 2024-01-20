@@ -11,11 +11,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public interface PivotIO {
   @AutoLog
   public static class PivotIOInputs {
-    public Rotation2d motorLeftRotation = new Rotation2d();
+    public Rotation2d position = new Rotation2d();
+
     public double motorLeftAppliedVolts = 0.0;
     public double motorLeftCurrentAmps = 0.0;
 
-    public Rotation2d motorRightRotation = new Rotation2d();
     public double motorRightAppliedVolts = 0.0;
     public double motorRightCurrentAmps = 0.0;
   }
@@ -26,13 +26,15 @@ public interface PivotIO {
    * Rotate both motors.
    * @param speed The speed at which to rotate the motors.
    */
-  public default void rotatePivot(double speedLeft, double speedRight) {}
+  public default void setSpeed(double speed) {}
 
-  /** Stop both motors.
+  /**
+   * Stop both motors.
    */
   public default void stopPivot() {}
 
-  public double getLeftPositionRadians();
-
-  public double getRightPositionRadians();
+  /**
+   * Get the position in radians.
+   */
+  public double getPositionRadians();
 }

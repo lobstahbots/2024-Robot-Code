@@ -8,8 +8,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
@@ -20,29 +19,22 @@ import frc.robot.Constants.PivotConstants;
 public class PivotSparkMax implements PivotIO {
   private final CANSparkMax leftMotor;
   private final CANSparkMax rightMotor;
-  private final AbsoluteEncoder leftEncoder;
-  private final AbsoluteEncoder rightEncoder;
-  private final SparkMaxPIDController leftController;
-  private final SparkMaxPIDController rightController;
+  private final AbsoluteEncoder encoder;
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
   /** Creates a new PivotReal. */
   public PivotSparkMax(int leftMotorID, int rightMotorID) {
     this.leftMotor = new CANSparkMax(leftMotorID, MotorType.kBrushless);
     this.rightMotor = new CANSparkMax(rightMotorID, MotorType.kBrushless);
     
-    this.leftEncoder = leftMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    this.rightEncoder = rightMotor.getAbsoluteEncoder(Type.kDutyCycle);
+    this.encoder = leftMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
-    this.leftController = leftMotor.getPIDController();
-    leftController.setP(PivotConstants.PID_P);
-    leftController.setI(PivotConstants.PID_I);
-    leftController.setD(PivotConstants.PID_D);
-    leftController.setFF(PivotConstants.PID_FF);
-    this.rightController = rightMotor.getPIDController();
-    rightController.setP(PivotConstants.PID_P);
-    rightController.setI(PivotConstants.PID_I);
-    rightController.setD(PivotConstants.PID_D);
-    rightController.setFF(PivotConstants.PID_FF);
+    leftMotor.setIdleMode(IdleMode.kBrake);
+    rightMotor.setIdleMode(IdleMode.kBrake);
+
+    leftMotor.setSmartCurrentLimit(PivotConstants.MAX_CURRENT);
+    rightMotor.setSmartCurrentLimit(PivotConstants.MAX_CURRENT);
+
+    leftMotor.follow(rightMotor, true);
 
     Timer.delay(0.5);
     leftMotor.burnFlash();
@@ -55,34 +47,32 @@ public class PivotSparkMax implements PivotIO {
    * Rotate both motors.
    * @param speed The speed at which to rotate the motors.
    */
-  public void rotatePivot(double speedLeft, double speedRight) {
-    leftController.setReference(speedLeft, ControlType.kDutyCycle);
-    rightController.setReference(speedRight, ControlType.kDutyCycle);
+  public void setSpeed(double speed) {
+    rightMotor.set(speed);
   }
 
-  /** Stop both motors.
+  /**
+   * Stop both motors.
    */
   public void stopPivot() {
-    leftController.setReference(0, ControlType.kVelocity);
-    rightController.setReference(0, ControlType.kVelocity);
+    rightMotor.set(0);
   }
 
   public void updateInputs(PivotIOInputs inputs) {
-    inputs.motorLeftRotation = Rotation2d.fromRotations(leftEncoder.getPosition());
+    inputs.position = Rotation2d.fromRotations(encoder.getPosition());
+
     inputs.motorLeftAppliedVolts = leftMotor.getAppliedOutput() * leftMotor.getBusVoltage();
     inputs.motorLeftCurrentAmps = leftMotor.getOutputCurrent();
 
-    inputs.motorRightRotation = Rotation2d.fromRotations(rightEncoder.getPosition());
     inputs.motorRightAppliedVolts = rightMotor.getAppliedOutput() * rightMotor.getBusVoltage();
     inputs.motorRightCurrentAmps = rightMotor.getOutputCurrent();
   }
 
-  public double getLeftPositionRadians() {
-    return Rotation2d.fromRotations(leftEncoder.getPosition()).getRadians();
-  }
-
-  public double getRightPositionRadians() {
-    return Rotation2d.fromRotations(rightEncoder.getPosition()).getRadians();
+  /**
+   * Get the position in radians.
+   */
+  public double getPositionRadians() {
+    return encoder.getPosition() * 2 * Math.PI;
   }
 
   public void periodic() {

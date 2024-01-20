@@ -136,5 +136,9 @@ public final class Constants {
     public static final double KS = 0;
     public static final double KV = 0;
     public static final double KA = 0;
+
+    public static final int MAX_VELOCITY = 0;
+    public static final int MAX_ACCELERATION = 0;
+    public static final int MAX_CURRENT = 40;
   }
 }
