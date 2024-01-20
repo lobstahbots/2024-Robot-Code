@@ -24,17 +24,12 @@ public interface PivotIO {
 
   /**
    * Rotate both motors.
-   * @param speed The speed at which to rotate the motors.
+   * @param voltage The speed at which to rotate the motors.
    */
-  public default void setSpeed(double speed) {}
+  public default void setVoltage(double voltage) {}
 
   /**
    * Stop both motors.
    */
   public default void stopPivot() {}
-
-  /**
-   * Get the position in radians.
-   */
-  public double getPositionRadians();
 }

@@ -11,7 +11,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.PivotConstants;;
+import frc.robot.Constants.PivotConstants;
 
 public class Pivot extends SubsystemBase {
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
@@ -42,17 +42,17 @@ public class Pivot extends SubsystemBase {
    * @param angle The desired angle
    */
   public void setDesiredAngle(double angle) {
-    double pidOutput = controller.calculate(pivotMotor.getPositionRadians(), angle);
+    double pidOutput = controller.calculate(inputs.position.getRadians(), angle);
     State setpoint = controller.getSetpoint();
     double feedforwardOutput = feedforward.calculate(setpoint.position, setpoint.velocity);
-    pivotMotor.setSpeed(pidOutput + feedforwardOutput);
+    pivotMotor.setVoltage(pidOutput + feedforwardOutput);
   }
 
   /**
    * Reset the PID controller error.
    */
   public void resetControllerError() {
-    controller.reset(pivotMotor.getPositionRadians());
+    controller.reset(inputs.position.getRadians());
   }
 
   @Override
