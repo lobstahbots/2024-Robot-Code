@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -53,6 +54,10 @@ public class Pivot extends SubsystemBase {
    */
   public void resetControllerError() {
     controller.reset(inputs.position.getRadians());
+  }
+
+  public Rotation2d getPosition() {
+    return inputs.position;
   }
 
   @Override
