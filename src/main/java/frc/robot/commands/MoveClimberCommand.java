@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
 
 public class MoveClimberCommand extends Command {
-  /** Creates a new climberComand. */
+  /** Creates a new ClimberCommand. */
   public final Climber climber;
 
   public MoveClimberCommand(Climber climber) {
