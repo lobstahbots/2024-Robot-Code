@@ -16,13 +16,11 @@ public class StopClimberCommand extends Command {
     addRequirements(climber);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     climber.stopClimber();
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

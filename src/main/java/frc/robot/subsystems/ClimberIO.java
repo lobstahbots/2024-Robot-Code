@@ -15,10 +15,13 @@ public interface ClimberIO {
         public double rightClimberVoltage = 0.0;
     }
 
+    /* Moves the left side climber. */
     public default void moveLeftClimber() {}
 
+    /* Moves the right side climber. */
     public default void moveRightClimber() {}
     
+    /* Stops the climber motors. */
     public default void stopClimber() {}
 
     public default void updateInputs(ClimberIOInputs inputs) {}

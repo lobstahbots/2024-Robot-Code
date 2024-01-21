@@ -15,13 +15,11 @@ public class SwerveDriveStopCommand extends Command {
     addRequirements(driveBase);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     driveBase.stopMotors();
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

@@ -21,6 +21,7 @@ public interface GyroIO {
       public double yawVelocity= 0.0;
     }
   
+    /* Zeroes the gyro. */
     public default void zeroGyro() {}
 
     public default void updateInputs(GyroIOInputs inputs) {}
