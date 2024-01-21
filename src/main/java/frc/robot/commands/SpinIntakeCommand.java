@@ -2,17 +2,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeReal;
 
 public class SpinIntakeCommand extends Command {
-  private final Intake intake;
+  private final IntakeReal intake;
   private final double speed;
   /**
-   * Command to move the intake ({@link Intake})
+   * Command to move the intake ({@link IntakeReal})
    * @param intake The intake subsystem.
    * @param speed The speed at which to move.
    */
-  public SpinIntakeCommand(Intake intake, double speed) {
+  public SpinIntakeCommand(IntakeReal intake, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.speed = speed;
