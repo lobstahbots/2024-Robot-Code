@@ -126,4 +126,8 @@ public final class Constants {
   public static class SimConstants {
     public static final double LOOP_TIME = 0.01;
   }
+
+  public static class ClimberConstants {
+    public static final double CLIMBER_SPEED = 1.0;
+  }
 }

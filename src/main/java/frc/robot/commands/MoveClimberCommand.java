@@ -8,11 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
 
 public class MoveClimberCommand extends Command {
-<<<<<<< Updated upstream
   /** Creates a new ClimberCommand. */
-=======
-  /** Creates a new climberComand. */
->>>>>>> Stashed changes
   public final Climber climber;
 
   public MoveClimberCommand(Climber climber) {

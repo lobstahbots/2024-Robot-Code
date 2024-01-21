@@ -4,83 +4,44 @@
 
 package frc.robot.subsystems;
 
-<<<<<<< Updated upstream
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.RobotConstants;
-
-public class ClimberSparkMax extends SubsystemBase implements ClimberIO{
-  public final CANSparkMax leftClimber;
-  public final CANSparkMax rightClimber;
-=======
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import frc.robot.Constants.RobotConstants;
+import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSparkMax implements ClimberIO{
   public final CANSparkMax leftClimberMotor;
   public final CANSparkMax rightClimberMotor;
   public final RelativeEncoder leftClimberEncoder;
   public final RelativeEncoder rightClimberEncoder;
->>>>>>> Stashed changes
+
   /*
-   * Initalizes Left and Right climber
-   * Creates new climber
-   * takes in two ints which are the two motor IDs
+   * Initializes a new ClimberSparkMax with a left and right climber
+   * @param leftClimberID The CAN ID of the left climber.
+   * @param rightClimberID The CAN ID of the right climber.
    */
   public ClimberSparkMax(int leftClimberID, int rightClimberID) {
-<<<<<<< Updated upstream
-    this.leftClimber = new CANSparkMax(leftClimberID, MotorType.kBrushless);
-    this.rightClimber = new CANSparkMax(rightClimberID, MotorType.kBrushless);
-    this.leftClimber.setSmartCurrentLimit(40);
-    this.rightClimber.setSmartCurrentLimit(40);
-=======
     this.leftClimberMotor = new CANSparkMax(leftClimberID, MotorType.kBrushless);
     this.rightClimberMotor = new CANSparkMax(rightClimberID, MotorType.kBrushless);
     this.leftClimberMotor.setSmartCurrentLimit(40);
     this.rightClimberMotor.setSmartCurrentLimit(40);
     this.leftClimberEncoder = leftClimberMotor.getEncoder();
     this.rightClimberEncoder = rightClimberMotor.getEncoder();
->>>>>>> Stashed changes
   }
-  /*
-   * Moves the leftside climber
-   */
-  
+
+  /* Moves the leftside climber. */
   public void moveLeftClimber() {
-<<<<<<< Updated upstream
-    leftClimber.set(RobotConstants.CLIMBER_SPEED);
-=======
-    leftClimberMotor.set(RobotConstants.CLIMBER_SPEED);
->>>>>>> Stashed changes
+    leftClimberMotor.set(ClimberConstants.CLIMBER_SPEED);
   }
 
-  /*
-   * Moves the rightside climber
-   */
-
+   /* Moves the rightside climber. */
   public void moveRightClimber() {
-<<<<<<< Updated upstream
-    rightClimber.set(RobotConstants.CLIMBER_SPEED);
+    rightClimberMotor.set(ClimberConstants.CLIMBER_SPEED);
   }
-
-  public void stopClimber() {
-    leftClimber.stopMotor();
-    rightClimber.stopMotor();
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-=======
-    rightClimberMotor.set(RobotConstants.CLIMBER_SPEED);
-  }
-
+  
+  /* Stops the climber motors. */
   public void stopClimber() {
     leftClimberMotor.stopMotor();
     rightClimberMotor.stopMotor();
@@ -95,6 +56,5 @@ public class ClimberSparkMax implements ClimberIO{
     inputs.rightClimberPosition = rightClimberEncoder.getPosition();
     inputs.rightClimberTemperature = rightClimberMotor.getMotorTemperature();
     inputs.rightClimberVoltage = rightClimberMotor.getBusVoltage();
->>>>>>> Stashed changes
   }
 }
