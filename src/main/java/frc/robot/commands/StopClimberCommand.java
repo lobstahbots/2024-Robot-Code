@@ -14,7 +14,10 @@ public class StopClimberCommand extends Command {
   public StopClimberCommand(Climber climber) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.climber = climber;
+<<<<<<< Updated upstream
     addRequirements(climber);
+=======
+>>>>>>> Stashed changes
   }
 
   // Called when the command is initially scheduled.

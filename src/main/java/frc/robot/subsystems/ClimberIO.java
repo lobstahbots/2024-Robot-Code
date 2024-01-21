@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ClimberIO {
     @AutoLog
     public static class ClimberIOInputs {
+<<<<<<< Updated upstream
         public final double leftClimberVelocity = 0.0;
         public final double rightClimberVelocity = 0.0;
         public final double leftClimberPosition = 0.0;
@@ -13,6 +14,16 @@ public interface ClimberIO {
         public final double rightClimberTemperature = 0.0;
         public final double leftClimberVoltage = 0.0;
         public final double rightClimberVoltage = 0.0;
+=======
+        public double leftClimberVelocity = 0.0;
+        public double rightClimberVelocity = 0.0;
+        public double leftClimberPosition = 0.0;
+        public double rightClimberPosition = 0.0;
+        public double leftClimberTemperature = 0.0;
+        public double rightClimberTemperature = 0.0;
+        public double leftClimberVoltage = 0.0;
+        public double rightClimberVoltage = 0.0;
+>>>>>>> Stashed changes
     }
 
     public default void moveLeftClimber() {}
@@ -21,7 +32,11 @@ public interface ClimberIO {
     
     public default void stopClimber() {}
 
+<<<<<<< Updated upstream
     public default void getInputs(ClimberIOInputs inputs) {}
+=======
+    public default void updateInputs(ClimberIOInputs inputs) {}
+>>>>>>> Stashed changes
 
 
 }
