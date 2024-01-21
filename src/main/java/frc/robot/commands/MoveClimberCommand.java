@@ -12,7 +12,6 @@ public class MoveClimberCommand extends Command {
   public final Climber climber;
 
   public MoveClimberCommand(Climber climber) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.climber = climber;
     addRequirements(climber);
   }
