@@ -34,6 +34,7 @@ public class PivotSparkMax implements PivotIO {
     leftMotor.setSmartCurrentLimit(PivotConstants.MAX_CURRENT);
     rightMotor.setSmartCurrentLimit(PivotConstants.MAX_CURRENT);
 
+    rightMotor.setInverted(false);
     leftMotor.follow(rightMotor, true);
 
     Timer.delay(0.5);
@@ -60,6 +61,7 @@ public class PivotSparkMax implements PivotIO {
 
   public void updateInputs(PivotIOInputs inputs) {
     inputs.position = Rotation2d.fromRotations(encoder.getPosition());
+    inputs.velocity = Rotation2d.fromRotations(encoder.getVelocity());
 
     inputs.motorLeftAppliedVolts = leftMotor.getAppliedOutput() * leftMotor.getBusVoltage();
     inputs.motorLeftCurrentAmps = leftMotor.getOutputCurrent();
