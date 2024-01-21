@@ -10,24 +10,19 @@ public class Climber extends SubsystemBase {
 
   private ClimberIO inputs;
 
-  /*
-   * Initalizes Left and Right climber
-   * Creates new climber
-   * takes in two ints which are the two motor IDs
-   */
   public Climber(ClimberIO inputs) {
     this.inputs = inputs;
   }
 
   /*
-   * Moves the leftside climber
+   * Logs data for the leftside climber
    */
   public void moveLeftClimber() {
    inputs.moveLeftClimber();
   }
 
   /*
-   * Moves the rightside climber
+   * logs data for the rightside climber
    */
 
   public void moveRightClimber() {
