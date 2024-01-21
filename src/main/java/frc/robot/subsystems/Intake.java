@@ -27,5 +27,7 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    io.updateInputs(inputs);
+    Logger.processInputs("Intake", inputs);
   }
 }
