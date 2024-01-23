@@ -122,9 +122,27 @@ public final class Constants {
     public static final double TURN_PID_D = 0;
     public static final double TURN_PID_FF = 0;
   }
-
+  public static class IntakeConstants {
+    public static final double INTAKE_SPEED = 1;
+    public static final int INTAKE_MOTOR_ID = 0;
+  } 
   public static class SimConstants {
     public static final double LOOP_TIME = 0.01;
+  }
+
+  public static class PivotConstants {
+    public static final double PID_P = 0;
+    public static final double PID_I = 0;
+    public static final double PID_D = 0;
+    public static final double PID_FF = 0;
+
+    public static final double KS = 0;
+    public static final double KV = 0;
+    public static final double KA = 0;
+
+    public static final double MAX_VELOCITY = 0;
+    public static final double MAX_ACCELERATION = 0;
+    public static final int MAX_CURRENT = 40;
   }
 
   public static class ClimberConstants {
