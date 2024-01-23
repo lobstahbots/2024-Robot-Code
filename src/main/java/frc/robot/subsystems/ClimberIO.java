@@ -13,6 +13,8 @@ public interface ClimberIO {
         public double rightClimberTemperature = 0.0;
         public double leftClimberVoltage = 0.0;
         public double rightClimberVoltage = 0.0;
+        public double leftClimberCurrent = 0.0;
+        public double rightClimberCurrent = 0.0;
     }
 
     /* Moves the left side climber. */

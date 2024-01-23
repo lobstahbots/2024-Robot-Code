@@ -7,9 +7,10 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.RobotConstants;
 
 public class ClimberSparkMax implements ClimberIO{
   public final CANSparkMax leftClimberMotor;
@@ -27,18 +28,20 @@ public class ClimberSparkMax implements ClimberIO{
     this.rightClimberMotor = new CANSparkMax(rightClimberID, MotorType.kBrushless);
     this.leftClimberMotor.setSmartCurrentLimit(40);
     this.rightClimberMotor.setSmartCurrentLimit(40);
+    this.leftClimberMotor.setIdleMode(IdleMode.kBrake);
+    this.leftClimberMotor.setIdleMode(IdleMode.kBrake);
     this.leftClimberEncoder = leftClimberMotor.getEncoder();
     this.rightClimberEncoder = rightClimberMotor.getEncoder();
   }
 
   /* Moves the leftside climber. */
   public void moveLeftClimber() {
-    leftClimberMotor.set(ClimberConstants.CLIMBER_SPEED);
+    leftClimberMotor.set(RobotConstants.CLIMBER_SPEED);
   }
 
    /* Moves the rightside climber. */
   public void moveRightClimber() {
-    rightClimberMotor.set(ClimberConstants.CLIMBER_SPEED);
+    rightClimberMotor.set(RobotConstants.CLIMBER_SPEED);
   }
   
   /* Stops the climber motors. */
@@ -51,10 +54,12 @@ public class ClimberSparkMax implements ClimberIO{
     inputs.leftClimberVelocity = leftClimberMotor.get();
     inputs.leftClimberPosition = leftClimberEncoder.getPosition();
     inputs.leftClimberTemperature = leftClimberMotor.getMotorTemperature();
-    inputs.leftClimberVoltage = leftClimberMotor.getBusVoltage();
+    inputs.leftClimberVoltage = leftClimberMotor.getBusVoltage() * rightClimberMotor.getAppliedOutput();
+    inputs.leftClimberCurrent = leftClimberMotor.getOutputCurrent();
     inputs.rightClimberVelocity = rightClimberMotor.get();
     inputs.rightClimberPosition = rightClimberEncoder.getPosition();
     inputs.rightClimberTemperature = rightClimberMotor.getMotorTemperature();
-    inputs.rightClimberVoltage = rightClimberMotor.getBusVoltage();
+    inputs.rightClimberVoltage = rightClimberMotor.getBusVoltage() * rightClimberMotor.getAppliedOutput(); 
+    inputs.rightClimberCurrent = rightClimberMotor.getOutputCurrent();
   }
 }
