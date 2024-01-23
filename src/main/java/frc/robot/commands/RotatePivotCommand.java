@@ -4,27 +4,38 @@
 
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Pivot;
 
 public class RotatePivotCommand extends Command {
   private final Pivot pivot;
-  private final double angle;
+  private final DoubleSupplier angleSupplier;
 
   /**
    * Create a new RotatePivotCommand.
    * @param pivot An instance of the {@link Pivot} subsystem
-   * @param angle The angle in radians to pivot to
+   * @param angleSupplier A {@link DoubleSupplier} for the angle
+   */
+  public RotatePivotCommand(Pivot pivot, DoubleSupplier angleSupplier) {
+    this.pivot = pivot;
+    this.angleSupplier = angleSupplier;
+    addRequirements(pivot);
+  }
+
+  /**
+   * Create a new RotatePivotCommand for a fixed angle.
+   * @param pivot An instance of the {@link Pivot} subsystem
+   * @param angle The angle to rotate the pivot to
    */
   public RotatePivotCommand(Pivot pivot, double angle) {
-    this.pivot = pivot;
-    this.angle = angle;
-    addRequirements(pivot);
+    this(pivot, () -> angle);
   }
 
   @Override
   public void execute() {
-    pivot.setDesiredAngle(angle);
+    pivot.setDesiredAngle(angleSupplier.getAsDouble());
   }
 
   @Override
