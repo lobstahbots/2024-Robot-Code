@@ -147,5 +147,9 @@ public final class Constants {
 
   public static class ClimberConstants {
     public static final double CLIMBER_SPEED = 1.0;
+
+    public static final double AMP_ANGLE = 0;
+    public static final double NEAR_SPEAKER_ANGLE = 0;
+    public static final double FAR_SPEAKER_ANGLE = 0;
   }
 }
