@@ -144,4 +144,8 @@ public final class Constants {
     public static final double MAX_ACCELERATION = 0;
     public static final int MAX_CURRENT = 40;
   }
+
+  public static class ClimberConstants {
+    public static final double CLIMBER_SPEED = 1.0;
+  }
 }

@@ -17,7 +17,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.subsystems.DriveBase;
 
-/** An example command that uses an example subsystem. */
+/** A command to drive a swerve robot. */
 public class SwerveDriveCommand extends Command {
   private final DriveBase driveBase;
   private final DoubleSupplier strafeXSupplier;
@@ -38,7 +38,6 @@ public class SwerveDriveCommand extends Command {
     this(driveBase, () -> strafeX, () -> strafeY, () -> rotation, fieldCentric);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
      double linearMagnitude =
@@ -52,7 +51,7 @@ public class SwerveDriveCommand extends Command {
           // linearMagnitude = linearMagnitude * linearMagnitude;
           omega = Math.copySign(omega * omega, omega);
 
-          // Calcaulate new linear velocity
+          // Calculate new linear velocity
           Translation2d linearVelocity =
               new Pose2d(new Translation2d(), linearDirection)
                   .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
@@ -61,7 +60,6 @@ public class SwerveDriveCommand extends Command {
     driveBase.driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(linearVelocity.getX() * DriveConstants.MAX_DRIVE_SPEED, linearVelocity.getY() * DriveConstants.MAX_DRIVE_SPEED, omega * DriveConstants.MAX_ANGULAR_SPEED, driveBase.getGyroAngle()));
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
