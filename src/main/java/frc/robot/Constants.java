@@ -27,6 +27,16 @@ public final class Constants {
     public static final PathConstraints CONSTRAINTS = new PathConstraints(
             3.0, 4.0, 
             Units.degreesToRadians(540), Units.degreesToRadians(720));
+
+    public static final Pose2d NOTE_1_POSE = new Pose2d(2.9, 4.1, Rotation2d.fromDegrees(90));
+    public static final Pose2d NOTE_2_POSE = new Pose2d(2.9, 5.55, Rotation2d.fromDegrees(90));
+    public static final Pose2d NOTE_3_POSE = new Pose2d(2.9, 7, Rotation2d.fromDegrees(90));
+    public static final Pose2d CENTER_NOTE_1_POSE = new Pose2d(8.29, 0.76, Rotation2d.fromDegrees(90));
+    public static final Pose2d CENTER_NOTE_2_POSE = new Pose2d(8.29, 2.45, Rotation2d.fromDegrees(90));
+    public static final Pose2d CENTER_NOTE_3_POSE = new Pose2d(8.29, 4.1, Rotation2d.fromDegrees(90));
+    public static final Pose2d CENTER_NOTE_4_POSE = new Pose2d(8.29, 5.77, Rotation2d.fromDegrees(90));
+    public static final Pose2d CENTER_NOTE_5_POSE = new Pose2d(8.29, 7.44, Rotation2d.fromDegrees(90));
+
   }
   public static class IOConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
