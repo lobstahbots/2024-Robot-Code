@@ -126,6 +126,11 @@ public final class Constants {
     public static final double INTAKE_SPEED = 1;
     public static final int INTAKE_MOTOR_ID = 0;
   } 
+  public static class ShooterConstants {
+    public static final double SHOOTER_SPEED = 1;
+    public static final int UPPER_SHOOTER_ID = 0;
+    public static final int LOWER_SHOOTER_ID = 0;
+  }
   public static class SimConstants {
     public static final double LOOP_TIME = 0.01;
   }
