@@ -4,24 +4,27 @@
 
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.IntakeIO.IntakeIOInputs;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-  public Intake(IntakeIOInputs io) {
+  public Intake(IntakeIO io) {
     this.io = io;
   }
-
+  /*
+   * @param creates 
+   */
   public void setIntakeMotorSpeed(double intakeMotorSpeed) {
     io.setIntakeMotorSpeed(intakeMotorSpeed);
   }
   
   public void stopIntakeMotor() {
-    io.stopMotor();
+    io.stopIntakeMotor();
   }
 
   @Override
