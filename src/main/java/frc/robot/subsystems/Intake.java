@@ -1,25 +1,40 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-public class Intake extends SubsystemBase{
-    private final CANSparkMax intakeMotor;
 
-    public Intake(int intakeMotorID){
-        this.intakeMotor = new CANSparkMax(intakeMotorID, MotorType.kBrushless);
-        this.intakeMotor.setIdleMode(IdleMode.kBrake);
-        this.intakeMotor.setInverted(false);
-        this.intakeMotor.setSmartCurrentLimit(40);
-    }
+public class Intake extends SubsystemBase {
+  /** Creates a new Intake.
+   * @param io The {@link IntakeIO} used to construct the Intake.
+   */
+  private IntakeIO io;
+  private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-    public void setIMotorSpeed(double intakeSpeed){
-        intakeMotor.set(intakeSpeed);
-    }
+  public Intake(IntakeIO io) {
+    this.io = io;
+  }
+ 
+  /**
+   * Sets the intake motor speed to the given speed
+   * @param intakeMotorSpeed
+   */
+  public void setIntakeMotorSpeed(double intakeMotorSpeed) {
+    io.setIntakeMotorSpeed(intakeMotorSpeed);
+  }
+  
+  /** Stops the intake motor. */
+  public void stopIntakeMotor() {
+    io.stopIntakeMotor();
+  }
 
-    public void stopMotor(){
-        intakeMotor.stopMotor();
-    }
+  @Override
+  public void periodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("Intake", inputs);
+  }
 }

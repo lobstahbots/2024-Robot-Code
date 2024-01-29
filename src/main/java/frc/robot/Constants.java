@@ -43,6 +43,7 @@ public final class Constants {
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(3);
     public static final double DRIVE_GEAR_RATIO = 4.71;
     public static final double ANGLE_GEAR_RATIO = 6.1;
+    public static final double CLIMBER_SPEED = 1.0;
   }
   public static class DriveConstants {
     public static final double MAX_VOLTS = 4.95;

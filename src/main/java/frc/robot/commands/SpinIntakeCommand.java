@@ -8,30 +8,26 @@ public class SpinIntakeCommand extends Command {
   private final Intake intake;
   private final double speed;
   /**
-   * Command to move the intake ({@link Intake})
+   * Command to move the {@link Intake}.
    * @param intake The intake subsystem.
    * @param speed The speed at which to move.
    */
   public SpinIntakeCommand(Intake intake, double speed) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.speed = speed;
     addRequirements(intake);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.setIMotorSpeed(speed);
+    intake.setIntakeMotorSpeed(speed);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stopMotor();
+    intake.stopIntakeMotor();
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
