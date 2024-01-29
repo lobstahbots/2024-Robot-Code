@@ -9,17 +9,19 @@ import frc.robot.subsystems.Shooter;
 
 public class SpinShooterCommand extends Command {
   private final Shooter shooter;
-  private final double shooterSpeed;
+  private final double lowerShooterSpeed;
+  private final double upperShooterSpeed;
 
-  public SpinShooterCommand() {
+  public SpinShooterCommand(Shooter shooter, double lowerShooterSpeed, double upperShooterSpeed) {
     this.shooter = shooter;
-    this.shooterSpeed = shooterSpeed;
+    this.lowerShooterSpeed = lowerShooterSpeed;
+    this.upperShooterSpeed = upperShooterSpeed;
     addRequirements(shooter);
   }
 
   @Override
   public void execute() {
-    shooter.setIMotorSpeed(shooterSpeed);
+    shooter.setShooterSpeed(upperShooterSpeed, lowerShooterSpeed);
   }
 
   @Override
