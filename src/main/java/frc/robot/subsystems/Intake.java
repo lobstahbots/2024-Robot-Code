@@ -9,27 +9,31 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
-  /** Creates a new Intake. */
+  /** Creates a new Intake.
+   * @param io The {@link IntakeIO} used to construct the Intake.
+   */
   private IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
   public Intake(IntakeIO io) {
     this.io = io;
   }
-  /*
-   * @param creates 
+ 
+  /**
+   * Sets the intake motor speed to the given speed
+   * @param intakeMotorSpeed
    */
   public void setIntakeMotorSpeed(double intakeMotorSpeed) {
     io.setIntakeMotorSpeed(intakeMotorSpeed);
   }
   
+  /** Stops the intake motor. */
   public void stopIntakeMotor() {
     io.stopIntakeMotor();
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
   }
