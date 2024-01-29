@@ -11,9 +11,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.Constants.ClimberConstants;
-import frc.robot.Constants.RobotConstants;
 
-public class ClimberSparkMax implements ClimberIO{
+public class ClimberSparkMax implements ClimberIO {
   public final CANSparkMax leftClimberMotor;
   public final CANSparkMax rightClimberMotor;
   public final RelativeEncoder leftClimberEncoder;

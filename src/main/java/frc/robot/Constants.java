@@ -148,6 +148,10 @@ public final class Constants {
     public static final double MAX_VELOCITY = 0;
     public static final double MAX_ACCELERATION = 0;
     public static final int MAX_CURRENT = 40;
+
+    public static final double AMP_ANGLE = 0;
+    public static final double NEAR_SPEAKER_ANGLE = 0;
+    public static final double FAR_SPEAKER_ANGLE = 0;
   }
 
   public static class ClimberConstants {
