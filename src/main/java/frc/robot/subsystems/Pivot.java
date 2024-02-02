@@ -16,7 +16,7 @@ import frc.robot.Constants.PivotConstants;
 
 public class Pivot extends SubsystemBase {
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
-  private PivotSparkMax pivotMotor;
+  private PivotIO pivotMotor;
   private final ArmFeedforward feedforward = new ArmFeedforward(
     PivotConstants.KS, PivotConstants.KV, PivotConstants.KA
   );
@@ -27,7 +27,7 @@ public class Pivot extends SubsystemBase {
     new TrapezoidProfile.Constraints(PivotConstants.MAX_VELOCITY, PivotConstants.MAX_ACCELERATION)
   );
   /** Creates a new Pivot. */
-  public Pivot(PivotSparkMax pivotMotor) {
+  public Pivot(PivotIO pivotMotor) {
     this.pivotMotor = pivotMotor;
   }
 
@@ -44,6 +44,7 @@ public class Pivot extends SubsystemBase {
    */
   public void setDesiredAngle(double angle) {
     double pidOutput = controller.calculate(inputs.position.getRadians(), angle);
+    controller.setGoal(inputs.position.getRadians());
     State setpoint = controller.getSetpoint();
     double feedforwardOutput = feedforward.calculate(setpoint.position, setpoint.velocity);
     pivotMotor.setVoltage(pidOutput + feedforwardOutput);

@@ -133,18 +133,18 @@ public final class Constants {
     public static final int LOWER_SHOOTER_ID = 0;
   }
   public static class SimConstants {
-    public static final double LOOP_TIME = 0.01;
+    public static final double LOOP_TIME = 0.02;
   }
 
   public static class PivotConstants {
-    public static final double PID_P = 0;
+    public static final double PID_P = 1;
     public static final double PID_I = 0;
     public static final double PID_D = 0;
     public static final double PID_FF = 0;
 
-    public static final double KS = 0;
-    public static final double KV = 0;
-    public static final double KA = 0;
+    public static final double KS = 0.1;
+    public static final double KV = 0.2;
+    public static final double KA = 0.01;
 
     public static final double MAX_VELOCITY = 0;
     public static final double MAX_ACCELERATION = 0;
@@ -153,6 +153,9 @@ public final class Constants {
     public static final double AMP_ANGLE = 0;
     public static final double NEAR_SPEAKER_ANGLE = 0;
     public static final double FAR_SPEAKER_ANGLE = 0;
+
+    public static final int LEFT_MOTOR_ID = 10;
+    public static final int RIGHT_MOTOR_ID = 11;
   }
 
   public static class ClimberConstants {

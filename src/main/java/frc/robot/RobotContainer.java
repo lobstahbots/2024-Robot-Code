@@ -6,20 +6,26 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.TrajectoryFactory.PathType;
+import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.GyroIO;
 import frc.robot.subsystems.NavXGyro;
+import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.PivotSim;
+import frc.robot.subsystems.PivotSparkMax;
 import frc.robot.subsystems.SwerveModuleReal;
 import frc.robot.subsystems.SwerveModuleSim;
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,10 +36,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveBase driveBase;
+  private final Pivot pivot;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick =
       new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
+
+  private final JoystickButton armButton = new JoystickButton(driverJoystick, 1);
   
   private final TrajectoryFactory trajectoryFactory = new TrajectoryFactory();
 
@@ -46,6 +55,7 @@ public class RobotContainer {
       SwerveModuleReal backRight = new SwerveModuleReal(BackRightModuleConstants.moduleID, BackRightModuleConstants.angleID, BackRightModuleConstants.driveID, BackRightModuleConstants.angleOffset, BackRightModuleConstants.inverted);
   
       driveBase = new DriveBase(new NavXGyro(), frontLeft, frontRight, backRight, backLeft, false);
+      pivot = new Pivot(new PivotSparkMax(PivotConstants.LEFT_MOTOR_ID, PivotConstants.RIGHT_MOTOR_ID));
     } 
     else {
       SwerveModuleSim frontLeft = new SwerveModuleSim(FrontLeftModuleConstants.angleOffset);
@@ -54,18 +64,20 @@ public class RobotContainer {
       SwerveModuleSim backRight = new SwerveModuleSim(BackRightModuleConstants.angleOffset);
 
       driveBase = new DriveBase(new GyroIO(){}, frontLeft, frontRight, backLeft, backRight, false);
+      pivot = new Pivot(new PivotSim());
     }
    
     setTeleopDefaultCommands();
   }
 
   private void setTeleopDefaultCommands() {
-    driveBase.setDefaultCommand(
-      new SwerveDriveCommand(driveBase,
-          () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
-          () -> driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
-          () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
-          DriveConstants.FIELD_CENTRIC));
+    // driveBase.setDefaultCommand(
+    //   new SwerveDriveCommand(driveBase,
+    //       () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
+    //       () -> driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
+    //       () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
+    //       DriveConstants.FIELD_CENTRIC));
+    pivot.setDefaultCommand(new RotatePivotCommand(pivot, () -> 360 * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS)));
   }
 
   /**

@@ -14,6 +14,10 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.PivotConstants;
 
 public class PivotSparkMax implements PivotIO {
@@ -21,8 +25,17 @@ public class PivotSparkMax implements PivotIO {
   private final CANSparkMax rightMotor;
   private final AbsoluteEncoder encoder;
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
+
+  private final Mechanism2d pivot = new Mechanism2d(2, 11.855);
+  private final MechanismRoot2d root = pivot.getRoot("pivot", 14, 1);
+  private final MechanismLigament2d arm;
+  private final MechanismLigament2d shooter;
+
   /** Creates a new PivotReal. */
   public PivotSparkMax(int leftMotorID, int rightMotorID) {
+    this.arm = root.append(new MechanismLigament2d("arm", 16, 45));
+    this.shooter = root.append(new MechanismLigament2d("shooter", 7.5, 45));
+
     this.leftMotor = new CANSparkMax(leftMotorID, MotorType.kBrushless);
     this.rightMotor = new CANSparkMax(rightMotorID, MotorType.kBrushless);
     
@@ -72,5 +85,7 @@ public class PivotSparkMax implements PivotIO {
 
   public void periodic() {
     Logger.processInputs("Pivot", inputs);
+    arm.setAngle(Rotation2d.fromRotations(encoder.getPosition()));
+    SmartDashboard.putData("Pivot", pivot);
   }
 }
