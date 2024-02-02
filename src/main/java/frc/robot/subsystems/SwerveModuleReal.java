@@ -115,7 +115,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
 
     angleMonitor = new MonitoredSparkMaxPIDController(angleMotor, angleController);
     driveMonitor = new MonitoredSparkMaxPIDController(driveMotor, driveController);
-    monitor = new TemperatureMonitor(Arrays.asList(angleMonitor, driveMonitor));
+    monitor = new TemperatureMonitor(Arrays.asList(angleMonitor, driveMonitor, driveMotor, angleMotor));
 
     System.out.println(moduleID + angleAbsoluteEncoder.getPosition());
     this.angularOffset = Rotation2d.fromRadians(angularOffsetRadians);
