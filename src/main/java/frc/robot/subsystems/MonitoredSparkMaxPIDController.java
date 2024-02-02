@@ -38,6 +38,7 @@ public class MonitoredSparkMaxPIDController implements Monitorable {
 
   public void setDisabled(boolean disable) {
     if (disable && !disabled) {
+      sparkMax.set(0);
       prevMax = controller.getOutputMax();
       prevMin = controller.getOutputMin();
       controller.setOutputRange(0, 0);
