@@ -14,8 +14,20 @@ import frc.robot.Constants.TempConstants;
  */
 public class TemperatureMonitor {
     public static interface Monitorable {
+        /**
+         * Sets the disabled state of the monitorable.
+         * @param disable Whether or not to disable.
+         */
         public void setDisabled(boolean disable);
+        /**
+         * Gets the disabled state of the monitorable.
+         * @return Whether or not it is disabled.
+         */
         public boolean getDisabled();
+        /**
+         * Gets the motor temperature.
+         * @return The temperature.
+         */
         public double getMotorTemperature();
     }
     private double overheatTime = -1;

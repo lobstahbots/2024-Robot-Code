@@ -24,7 +24,7 @@ public class MonitoredSparkMax extends CANSparkMax implements Monitorable {
   }
 
   public void setDisabled(boolean disable) {
-    disable = disabled;
+    disabled = disable;
   }
 
   public boolean getDisabled() {
