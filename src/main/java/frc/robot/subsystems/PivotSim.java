@@ -10,7 +10,9 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
@@ -29,7 +31,7 @@ public class PivotSim implements PivotIO {
   private final DCMotor armGearbox = DCMotor.getNEO(2);
 
   private final Mechanism2d pivot = new Mechanism2d(1, 1);
-  private final MechanismRoot2d root = pivot.getRoot("pivot", Units.inchesToMeters(14), Units.inchesToMeters(15.5));
+  private final MechanismRoot2d root = pivot.getRoot("pivot", Units.inchesToMeters(14), Units.inchesToMeters(17.5));
   private final MechanismLigament2d arm;
   private final MechanismLigament2d shooter;
   private final MechanismLigament2d shooterIndexer;
@@ -67,16 +69,14 @@ public class PivotSim implements PivotIO {
   }
 
   public void setVoltage(double voltage) {
-    System.out.println("vol" + voltage);
-    // pivotSim.setInput(voltage);
     pivotSim.setInput(VecBuilder.fill(voltage));
-    System.out.println(pivotSim.getOutput(0));
     
-    System.out.println("deg" + pivotSim.getAngleRads());
     arm.setAngle(270 - Rotation2d.fromRadians(pivotSim.getAngleRads()).getDegrees());
     pivotSim.update(SimConstants.LOOP_TIME);
     // SmartDashboard.putData("Pivot", pivot);
     Logger.recordOutput("Arm", pivot);
+    Logger.recordOutput("ArmPose", new Pose3d(-Units.inchesToMeters(18),Units.inchesToMeters(-2), 0, new Rotation3d(Math.PI - pivotSim.getAngleRads(), Units.degreesToRadians(180), Units.degreesToRadians(90))));
+    Logger.recordOutput("IntakePose", new Pose3d(0,0, Units.inchesToMeters(14), new Rotation3d(Units.degreesToRadians(240) - pivotSim.getAngleRads(), Units.degreesToRadians(180), Units.degreesToRadians(90))));
   }
 
   public void stopPivot() {
