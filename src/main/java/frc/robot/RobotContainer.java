@@ -86,7 +86,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return trajectoryFactory.getPathFindToPathCommand("NewPath", PathType.CHOREO);
+    return trajectoryFactory.getPathFindToPathCommand("Station1SimpleAuto", PathType.CHOREO);
   }
 
   public void setAutonDefaultCommands() {
