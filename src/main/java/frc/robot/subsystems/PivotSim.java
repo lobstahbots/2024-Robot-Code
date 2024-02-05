@@ -6,17 +6,12 @@ package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -43,7 +38,7 @@ public class PivotSim implements PivotIO {
           SingleJointedArmSim.estimateMOI(Units.inchesToMeters(17.18), Units.lbsToKilograms(16)),
           16,
           Units.degreesToRadians(90 - 180),
-          Units.degreesToRadians(135 - 180),
+          Units.degreesToRadians(147 - 180),
           true,
           0,
           VecBuilder.fill(2.0 * Math.PI / 2048) // Add noise with a std-dev of 1 tick
@@ -75,8 +70,8 @@ public class PivotSim implements PivotIO {
     pivotSim.update(SimConstants.LOOP_TIME);
     // SmartDashboard.putData("Pivot", pivot);
     Logger.recordOutput("Arm", pivot);
-    Logger.recordOutput("ArmPose", new Pose3d(-Units.inchesToMeters(18),Units.inchesToMeters(-2), 0, new Rotation3d(Math.PI - pivotSim.getAngleRads(), Units.degreesToRadians(180), Units.degreesToRadians(90))));
-    Logger.recordOutput("IntakePose", new Pose3d(0,0, Units.inchesToMeters(14), new Rotation3d(Units.degreesToRadians(240) - pivotSim.getAngleRads(), Units.degreesToRadians(180), Units.degreesToRadians(90))));
+    Logger.recordOutput("ArmPose", new Pose3d(Units.inchesToMeters(16.5),Units.inchesToMeters(8.65), Units.inchesToMeters(3.375), new Rotation3d(Units.degreesToRadians(90), 0, Units.degreesToRadians(90))));
+    Logger.recordOutput("IntakePose", new Pose3d(Units.inchesToMeters(8 + pivotSim.getAngleRads()),Units.inchesToMeters(0), Units.inchesToMeters(5.25 - 7*(pivotSim.getAngleRads())), new Rotation3d(Units.degreesToRadians(-45) - pivotSim.getAngleRads(), 0, Units.degreesToRadians(90))));
   }
 
   public void stopPivot() {
