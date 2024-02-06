@@ -19,4 +19,6 @@ public interface IntakeIO {
     public default void stopIntakeMotor() {}
     
     public default void updateInputs(IntakeIOInputs inputs) {}
+
+    public default void periodic() {}
 }
