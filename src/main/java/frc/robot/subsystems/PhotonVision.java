@@ -50,6 +50,10 @@ public class PhotonVision extends SubsystemBase {
         return Optional.of(averagePose);
     }
 
+    public double getTimestamp() {
+        return inputs.estimatedRearPose.timestampSeconds > inputs.estimatedFrontPose.timestampSeconds ? inputs.estimatedRearPose.timestampSeconds : inputs.estimatedFrontPose.timestampSeconds;
+    }
+
     /**
      * Get the tracked targets from the front camera.
      * @return The tracked targets.
