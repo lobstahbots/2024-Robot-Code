@@ -4,7 +4,7 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface IntakeIO {
     @AutoLog
-    public class IntakeIOInputs {
+    public static class IntakeIOInputs {
         public double intakeMotorVoltage = 0.0;
         public double intakeMotorTemperature = 0.0;
         public double intakeMotorCurrent = 0.0;

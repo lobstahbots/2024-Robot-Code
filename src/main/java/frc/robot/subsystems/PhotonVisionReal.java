@@ -1,14 +1,11 @@
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-import org.littletonrobotics.junction.AutoLog;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -29,7 +26,6 @@ public class PhotonVisionReal implements PhotonVisionIO {
         this.rearPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, VisionConstants.POSE_STRATEGY, rearCamera, VisionConstants.ROBOT_TO_REAR_CAMERA);
     }
 
-
     public void updateInputs(PhotonVisionIOInputs inputs) {
         Optional<EstimatedRobotPose> frontPoseOptional = frontPoseEstimator.update();
         if (frontPoseOptional.isPresent()) inputs.estimatedFrontPose = frontPoseOptional.get();
@@ -38,8 +34,18 @@ public class PhotonVisionReal implements PhotonVisionIO {
         inputs.frontTargets = inputs.estimatedFrontPose.targetsUsed;
         inputs.rearTargets = inputs.estimatedRearPose.targetsUsed;
         inputs.visibleFrontFiducialIDs = new ArrayList<>();
-        for (PhotonTrackedTarget target : inputs.frontTargets) inputs.visibleFrontFiducialIDs.add(target.getFiducialId());
         inputs.visibleRearFiducialIDs = new ArrayList<>();
-        for (PhotonTrackedTarget target : inputs.rearTargets) inputs.visibleRearFiducialIDs.add(target.getFiducialId());
+        double frontAmbiguitySum = 0;
+        double rearAmbiguitySum = 0;
+        for (PhotonTrackedTarget target : inputs.frontTargets) {
+            inputs.visibleFrontFiducialIDs.add(target.getFiducialId());
+            frontAmbiguitySum += target.getPoseAmbiguity();
+        }   
+        for (PhotonTrackedTarget target : inputs.rearTargets) {
+            inputs.visibleRearFiducialIDs.add(target.getFiducialId());
+            rearAmbiguitySum += target.getPoseAmbiguity();
+        }
+        inputs.rearConfidence = rearAmbiguitySum / inputs.rearTargets.size();  
+        inputs.frontConfidence = frontAmbiguitySum / inputs.frontTargets.size();
     }
 }

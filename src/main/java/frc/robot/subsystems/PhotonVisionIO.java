@@ -17,7 +17,9 @@ public interface PhotonVisionIO {
         public List<PhotonTrackedTarget> frontTargets = new ArrayList<>();
         public List<PhotonTrackedTarget> rearTargets = new ArrayList<>();
         public List<Integer> visibleFrontFiducialIDs = new ArrayList<>();
-        public List<Integer> visibleRearFiducialIDs = new ArrayList<>();  
+        public List<Integer> visibleRearFiducialIDs = new ArrayList<>();
+        public double frontConfidence = 0.0;
+        public double rearConfidence = 0.0;
     }
 
     public default void updateInputs(PhotonVisionIOInputs inputs) {}
