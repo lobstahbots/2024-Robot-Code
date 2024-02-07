@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.SimConstants;
 
 /** Add your docs here. */
@@ -37,7 +38,7 @@ public class PivotSim implements PivotIO {
           80,
           SingleJointedArmSim.estimateMOI(Units.inchesToMeters(17.18), Units.lbsToKilograms(16)),
           16,
-          Units.degreesToRadians(90 - 180),
+          Units.degreesToRadians(125 - 180),
           Units.degreesToRadians(147 - 180),
           true,
           0,
@@ -72,8 +73,9 @@ public class PivotSim implements PivotIO {
   }
 
   public void periodic() {
+    var logTransform = PivotKinematics.angleToSimPivotTransform(pivotSim.getAngleRads());
     Logger.recordOutput("Arm", pivot);
     Logger.recordOutput("ArmPose", new Pose3d(Units.inchesToMeters(16.5),Units.inchesToMeters(8.65), Units.inchesToMeters(3.375), new Rotation3d(Units.degreesToRadians(90), 0, Units.degreesToRadians(90))));
-    Logger.recordOutput("IntakePose", new Pose3d(Units.inchesToMeters(8 + pivotSim.getAngleRads()),Units.inchesToMeters(0), Units.inchesToMeters(5.25 - 7*(pivotSim.getAngleRads())), new Rotation3d(Units.degreesToRadians(-45) - pivotSim.getAngleRads(), 0, Units.degreesToRadians(90))));
+    Logger.recordOutput("IntakePose", new Pose3d(Units.inchesToMeters(7), 0, Units.inchesToMeters(PivotConstants.PIVOT_SIM_ROTATION_POINT_HEIGHT_INCHES) + logTransform.getY(), new Rotation3d(Units.degreesToRadians(-45) - pivotSim.getAngleRads(), 0, Units.degreesToRadians(90))));
   }
 }

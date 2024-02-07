@@ -36,7 +36,6 @@ public class RotatePivotCommand extends Command {
   @Override
   public void execute() {
     pivot.setDesiredAngle(angleSupplier.getAsDouble());
-    System.out.println("supplier" + angleSupplier.getAsDouble());
   }
 
   @Override

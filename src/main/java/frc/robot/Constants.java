@@ -153,6 +153,8 @@ public final class Constants {
     public static final double AMP_ANGLE = 0;
     public static final double NEAR_SPEAKER_ANGLE = 0;
     public static final double FAR_SPEAKER_ANGLE = 0;
+    public static final double PIVOT_SIM_ROTATION_POINT_DISTANCE_INCHES = 5;
+    public static final double PIVOT_SIM_ROTATION_POINT_HEIGHT_INCHES = 14;
 
     public static final int LEFT_MOTOR_ID = 10;
     public static final int RIGHT_MOTOR_ID = 11;
