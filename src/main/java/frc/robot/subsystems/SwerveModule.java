@@ -61,6 +61,7 @@ public class SwerveModule {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Drive/Module" + Integer.toString(moduleID), inputs);
+    io.periodic();
   }
 
   /**

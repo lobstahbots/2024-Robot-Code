@@ -4,9 +4,8 @@
 
 package frc.robot.subsystems;
 
-import org.littletonrobotics.junction.Logger;
+import java.util.Arrays;
 
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -21,10 +20,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.PivotConstants;
 
 public class PivotSparkMax implements PivotIO {
-  private final CANSparkMax leftMotor;
-  private final CANSparkMax rightMotor;
+  private final MonitoredSparkMax leftMotor;
+  private final MonitoredSparkMax rightMotor;
   private final AbsoluteEncoder encoder;
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
+  private final TemperatureMonitor monitor;
 
   private final Mechanism2d pivot = new Mechanism2d(2, 11.855);
   private final MechanismRoot2d root = pivot.getRoot("pivot", 14, 1);
@@ -33,11 +33,10 @@ public class PivotSparkMax implements PivotIO {
 
   /** Creates a new PivotReal. */
   public PivotSparkMax(int leftMotorID, int rightMotorID) {
+    this.leftMotor = new MonitoredSparkMax(leftMotorID, MotorType.kBrushless);
+    this.rightMotor = new MonitoredSparkMax(rightMotorID, MotorType.kBrushless);
     this.arm = root.append(new MechanismLigament2d("arm", 16, 45));
     this.shooter = root.append(new MechanismLigament2d("shooter", 7.5, 45));
-
-    this.leftMotor = new CANSparkMax(leftMotorID, MotorType.kBrushless);
-    this.rightMotor = new CANSparkMax(rightMotorID, MotorType.kBrushless);
     
     this.encoder = leftMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
@@ -55,6 +54,8 @@ public class PivotSparkMax implements PivotIO {
     Timer.delay(0.5);
     rightMotor.burnFlash();
     Timer.delay(0.5);
+
+    monitor = new TemperatureMonitor(Arrays.asList(leftMotor, rightMotor));
   }
 
   /**
@@ -84,7 +85,7 @@ public class PivotSparkMax implements PivotIO {
   }
 
   public void periodic() {
-    Logger.processInputs("Pivot", inputs);
+    monitor.monitor();
     arm.setAngle(Rotation2d.fromRotations(encoder.getPosition()));
     SmartDashboard.putData("Pivot", pivot);
   }
