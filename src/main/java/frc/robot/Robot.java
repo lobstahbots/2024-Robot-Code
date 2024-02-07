@@ -11,6 +11,7 @@ import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
 
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
@@ -44,12 +45,11 @@ public class Robot extends LoggedRobot {
     Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
     Logger.recordMetadata("Lobstah Bots", "2023 Swerve Offseason");
     if (Robot.isReal()) {
-      // Logger.addDataReceiver(new WPILOGWriter("/U")); // Log to a USB stick
-      // File log = new File (Filesystem.getOperatingDirectory(), "log");
-      // String logPath = log.getAbsolutePath();
-      // System.out.println(logPath);
-      // logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-      // Logger.addDataReceiver(new WPILOGWriter(logPath)); // Save outputs to a new log
+      File log = new File (Filesystem.getOperatingDirectory(), "log");
+      String logPath = log.getAbsolutePath();
+      System.out.println(logPath);
+      Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+      Logger.addDataReceiver(new WPILOGWriter(logPath)); // Save outputs to a new log
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
   } else {
       setUseTiming(false); // Run as fast as possible
