@@ -25,7 +25,11 @@ public class PivotSparkMax implements PivotIO {
   private final AbsoluteEncoder encoder;
   private final TemperatureMonitor monitor;
 
-  /** Creates a new PivotReal. */
+  /** Creates a new PivotSparkMax. 
+   * 
+   * @param leftMotorID The CAN ID of the left motor.
+   * @param rightMotorID The CAN ID of the right motor.
+   */
   public PivotSparkMax(int leftMotorID, int rightMotorID) {
     this.leftMotor = new MonitoredSparkMax(leftMotorID, MotorType.kBrushless);
     this.rightMotor = new MonitoredSparkMax(rightMotorID, MotorType.kBrushless);
@@ -51,7 +55,7 @@ public class PivotSparkMax implements PivotIO {
   }
 
   /**
-   * Rotate both motors.
+   * Sets voltage of both motors.
    * @param voltage The speed at which to rotate the motors.
    */
   public void setVoltage(double voltage) {
@@ -59,7 +63,7 @@ public class PivotSparkMax implements PivotIO {
   }
 
   /**
-   * Stop both motors.
+   * Stops both motors.
    */
   public void stopPivot() {
     rightMotor.set(0);

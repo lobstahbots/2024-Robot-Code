@@ -62,12 +62,16 @@ public class PivotSim implements PivotIO {
     inputs.velocity = Rotation2d.fromRadians(pivotSim.getVelocityRadPerSec());
   }
 
+  /** Sets voltage of the pivot sim motor.
+   * @param voltage The voltage to set it to
+   */
   public void setVoltage(double voltage) {
     pivotSim.setInput(VecBuilder.fill(voltage));
     arm.setAngle(270 - Rotation2d.fromRadians(pivotSim.getAngleRads()).getDegrees());
     pivotSim.update(SimConstants.LOOP_TIME);
   }
 
+  /** Stops the pivot sim motor. */
   public void stopPivot() {
     pivotSim.setInput(0);
   }
