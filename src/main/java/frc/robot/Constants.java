@@ -158,4 +158,9 @@ public final class Constants {
   public static class ClimberConstants {
     public static final double CLIMBER_SPEED = 1.0;
   }
+
+  public static class TempConstants {
+    public static final int OVERHEAT_TEMP = 80;
+    public static final int SAFE_TEMP = 65;
+  }
 }

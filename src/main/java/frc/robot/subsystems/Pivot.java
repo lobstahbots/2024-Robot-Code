@@ -64,5 +64,6 @@ public class Pivot extends SubsystemBase {
   public void periodic() {
     pivotMotor.updateInputs(inputs);
     Logger.processInputs("Pivot", inputs);
+    pivotMotor.periodic();
   }
 }

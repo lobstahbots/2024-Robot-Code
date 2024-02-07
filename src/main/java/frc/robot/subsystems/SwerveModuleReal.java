@@ -4,10 +4,9 @@
 
 package frc.robot.subsystems;
 
-import org.littletonrobotics.junction.Logger;
+import java.util.Arrays;
 
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -27,8 +26,8 @@ import frc.robot.Constants.SwerveConstants;
 import stl.math.LobstahMath;
 
 public class SwerveModuleReal implements SwerveModuleIO {
-  private final CANSparkMax angleMotor;
-  private final CANSparkMax driveMotor;
+  private final MonitoredSparkMax angleMotor;
+  private final MonitoredSparkMax driveMotor;
   private final RelativeEncoder drivingEncoder;
   private final AbsoluteEncoder angleAbsoluteEncoder;
   private final RelativeEncoder angleEncoder;
@@ -41,7 +40,9 @@ public class SwerveModuleReal implements SwerveModuleIO {
   private Rotation2d lastAngle;
   private SwerveModuleState desiredState = new SwerveModuleState(0.0, new Rotation2d());
   private final int moduleID;
-  private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
+  private final TemperatureMonitor monitor;
+  private final MonitoredSparkMaxPIDController driveMonitor;
+  private final MonitoredSparkMaxPIDController angleMonitor;
 
   /** Creates a new SwerveModule for real cases. 
    * 
@@ -53,8 +54,8 @@ public class SwerveModuleReal implements SwerveModuleIO {
   public SwerveModuleReal (int moduleID, int angleMotorID, int driveMotorID, double angularOffsetDegrees, boolean inverted) {
     this.moduleID = moduleID;
 
-    this.angleMotor = new CANSparkMax(angleMotorID, MotorType.kBrushless);
-    this.driveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
+    this.angleMotor = new MonitoredSparkMax(angleMotorID, MotorType.kBrushless);
+    this.driveMotor = new MonitoredSparkMax(driveMotorID, MotorType.kBrushless);
 
     angleMotor.restoreFactoryDefaults();
     driveMotor.restoreFactoryDefaults();
@@ -112,6 +113,10 @@ public class SwerveModuleReal implements SwerveModuleIO {
     Timer.delay(0.5);
     angleMotor.burnFlash();
     Timer.delay(0.5);
+    
+    angleMonitor = new MonitoredSparkMaxPIDController(angleMotor, angleController);
+    driveMonitor = new MonitoredSparkMaxPIDController(driveMotor, driveController);
+    monitor = new TemperatureMonitor(Arrays.asList(angleMonitor, driveMonitor, driveMotor, angleMotor));
 
     System.out.println(moduleID + angleAbsoluteEncoder.getPosition());
     this.angularOffset = Rotation2d.fromDegrees(angularOffsetDegrees);
@@ -254,7 +259,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
   }
 
   public void periodic() {
-    Logger.processInputs("Drive/Module" + Integer.toString(moduleID), inputs);
+    monitor.monitor();
   }
 
 }
