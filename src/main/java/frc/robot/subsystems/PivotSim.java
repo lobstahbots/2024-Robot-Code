@@ -59,22 +59,21 @@ public class PivotSim implements PivotIO {
     inputs.motorRightCurrentAmps = pivotSim.getCurrentDrawAmps();
     inputs.position = Rotation2d.fromRadians(pivotSim.getAngleRads());
     inputs.velocity = Rotation2d.fromRadians(pivotSim.getVelocityRadPerSec());
-    // System.out.println(inputs.position);
-    // arm.setAngle(inputs.position);
   }
 
   public void setVoltage(double voltage) {
     pivotSim.setInput(VecBuilder.fill(voltage));
-    
     arm.setAngle(270 - Rotation2d.fromRadians(pivotSim.getAngleRads()).getDegrees());
     pivotSim.update(SimConstants.LOOP_TIME);
-    // SmartDashboard.putData("Pivot", pivot);
-    Logger.recordOutput("Arm", pivot);
-    Logger.recordOutput("ArmPose", new Pose3d(Units.inchesToMeters(16.5),Units.inchesToMeters(8.65), Units.inchesToMeters(3.375), new Rotation3d(Units.degreesToRadians(90), 0, Units.degreesToRadians(90))));
-    Logger.recordOutput("IntakePose", new Pose3d(Units.inchesToMeters(8 + pivotSim.getAngleRads()),Units.inchesToMeters(0), Units.inchesToMeters(5.25 - 7*(pivotSim.getAngleRads())), new Rotation3d(Units.degreesToRadians(-45) - pivotSim.getAngleRads(), 0, Units.degreesToRadians(90))));
   }
 
   public void stopPivot() {
     pivotSim.setInput(0);
+  }
+
+  public void periodic() {
+    Logger.recordOutput("Arm", pivot);
+    Logger.recordOutput("ArmPose", new Pose3d(Units.inchesToMeters(16.5),Units.inchesToMeters(8.65), Units.inchesToMeters(3.375), new Rotation3d(Units.degreesToRadians(90), 0, Units.degreesToRadians(90))));
+    Logger.recordOutput("IntakePose", new Pose3d(Units.inchesToMeters(8 + pivotSim.getAngleRads()),Units.inchesToMeters(0), Units.inchesToMeters(5.25 - 7*(pivotSim.getAngleRads())), new Rotation3d(Units.degreesToRadians(-45) - pivotSim.getAngleRads(), 0, Units.degreesToRadians(90))));
   }
 }

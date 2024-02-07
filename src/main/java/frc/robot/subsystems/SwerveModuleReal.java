@@ -75,8 +75,6 @@ public class SwerveModuleReal implements SwerveModuleIO {
     angleEncoder = angleMotor.getEncoder();
     driveController.setFeedbackDevice(drivingEncoder);
     angleController.setFeedbackDevice(angleEncoder);
-    // angleAbsoluteEncoder.setInverted(inverted);
-    // angleEncoder.setInverted(inverted);
 
     angleController.setPositionPIDWrappingEnabled(true);
     angleController.setPositionPIDWrappingMinInput(SwerveConstants.TURN_PID_MIN_INPUT);
@@ -129,11 +127,6 @@ public class SwerveModuleReal implements SwerveModuleIO {
   public void stopMotors() {
     angleMotor.stopMotor();
     driveMotor.stopMotor();
-  }
-
-  /**Initializes angle based on initial absolute encoder reading. */
-  public void initializeAngle() {
-    // angleEncoder.setPosition(angleAbsoluteEncoder.getPosition());
   }
 
   /**

@@ -25,7 +25,6 @@ import frc.robot.subsystems.SwerveModuleSim;
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,8 +40,6 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick =
       new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
-
-  private final JoystickButton armButton = new JoystickButton(driverJoystick, 1);
   
   private final TrajectoryFactory trajectoryFactory = new TrajectoryFactory();
 
@@ -71,12 +68,12 @@ public class RobotContainer {
   }
 
   private void setTeleopDefaultCommands() {
-    // driveBase.setDefaultCommand(
-    //   new SwerveDriveCommand(driveBase,
-    //       () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
-    //       () -> driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
-    //       () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
-    //       DriveConstants.FIELD_CENTRIC));
+    driveBase.setDefaultCommand(
+      new SwerveDriveCommand(driveBase,
+          () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
+          () -> driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
+          () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
+          DriveConstants.FIELD_CENTRIC));
     pivot.setDefaultCommand(new RotatePivotCommand(pivot, () -> 360 * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS)));
   }
 
