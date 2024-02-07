@@ -16,7 +16,6 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.PivotConstants;
 
@@ -79,7 +78,9 @@ public class PivotSparkMax implements PivotIO {
 
   public void periodic() {
     monitor.monitor();
-    Logger.recordOutput("ArmPose", new Pose3d(Units.inchesToMeters(16.5),Units.inchesToMeters(8.65), Units.inchesToMeters(3.375), new Rotation3d(Units.degreesToRadians(90), 0, Units.degreesToRadians(90))));
-    Logger.recordOutput("IntakePose", new Pose3d(Units.inchesToMeters(8 + Rotation2d.fromRotations(encoder.getPosition()).getRadians()),Units.inchesToMeters(0), Units.inchesToMeters(5.25 - 7*(Rotation2d.fromRotations(encoder.getPosition()).getRadians())), new Rotation3d(Units.degreesToRadians(-45) - Rotation2d.fromRotations(encoder.getPosition()).getRadians(), 0, Units.degreesToRadians(90))));
+    var pivotAngleRads = Rotation2d.fromRotations(encoder.getPosition()).getRadians();
+    var logTransform = PivotKinematics.angleToSimPivotTransform(pivotAngleRads);
+    Logger.recordOutput("TowerPose", new Pose3d(PivotConstants.ORIGIN_TO_TOWER_MOUNT_X_DIST, PivotConstants.ORIGIN_TO_TOWER_MOUNT_Y_DIST, PivotConstants.ORIGIN_TO_TOWER_MOUNT_Z_DIST, PivotConstants.TOWER_ROTATION));
+    Logger.recordOutput("ArmPose", new Pose3d(PivotConstants.ORIGIN_TO_ARM_MOUNT_X_DIST, PivotConstants.ORIGIN_TO_ARM_MOUNT_Y_DIST, PivotConstants.ORIGIN_TO_ARM_MOUNT_Z_DIST + logTransform.getY(), new Rotation3d(PivotConstants.ARM_INITIAL_ROLL - pivotAngleRads, PivotConstants.ARM_PITCH, PivotConstants.ARM_YAW)));
   }
 }

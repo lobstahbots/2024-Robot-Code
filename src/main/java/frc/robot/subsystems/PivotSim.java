@@ -38,8 +38,8 @@ public class PivotSim implements PivotIO {
           80,
           SingleJointedArmSim.estimateMOI(Units.inchesToMeters(17.18), Units.lbsToKilograms(16)),
           16,
-          Units.degreesToRadians(125 - 180),
-          Units.degreesToRadians(147 - 180),
+          PivotConstants.PIVOT_MIN_ANGLE,
+          PivotConstants.PIVOT_MAX_ANGLE,
           true,
           0,
           VecBuilder.fill(2.0 * Math.PI / 2048) // Add noise with a std-dev of 1 tick
@@ -75,7 +75,7 @@ public class PivotSim implements PivotIO {
   public void periodic() {
     var logTransform = PivotKinematics.angleToSimPivotTransform(pivotSim.getAngleRads());
     Logger.recordOutput("Arm", pivot);
-    Logger.recordOutput("ArmPose", new Pose3d(Units.inchesToMeters(16.5),Units.inchesToMeters(8.65), Units.inchesToMeters(3.375), new Rotation3d(Units.degreesToRadians(90), 0, Units.degreesToRadians(90))));
-    Logger.recordOutput("IntakePose", new Pose3d(Units.inchesToMeters(7), 0, Units.inchesToMeters(PivotConstants.PIVOT_SIM_ROTATION_POINT_HEIGHT_INCHES) + logTransform.getY(), new Rotation3d(Units.degreesToRadians(-45) - pivotSim.getAngleRads(), 0, Units.degreesToRadians(90))));
+    Logger.recordOutput("TowerPose", new Pose3d(PivotConstants.ORIGIN_TO_TOWER_MOUNT_X_DIST, PivotConstants.ORIGIN_TO_TOWER_MOUNT_Y_DIST, PivotConstants.ORIGIN_TO_TOWER_MOUNT_Z_DIST, PivotConstants.TOWER_ROTATION));
+    Logger.recordOutput("ArmPose", new Pose3d(PivotConstants.ORIGIN_TO_ARM_MOUNT_X_DIST, PivotConstants.ORIGIN_TO_ARM_MOUNT_Y_DIST, PivotConstants.ORIGIN_TO_ARM_MOUNT_Z_DIST + logTransform.getY(), new Rotation3d(PivotConstants.ARM_INITIAL_ROLL - pivotSim.getAngleRads(), PivotConstants.ARM_PITCH, PivotConstants.ARM_YAW)));
   }
 }
