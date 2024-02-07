@@ -63,7 +63,7 @@ public class RobotContainer {
     driveBase.setDefaultCommand(
       new SwerveDriveCommand(driveBase,
           () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
-          () -> driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
+          () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
           () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
           DriveConstants.FIELD_CENTRIC));
   }
@@ -74,7 +74,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return trajectoryFactory.getPathFindToPathCommand("NewPath", PathType.CHOREO);
+    return trajectoryFactory.getPathFindToPathCommand("Station1SimpleAuto", PathType.CHOREO);
   }
 
   public void setAutonDefaultCommands() {

@@ -19,7 +19,6 @@ public class PivotSparkMax implements PivotIO {
   private final MonitoredSparkMax leftMotor;
   private final MonitoredSparkMax rightMotor;
   private final AbsoluteEncoder encoder;
-  private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
   private final TemperatureMonitor monitor;
   /** Creates a new PivotReal. */
   public PivotSparkMax(int leftMotorID, int rightMotorID) {
