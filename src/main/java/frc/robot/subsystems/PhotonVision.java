@@ -3,9 +3,7 @@ package frc.robot.subsystems;
 import java.util.List;
 import java.util.Optional;
 
-import org.littletonrobotics.junction.AutoLog;
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonPoseEstimator;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -50,16 +48,21 @@ public class PhotonVision extends SubsystemBase {
         return Optional.of(averagePose);
     }
 
+    /**
+     * Get the timestamp of the pose capture.
+     * @return The latest timestamp.
+     */
     public double getTimestamp() {
-        return inputs.estimatedRearPose.timestampSeconds > inputs.estimatedFrontPose.timestampSeconds ? inputs.estimatedRearPose.timestampSeconds : inputs.estimatedFrontPose.timestampSeconds;
+        return inputs.estimatedRearPoseTimestamp > inputs.estimatedFrontPoseTimestamp ? inputs.estimatedRearPoseTimestamp : inputs.estimatedFrontPoseTimestamp;
     }
 
     /**
      * Get the tracked targets from the front camera.
      * @return The tracked targets.
      */
+
     public List<PhotonTrackedTarget> getFrontTargets() {
-        return inputs.frontTargets;
+        return io.getFrontTrackedTargets();
     }
 
     /**
@@ -67,22 +70,26 @@ public class PhotonVision extends SubsystemBase {
      * @return The tracked targets.
      */
     public List<PhotonTrackedTarget> getRearTargets() {
-        return inputs.rearTargets;
+        return io.getRearTrackedTargets();
     }
 
     /**
      * Get the fiducial IDs of the targets in the front camera.
      * @return A list of the IDs.
      */
-    public List<Integer> getFrontFiducialIDs() {
-        return inputs.visibileFrontFiducialIDs;
+    public int[] getFrontFiducialIDs() {
+        return inputs.visibleFrontFiducialIDs;
     }
 
     /**
      * Get the fiducial IDs of the targets in the rear camera.
      * @return A list of the IDs.
      */
-    public List<Integer> getRearFiducialIDs() {
+    public int[] getRearFiducialIDs() {
         return inputs.visibleRearFiducialIDs;
+    }
+
+    public void periodic() {
+        Logger.processInputs("PhotonVision", inputs);
     }
 }
