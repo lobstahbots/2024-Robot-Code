@@ -52,7 +52,7 @@ public class PhotonVisionReal implements PhotonVisionIO {
                 frontAmbiguitySum += target.getPoseAmbiguity();
             }   
 
-            inputs.frontConfidence = frontAmbiguitySum / inputs.visibleFrontFiducialIDs.length;
+            inputs.frontConfidence = 1 - (frontAmbiguitySum / inputs.visibleFrontFiducialIDs.length);
         }
         Optional<EstimatedRobotPose> rearPoseOptional = rearPoseEstimator.update();
         
@@ -72,7 +72,7 @@ public class PhotonVisionReal implements PhotonVisionIO {
                 rearAmbiguitySum += target.getPoseAmbiguity();
             }  
 
-            inputs.rearConfidence = rearAmbiguitySum / inputs.visibleRearFiducialIDs.length; 
+            inputs.rearConfidence = 1 - (rearAmbiguitySum / inputs.visibleRearFiducialIDs.length); 
         } 
     }
 
