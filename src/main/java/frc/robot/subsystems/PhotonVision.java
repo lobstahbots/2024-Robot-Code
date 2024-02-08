@@ -21,6 +21,7 @@ public class PhotonVision extends SubsystemBase {
 
     /**
      * Get the estimated pose from both cameras.
+     * @param odometryPose The current pose returned by the robot odometry to filter the vision estimate in comparison to.
      * @return The estimated pose.
      */
     public Optional<Pose2d> getEstimatedPose(Pose2d odometryPose) {
