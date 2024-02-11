@@ -25,7 +25,7 @@ public final class Constants {
     public static final Pose2d TARGET_POSE = new Pose2d(16, 7, Rotation2d.fromDegrees(180));
     public static final Pose2d INITIAL_POSE = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
     public static final PathConstraints CONSTRAINTS = new PathConstraints(
-            3.0, 4.0, 
+            0.3, 1, 
             Units.degreesToRadians(540), Units.degreesToRadians(720));
 
     public static final Pose2d NOTE_1_POSE = new Pose2d(2.9, 4.1, Rotation2d.fromDegrees(90));
@@ -37,10 +37,13 @@ public final class Constants {
     public static final Pose2d CENTER_NOTE_4_POSE = new Pose2d(8.29, 5.77, Rotation2d.fromDegrees(90));
     public static final Pose2d CENTER_NOTE_5_POSE = new Pose2d(8.29, 7.44, Rotation2d.fromDegrees(90));
 
+    public static final Pose2d STATION_1 = new Pose2d(0.4119143784046173, 7.161474227905273, Rotation2d.fromRotations(0));
+    public static final Pose2d STATION_2 = new Pose2d(0.5068893432617188, 3.710716009140014, Rotation2d.fromRotations(0));
+    public static final Pose2d STATION_3 = new Pose2d(0.44357267022132874, 2.3525, Rotation2d.fromRotations(0));
   }
   public static class IOConstants {
-    public static final int DRIVER_CONTROLLER_PORT = 0;
-    public static final int OPERATOR_CONTROLLER_PORT = 1; // Note: add real value
+    public static final int DRIVER_CONTROLLER_PORT = 0; 
+    public static final int OPERATOR_CONTROLLER_PORT = 1; 
     public static final int STRAFE_X_AXIS = 0;
     public static final int STRAFE_Y_AXIS = 1;
     public static final int ROTATION_AXIS = 2;
@@ -53,6 +56,7 @@ public final class Constants {
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(3);
     public static final double DRIVE_GEAR_RATIO = 4.71;
     public static final double ANGLE_GEAR_RATIO = 6.1;
+    public static final double CLIMBER_SPEED = 1.0;
   }
   public static class DriveConstants {
     public static final double MAX_VOLTS = 4.95;
@@ -62,10 +66,10 @@ public final class Constants {
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
     public static final int ANGLE_MOTOR_CURRENT_LIMIT = 40;
     public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
-      new Translation2d(-RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
+      new Translation2d(RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
-      new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0),
-      new Translation2d(RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0));
+      new Translation2d(-RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
+      new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0));
 
     public static final boolean FIELD_CENTRIC = true;
     public static final boolean IS_OPEN_LOOP = false;
@@ -77,14 +81,14 @@ public final class Constants {
       public static final int moduleID = 0;
       public static final int driveID = 12;
       public static final int angleID = 13;
-      public static final double angleOffset = 0;
+      public static final double angleOffset = -90;
       public static final boolean inverted = true;
     }
     public static class BackLeftModuleConstants {
       public static final int moduleID = 1;
       public static final int driveID = 16;
       public static final int angleID = 17;
-      public static final double angleOffset = 0;
+      public static final double angleOffset = 180;
       public static final boolean inverted = true;
     }
     public static class FrontRightModuleConstants {
@@ -98,7 +102,7 @@ public final class Constants {
       public static final int moduleID = 3;
       public static final int driveID = 10;
       public static final int angleID = 11;
-      public static final double angleOffset = 0;
+      public static final double angleOffset = 90;
       public static final boolean inverted = true;
     }
   }
@@ -110,7 +114,7 @@ public final class Constants {
     public static final double KA = 0.1;
     public static final double KV = 0.1;
 
-    public static final double DRIVING_ENCODER_POSITION_CONVERSION_FACTOR = (RobotConstants.WHEEL_DIAMETER * Math.PI) / (RobotConstants.DRIVE_GEAR_RATIO);
+    public static final double DRIVING_ENCODER_POSITION_CONVERSION_FACTOR = ((RobotConstants.WHEEL_DIAMETER * Math.PI) * (RobotConstants.DRIVE_GEAR_RATIO)) / 42;
     public static final double DRIVING_ENCODER_VELOCITY_CONVERSION_FACTOR = DRIVING_ENCODER_POSITION_CONVERSION_FACTOR / 60.0;
     public static final double TURNING_ENCODER_POSITION_CONVERSION_FACTOR = (2 * Math.PI);
     public static final double TURNING_ENCODER_VELOCITY_CONVERSION_FACTOR = TURNING_ENCODER_POSITION_CONVERSION_FACTOR / 60.0;
@@ -136,6 +140,11 @@ public final class Constants {
     public static final double INTAKE_SPEED = 1;
     public static final int INTAKE_MOTOR_ID = 0;
   } 
+  public static class ShooterConstants {
+    public static final double SHOOTER_SPEED = 1;
+    public static final int UPPER_SHOOTER_ID = 0;
+    public static final int LOWER_SHOOTER_ID = 0;
+  }
   public static class SimConstants {
     public static final double LOOP_TIME = 0.01;
   }
@@ -161,5 +170,10 @@ public final class Constants {
 
   public static class ClimberConstants {
     public static final double CLIMBER_SPEED = 1.0;
+  }
+
+  public static class TempConstants {
+    public static final int OVERHEAT_TEMP = 80;
+    public static final int SAFE_TEMP = 65;
   }
 }

@@ -16,7 +16,7 @@ import frc.robot.Constants.PivotConstants;
 
 public class Pivot extends SubsystemBase {
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
-  private PivotSparkMax pivotMotor;
+  private PivotIO io;
   private final ArmFeedforward feedforward = new ArmFeedforward(
     PivotConstants.KS, PivotConstants.KV, PivotConstants.KA
   );
@@ -27,15 +27,15 @@ public class Pivot extends SubsystemBase {
     new TrapezoidProfile.Constraints(PivotConstants.MAX_VELOCITY, PivotConstants.MAX_ACCELERATION)
   );
   /** Creates a new Pivot. */
-  public Pivot(PivotSparkMax pivotMotor) {
-    this.pivotMotor = pivotMotor;
+  public Pivot(PivotIO io) {
+    this.io = io;
   }
 
   /**
    * Stop the pivot.
    */
   public void stopPivot() {
-    pivotMotor.stopPivot();
+    io.stopPivot();
   }
 
   /**
@@ -46,7 +46,7 @@ public class Pivot extends SubsystemBase {
     double pidOutput = controller.calculate(inputs.position.getRadians(), angle);
     State setpoint = controller.getSetpoint();
     double feedforwardOutput = feedforward.calculate(setpoint.position, setpoint.velocity);
-    pivotMotor.setVoltage(pidOutput + feedforwardOutput);
+    io.setVoltage(pidOutput + feedforwardOutput);
   }
 
   /**
@@ -62,7 +62,8 @@ public class Pivot extends SubsystemBase {
 
   @Override
   public void periodic() {
-    pivotMotor.updateInputs(inputs);
+    io.updateInputs(inputs);
     Logger.processInputs("Pivot", inputs);
+    io.periodic();
   }
 }

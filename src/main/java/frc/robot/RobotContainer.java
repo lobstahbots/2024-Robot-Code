@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
@@ -17,9 +18,17 @@ import frc.robot.subsystems.GyroIO;
 import frc.robot.subsystems.NavXGyro;
 import frc.robot.subsystems.SwerveModuleReal;
 import frc.robot.subsystems.SwerveModuleSim;
+
+import java.util.function.Function;
+
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import com.revrobotics.CANSparkMax.IdleMode;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -36,6 +45,9 @@ public class RobotContainer {
       new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
   
   private final TrajectoryFactory trajectoryFactory = new TrajectoryFactory();
+
+  private final LoggedDashboardChooser<Pose2d> startingPositionChooser = new LoggedDashboardChooser<>("Starting Position");
+  private final LoggedDashboardChooser<Function<Pose2d, Command>> autoChooser = new LoggedDashboardChooser<>("Auto Chooser");
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -57,13 +69,15 @@ public class RobotContainer {
     }
    
     setTeleopDefaultCommands();
+
+    smartDashSetup();
   }
 
   private void setTeleopDefaultCommands() {
     driveBase.setDefaultCommand(
       new SwerveDriveCommand(driveBase,
           () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
-          () -> driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
+          () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
           () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
           DriveConstants.FIELD_CENTRIC));
   }
@@ -74,7 +88,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return trajectoryFactory.getPathFindToPathCommand("NewPath", PathType.CHOREO);
+    return autoChooser.get().apply(startingPositionChooser.get());
   }
 
   public void setAutonDefaultCommands() {
@@ -84,4 +98,24 @@ public class RobotContainer {
   public void configureButtonBindings() {
   }
 
+  protected Command getSimpleAuto(Pose2d startingPosition) {
+    String pathname = "";
+    if (startingPosition == PathConstants.STATION_1) {
+      pathname = "Station1SimpleAuto";
+    } else if (startingPosition == PathConstants.STATION_2) {
+      pathname = "Station2SimpleAuto";
+    } else if (startingPosition == PathConstants.STATION_3) {
+      pathname = "Station3SimpleAuto";
+    }
+    return trajectoryFactory.getPathFindToPathCommand(pathname, PathType.CHOREO);
+  }
+
+  public void smartDashSetup() {
+    autoChooser.addDefaultOption("Do Nothing", pose -> new WaitUntilCommand(() -> false));
+    autoChooser.addOption("Simple Auto", this::getSimpleAuto);
+
+    startingPositionChooser.addDefaultOption("Station 1", PathConstants.STATION_1);
+    startingPositionChooser.addOption("Station 2", PathConstants.STATION_2);
+    startingPositionChooser.addOption("Station 3", PathConstants.STATION_3);
+  }
 }

@@ -41,6 +41,7 @@ public class SwerveModule {
         SwerveConstants.DRIVE_PID_D);
     this.angleController = new PIDController(SwerveConstants.TURN_PID_P, SwerveConstants.TURN_PID_I,
         SwerveConstants.TURN_PID_D);
+    angleController.enableContinuousInput(SwerveConstants.TURN_PID_MIN_INPUT, SwerveConstants.TURN_PID_MAX_INPUT);
   }
 
   /**Sets the voltages of both motors to 0 */
@@ -61,6 +62,7 @@ public class SwerveModule {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Drive/Module" + Integer.toString(moduleID), inputs);
+    io.periodic();
   }
 
   /**
@@ -72,8 +74,6 @@ public class SwerveModule {
 
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState,
       inputs.turnPosition);
-      // io.setDriveSpeed(optimizedDesiredState, isOpenLoop);
-      // io.setAngle(optimizedDesiredState);
       io.setTurnVoltage(
           angleController.calculate(getAngle().getRadians(), optimizedDesiredState.angle.getRadians()));
 
