@@ -19,7 +19,7 @@ public class SysId {
     DYNAMIC_BACKWARD,
   } 
 
-  public Command getCharacterizationRoutine(CharacterizableSubsystem subsystem, CharacterizationRoutine routine) {
+  public static Command getCharacterizationRoutine(CharacterizableSubsystem subsystem, CharacterizationRoutine routine) {
     var sysIdRoutine = new SysIdRoutine(
         new SysIdRoutine.Config(
           null, null, null, // Use default config
