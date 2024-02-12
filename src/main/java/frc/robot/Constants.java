@@ -146,18 +146,18 @@ public final class Constants {
   }
   
   public static class SimConstants {
-    public static final double LOOP_TIME = 0.01;
+    public static final double LOOP_TIME = 0.02;
   }
 
   public static class PivotConstants {
-    public static final double PID_P = 0;
+    public static final double PID_P = 1;
     public static final double PID_I = 0;
     public static final double PID_D = 0;
     public static final double PID_FF = 0;
 
-    public static final double KS = 0;
-    public static final double KV = 0;
-    public static final double KA = 0;
+    public static final double KS = 0.1;
+    public static final double KV = 0.2;
+    public static final double KA = 0.01;
 
     public static final double MAX_VELOCITY = 0;
     public static final double MAX_ACCELERATION = 0;
@@ -166,6 +166,23 @@ public final class Constants {
     public static final double AMP_ANGLE = 0;
     public static final double NEAR_SPEAKER_ANGLE = 0;
     public static final double FAR_SPEAKER_ANGLE = 0;
+
+    public static final double PIVOT_SIM_ROTATION_POINT_DISTANCE_INCHES = 5;
+    public static final double ORIGIN_TO_TOWER_MOUNT_X_DIST = Units.inchesToMeters(16.5);
+    public static final double ORIGIN_TO_ARM_MOUNT_X_DIST = Units.inchesToMeters(7);
+    public static final double ORIGIN_TO_TOWER_MOUNT_Y_DIST = Units.inchesToMeters(8.65);
+    public static final double ORIGIN_TO_ARM_MOUNT_Y_DIST = Units.inchesToMeters(0);
+    public static final double ORIGIN_TO_ARM_MOUNT_Z_DIST = Units.inchesToMeters(14);
+    public static final double ORIGIN_TO_TOWER_MOUNT_Z_DIST = Units.inchesToMeters(3.375);
+    public static final Rotation3d TOWER_ROTATION = new Rotation3d(Units.degreesToRadians(90), 0, Units.degreesToRadians(90));
+    public static final double ARM_INITIAL_ROLL = Units.degreesToRadians(-45);
+    public static final double ARM_YAW = Units.degreesToRadians(90);
+    public static final double ARM_PITCH = Units.degreesToRadians(0);
+    public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(-55);
+    public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(-33);
+
+    public static final int LEFT_MOTOR_ID = 10;
+    public static final int RIGHT_MOTOR_ID = 11;
   }
 
   public static class ClimberConstants {

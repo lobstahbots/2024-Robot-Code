@@ -5,7 +5,7 @@ import java.util.Arrays;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-public class IntakeSparkMax implements IntakeIO{
+public class IntakeSparkMax implements IntakeIO {
     private final MonitoredSparkMax intakeMotor;
     private final TemperatureMonitor monitor;
     /**

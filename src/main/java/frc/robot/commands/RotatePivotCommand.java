@@ -40,7 +40,7 @@ public class RotatePivotCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    pivot.stopPivot();
+    // pivot.stopPivot();
   }
 
   @Override

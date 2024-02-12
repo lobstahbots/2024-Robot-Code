@@ -86,7 +86,6 @@ public class SwerveModuleReal implements SwerveModuleIO {
    * @return The current encoder velocities of the module as a {@link SwerveModuleState}.
    */
   public SwerveModuleState getState() {
-    System.out.println(angleAbsoluteEncoder.getPosition() + moduleID);
     return new SwerveModuleState(drivingEncoder.getVelocity(), new Rotation2d(angleAbsoluteEncoder.getPosition() + angularOffset.getRadians()));
   }
   

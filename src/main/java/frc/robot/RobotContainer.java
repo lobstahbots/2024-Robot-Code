@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.PathConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
@@ -18,6 +19,9 @@ import frc.robot.subsystems.GyroIO;
 import frc.robot.subsystems.NavXGyro;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.PhotonVisionReal;
+import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.PivotSim;
+import frc.robot.subsystems.PivotSparkMax;
 import frc.robot.subsystems.SwerveModuleReal;
 import frc.robot.subsystems.SwerveModuleSim;
 
@@ -41,6 +45,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveBase driveBase;
+  private final Pivot pivot;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick =
@@ -60,6 +65,7 @@ public class RobotContainer {
       SwerveModuleReal backRight = new SwerveModuleReal(BackRightModuleConstants.moduleID, BackRightModuleConstants.angleID, BackRightModuleConstants.driveID, BackRightModuleConstants.angleOffset, BackRightModuleConstants.inverted);
   
       driveBase = new DriveBase(new NavXGyro(), new PhotonVision(new PhotonVisionReal()), frontLeft, frontRight, backRight, backLeft, false);
+      pivot = new Pivot(new PivotSparkMax(PivotConstants.LEFT_MOTOR_ID, PivotConstants.RIGHT_MOTOR_ID));
     } 
     else {
       SwerveModuleSim frontLeft = new SwerveModuleSim(FrontLeftModuleConstants.angleOffset);
@@ -68,6 +74,7 @@ public class RobotContainer {
       SwerveModuleSim backRight = new SwerveModuleSim(BackRightModuleConstants.angleOffset);
 
       driveBase = new DriveBase(new GyroIO(){}, new PhotonVision(new PhotonVisionReal()), frontLeft, frontRight, backLeft, backRight, false);
+      pivot = new Pivot(new PivotSim());
     }
    
     setTeleopDefaultCommands();

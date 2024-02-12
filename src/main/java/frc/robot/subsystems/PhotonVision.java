@@ -46,7 +46,7 @@ public class PhotonVision extends SubsystemBase {
         }
 
         if (sumConfidence != 0) averagePose = new Pose2d(sumX, sumY, sumRotation).div(sumConfidence);
-        return Optional.of(averagePose);
+        return Optional.ofNullable(averagePose);
     }
 
     /**

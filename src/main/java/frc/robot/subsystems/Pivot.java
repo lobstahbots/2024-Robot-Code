@@ -44,6 +44,7 @@ public class Pivot extends SubsystemBase {
    */
   public void setDesiredAngle(double angle) {
     double pidOutput = controller.calculate(inputs.position.getRadians(), angle);
+    controller.setGoal(inputs.position.getRadians());
     State setpoint = controller.getSetpoint();
     double feedforwardOutput = feedforward.calculate(setpoint.position, setpoint.velocity);
     io.setVoltage(pidOutput + feedforwardOutput);
