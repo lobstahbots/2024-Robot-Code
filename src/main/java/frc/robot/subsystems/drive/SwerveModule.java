@@ -44,6 +44,14 @@ public class SwerveModule {
     angleController.enableContinuousInput(SwerveConstants.TURN_PID_MIN_INPUT, SwerveConstants.TURN_PID_MAX_INPUT);
   }
 
+  /** Sets voltage of drive motor and holds angle at 0 for use during characterization ramp routines. 
+   * @param voltage The voltage to set the drive motor to.
+  */
+  public void runVolts(double voltage) {
+    io.setDriveVoltage(voltage);
+    io.setTurnVoltage(angleController.calculate(getAngle().getRadians(), 0));
+  }
+
   /**Sets the voltages of both motors to 0 */
   public void stop() {
     io.setDriveVoltage(0);
