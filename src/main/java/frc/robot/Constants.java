@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -28,7 +31,11 @@ public final class Constants {
     public static final PathConstraints CONSTRAINTS = new PathConstraints(
             0.3, 1, 
             Units.degreesToRadians(540), Units.degreesToRadians(720));
+    public static final Pose2d STATION_1 = new Pose2d(0.4119143784046173, 7.161474227905273, Rotation2d.fromRotations(0));
+    public static final Pose2d STATION_2 = new Pose2d(0.5068893432617188, 3.710716009140014, Rotation2d.fromRotations(0));
+    public static final Pose2d STATION_3 = new Pose2d(0.44357267022132874, 2.3525, Rotation2d.fromRotations(0));
   }
+  
   public static class IOConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0; 
     public static final int OPERATOR_CONTROLLER_PORT = 1; 
@@ -37,6 +44,7 @@ public final class Constants {
     public static final int ROTATION_AXIS = 2;
     public static final double JOYSTICK_DEADBAND = 0.1;
   }
+  
   public static class RobotConstants {
     public static final double WHEELBASE = Units.inchesToMeters(20);
     public static final double TRACK_WIDTH = Units.inchesToMeters(20);
@@ -46,6 +54,7 @@ public final class Constants {
     public static final double ANGLE_GEAR_RATIO = 6.1;
     public static final double CLIMBER_SPEED = 1.0;
   }
+  
   public static class DriveConstants {
     public static final double MAX_VOLTS = 4.95;
     public static final double MAX_ACCELERATION = 4;
@@ -124,15 +133,18 @@ public final class Constants {
     public static final double TURN_PID_D = 0;
     public static final double TURN_PID_FF = 0;
   }
+  
   public static class IntakeConstants {
     public static final double INTAKE_SPEED = 1;
     public static final int INTAKE_MOTOR_ID = 0;
   } 
+  
   public static class ShooterConstants {
     public static final double SHOOTER_SPEED = 1;
     public static final int UPPER_SHOOTER_ID = 0;
     public static final int LOWER_SHOOTER_ID = 0;
   }
+  
   public static class SimConstants {
     public static final double LOOP_TIME = 0.02;
   }
@@ -176,7 +188,15 @@ public final class Constants {
   public static class ClimberConstants {
     public static final double CLIMBER_SPEED = 1.0;
   }
-
+  
+  public static class VisionConstants {
+    public static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+    public static final Transform3d ROBOT_TO_FRONT_CAMERA = new Transform3d(0, 0, 0, new Rotation3d());
+    public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(0, 0, 0, new Rotation3d());
+    public static final double POSE_CONFIDENCE_FILTER_THRESHOLD = 0.2;
+    public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 0.5;
+  }
+  
   public static class TempConstants {
     public static final int OVERHEAT_TEMP = 80;
     public static final int SAFE_TEMP = 65;
