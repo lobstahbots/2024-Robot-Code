@@ -43,7 +43,7 @@ public class Robot extends LoggedRobot {
     Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
     Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
     Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-    Logger.recordMetadata("Lobstah Bots", "2023 Swerve Offseason");
+    Logger.recordMetadata("Lobstah Bots", "2024 Robot Code");
     if (Robot.isReal()) {
       File log = new File (Filesystem.getOperatingDirectory(), "log");
       String logPath = log.getAbsolutePath();

@@ -8,7 +8,6 @@ import frc.robot.Constants.PivotConstants;
 public class PivotKinematics {
     public static Translation2d angleToSimPivotTransform(double pivotAngleRadians) {
         pivotAngleRadians = Math.abs(pivotAngleRadians);
-        System.out.println(Rotation2d.fromRadians(pivotAngleRadians).getDegrees());
         pivotAngleRadians %= Math.PI/2;
         return new Translation2d(Units.inchesToMeters(PivotConstants.PIVOT_SIM_ROTATION_POINT_DISTANCE_INCHES)*Math.asin(pivotAngleRadians), -Units.inchesToMeters(PivotConstants.PIVOT_SIM_ROTATION_POINT_DISTANCE_INCHES)*Math.acos(pivotAngleRadians));
     }

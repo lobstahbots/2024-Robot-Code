@@ -13,7 +13,6 @@ import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.TrajectoryFactory.PathType;
-import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.GyroIO;
