@@ -14,16 +14,16 @@ import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.TrajectoryFactory.PathType;
 import frc.robot.commands.SwerveDriveCommand;
-import frc.robot.subsystems.DriveBase;
-import frc.robot.subsystems.GyroIO;
-import frc.robot.subsystems.NavXGyro;
-import frc.robot.subsystems.PhotonVision;
-import frc.robot.subsystems.PhotonVisionReal;
-import frc.robot.subsystems.Pivot;
-import frc.robot.subsystems.PivotSim;
-import frc.robot.subsystems.PivotSparkMax;
-import frc.robot.subsystems.SwerveModuleReal;
-import frc.robot.subsystems.SwerveModuleSim;
+import frc.robot.subsystems.drive.DriveBase;
+import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.NavXGyro;
+import frc.robot.subsystems.drive.SwerveModuleReal;
+import frc.robot.subsystems.drive.SwerveModuleSim;
+import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.pivot.PivotSim;
+import frc.robot.subsystems.pivot.PivotSparkMax;
+import frc.robot.subsystems.vision.PhotonVision;
+import frc.robot.subsystems.vision.PhotonVisionReal;
 
 import java.util.function.Function;
 

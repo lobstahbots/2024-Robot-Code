@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.pivot;
 
 import java.util.Arrays;
 
@@ -18,6 +18,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.PivotConstants;
+import stl.motorcontrol.MonitoredSparkMax;
+import stl.motorcontrol.TemperatureMonitor;
 
 public class PivotSparkMax implements PivotIO {
   private final MonitoredSparkMax leftMotor;
