@@ -16,6 +16,8 @@ import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.GyroIO;
 import frc.robot.subsystems.NavXGyro;
+import frc.robot.subsystems.PhotonVision;
+import frc.robot.subsystems.PhotonVisionReal;
 import frc.robot.subsystems.SwerveModuleReal;
 import frc.robot.subsystems.SwerveModuleSim;
 
@@ -57,7 +59,7 @@ public class RobotContainer {
       SwerveModuleReal backLeft = new SwerveModuleReal(BackLeftModuleConstants.moduleID, BackLeftModuleConstants.angleID, BackLeftModuleConstants.driveID, BackLeftModuleConstants.angleOffset, BackLeftModuleConstants.inverted);
       SwerveModuleReal backRight = new SwerveModuleReal(BackRightModuleConstants.moduleID, BackRightModuleConstants.angleID, BackRightModuleConstants.driveID, BackRightModuleConstants.angleOffset, BackRightModuleConstants.inverted);
   
-      driveBase = new DriveBase(new NavXGyro(), frontLeft, frontRight, backRight, backLeft, false);
+      driveBase = new DriveBase(new NavXGyro(), new PhotonVision(new PhotonVisionReal()), frontLeft, frontRight, backRight, backLeft, false);
     } 
     else {
       SwerveModuleSim frontLeft = new SwerveModuleSim(FrontLeftModuleConstants.angleOffset);
@@ -65,7 +67,7 @@ public class RobotContainer {
       SwerveModuleSim backLeft = new SwerveModuleSim(BackLeftModuleConstants.angleOffset);
       SwerveModuleSim backRight = new SwerveModuleSim(BackRightModuleConstants.angleOffset);
 
-      driveBase = new DriveBase(new GyroIO(){}, frontLeft, frontRight, backLeft, backRight, false);
+      driveBase = new DriveBase(new GyroIO(){}, new PhotonVision(new PhotonVisionReal()), frontLeft, frontRight, backLeft, backRight, false);
     }
    
     setTeleopDefaultCommands();
