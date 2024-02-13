@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.PathConstants;
@@ -30,6 +31,8 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -81,6 +84,8 @@ public class RobotContainer {
     setTeleopDefaultCommands();
 
     smartDashSetup();
+
+    registerNamedCommands();
   }
 
   private void setTeleopDefaultCommands() {
@@ -122,19 +127,32 @@ public class RobotContainer {
   }
 
   protected Command getOneNoteAuto() {
-    return trajectoryFactory.getPathFindToPoseCommand(PathConstants.FIRST_NOTE_SHOOTING_POSITION)
-      .alongWith(new RotatePivotCommand(pivot, PathConstants.FIRST_NOTE_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(PathConstants.FIRST_NOTE_SHOOTING_ANGLE).getDegrees() < 2));
+    return trajectoryFactory.getPathFindToPoseCommand(AutoConstants.FIRST_NOTE_SHOOTING_POSITION)
+      .alongWith(new RotatePivotCommand(pivot, AutoConstants.FIRST_NOTE_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.FIRST_NOTE_SHOOTING_ANGLE).getDegrees() < 2));
       // .andThen(new SpinShooterCommand(shooter, ShooterConstants.lowerShooterSpeed, ShooterConstants.upperShooterSpeed));
       // TODO: uncomment the above line when shooter is created
+  }
+
+  protected Command getTwoNoteAuto() {
+    return getOneNoteAuto().andThen(new PathPlannerAuto("2 Note Auto"));
   }
 
   public void smartDashSetup() {
     autoChooser.addDefaultOption("Do Nothing", () -> new WaitUntilCommand(() -> false));
     autoChooser.addOption("Simple Auto", this::getSimpleAuto);
     autoChooser.addOption("One-Note Auto", this::getOneNoteAuto);
+    autoChooser.addOption("Two-Note Auto", this::getTwoNoteAuto);
 
     startingPositionChooser.addDefaultOption("Station 1", PathConstants.STATION_1);
     startingPositionChooser.addOption("Station 2", PathConstants.STATION_2);
     startingPositionChooser.addOption("Station 3", PathConstants.STATION_3);
+  }
+
+  private void registerNamedCommands() {
+    /*
+    NamedCommands.registerCommand("intake", new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
+    NamedCommands.registerCommand("shoot", new SpinShooterCommand(shooter, ShooterConstants.lowerShooterSpeed, ShooterConstants.upperShooterSpeed));
+    */
+    NamedCommands.registerCommand("note1pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_1_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_1_SHOOTING_ANGLE).getDegrees() < 2));
   }
 }
