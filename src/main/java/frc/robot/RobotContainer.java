@@ -137,6 +137,10 @@ public class RobotContainer {
     return getOneNoteAuto().andThen(new PathPlannerAuto("2 Note Auto"));
   }
 
+  protected Command getThreeNoteAuto() {
+    return getOneNoteAuto().andThen(new PathPlannerAuto("3 Note Auto"));
+  }
+
   public void smartDashSetup() {
     autoChooser.addDefaultOption("Do Nothing", () -> new WaitUntilCommand(() -> false));
     autoChooser.addOption("Simple Auto", this::getSimpleAuto);
@@ -154,5 +158,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("shoot", new SpinShooterCommand(shooter, ShooterConstants.lowerShooterSpeed, ShooterConstants.upperShooterSpeed));
     */
     NamedCommands.registerCommand("note1pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_1_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_1_SHOOTING_ANGLE).getDegrees() < 2));
+    NamedCommands.registerCommand("note2pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_2_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_2_SHOOTING_ANGLE).getDegrees() < 2));
   }
 }
