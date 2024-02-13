@@ -19,7 +19,7 @@ import frc.robot.subsystems.NavXGyro;
 import frc.robot.subsystems.SwerveModuleReal;
 import frc.robot.subsystems.SwerveModuleSim;
 
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -47,7 +47,7 @@ public class RobotContainer {
   private final TrajectoryFactory trajectoryFactory = new TrajectoryFactory();
 
   private final LoggedDashboardChooser<Pose2d> startingPositionChooser = new LoggedDashboardChooser<>("Starting Position");
-  private final LoggedDashboardChooser<Function<Pose2d, Command>> autoChooser = new LoggedDashboardChooser<>("Auto Chooser");
+  private final LoggedDashboardChooser<Supplier<Command>> autoChooser = new LoggedDashboardChooser<>("Auto Chooser");
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -88,7 +88,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get().apply(startingPositionChooser.get());
+    return autoChooser.get().get();
   }
 
   public void setAutonDefaultCommands() {
@@ -98,7 +98,8 @@ public class RobotContainer {
   public void configureButtonBindings() {
   }
 
-  protected Command getSimpleAuto(Pose2d startingPosition) {
+  protected Command getSimpleAuto() {
+    Pose2d startingPosition = startingPositionChooser.get();
     String pathname = "";
     if (startingPosition == PathConstants.STATION_1) {
       pathname = "Station1SimpleAuto";
@@ -111,7 +112,7 @@ public class RobotContainer {
   }
 
   public void smartDashSetup() {
-    autoChooser.addDefaultOption("Do Nothing", pose -> new WaitUntilCommand(() -> false));
+    autoChooser.addDefaultOption("Do Nothing", () -> new WaitUntilCommand(() -> false));
     autoChooser.addOption("Simple Auto", this::getSimpleAuto);
 
     startingPositionChooser.addDefaultOption("Station 1", PathConstants.STATION_1);
