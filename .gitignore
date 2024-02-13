@@ -43,6 +43,7 @@
 
 # Log file
 *.log
+*.wpilog
 
 # BlueJ files
 *.ctxt

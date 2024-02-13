@@ -7,7 +7,7 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.pivot.Pivot;
 
 public class RotatePivotCommand extends Command {
   private final Pivot pivot;
@@ -40,7 +40,7 @@ public class RotatePivotCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    pivot.stopPivot();
+    // pivot.stopPivot();
   }
 
   @Override

@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.pivot;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -44,6 +44,7 @@ public class Pivot extends SubsystemBase {
    */
   public void setDesiredAngle(double angle) {
     double pidOutput = controller.calculate(inputs.position.getRadians(), angle);
+    controller.setGoal(inputs.position.getRadians());
     State setpoint = controller.getSetpoint();
     double feedforwardOutput = feedforward.calculate(setpoint.position, setpoint.velocity);
     io.setVoltage(pidOutput + feedforwardOutput);

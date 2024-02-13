@@ -50,8 +50,10 @@ public class TrajectoryFactory {
         switch(pathType) {
             case CHOREO: 
                 path = PathPlannerPath.fromChoreoTrajectory(pathname);
+                break;
             case PATHPLANNER:
                 path = PathPlannerPath.fromPathFile(pathname);
+                break;
             default:
                 path = PathPlannerPath.fromChoreoTrajectory(pathname);
         }
