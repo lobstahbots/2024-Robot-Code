@@ -13,6 +13,7 @@ import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.TrajectoryFactory.PathType;
+import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIO;
@@ -120,9 +121,17 @@ public class RobotContainer {
     return trajectoryFactory.getPathFindToPathCommand(pathname, PathType.CHOREO);
   }
 
+  protected Command getOneNoteAuto() {
+    return trajectoryFactory.getPathFindToPoseCommand(PathConstants.FIRST_NOTE_SHOOTING_POSITION)
+      .alongWith(new RotatePivotCommand(pivot, PathConstants.FIRST_NOTE_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(PathConstants.FIRST_NOTE_SHOOTING_ANGLE).getDegrees() < 2));
+      // .andThen(new SpinShooterCommand(shooter, ShooterConstants.lowerShooterSpeed, ShooterConstants.upperShooterSpeed));
+      // TODO: uncomment the above line when shooter is created
+  }
+
   public void smartDashSetup() {
     autoChooser.addDefaultOption("Do Nothing", () -> new WaitUntilCommand(() -> false));
     autoChooser.addOption("Simple Auto", this::getSimpleAuto);
+    autoChooser.addOption("One-Note Auto", this::getOneNoteAuto);
 
     startingPositionChooser.addDefaultOption("Station 1", PathConstants.STATION_1);
     startingPositionChooser.addOption("Station 2", PathConstants.STATION_2);
