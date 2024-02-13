@@ -141,11 +141,17 @@ public class RobotContainer {
     return getOneNoteAuto().andThen(new PathPlannerAuto("3 Note Auto"));
   }
 
+  protected Command getFourNoteAuto() {
+    return getOneNoteAuto().andThen(new PathPlannerAuto("4 Note Auto"));
+  }
+
   public void smartDashSetup() {
     autoChooser.addDefaultOption("Do Nothing", () -> new WaitUntilCommand(() -> false));
     autoChooser.addOption("Simple Auto", this::getSimpleAuto);
     autoChooser.addOption("One-Note Auto", this::getOneNoteAuto);
     autoChooser.addOption("Two-Note Auto", this::getTwoNoteAuto);
+    autoChooser.addOption("Three-Note Auto", this::getThreeNoteAuto);
+    autoChooser.addOption("Four-Note Auto", this::getFourNoteAuto);
 
     startingPositionChooser.addDefaultOption("Station 1", PathConstants.STATION_1);
     startingPositionChooser.addOption("Station 2", PathConstants.STATION_2);
@@ -159,5 +165,6 @@ public class RobotContainer {
     */
     NamedCommands.registerCommand("note1pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_1_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_1_SHOOTING_ANGLE).getDegrees() < 2));
     NamedCommands.registerCommand("note2pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_2_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_2_SHOOTING_ANGLE).getDegrees() < 2));
+    NamedCommands.registerCommand("note3pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_3_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_3_SHOOTING_ANGLE).getDegrees() < 2));
   }
 }
