@@ -1,6 +1,5 @@
 package frc.robot.subsystems.pivot;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.PivotConstants;
