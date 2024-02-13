@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.PivotConstants;
@@ -13,6 +14,8 @@ import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.TrajectoryFactory.PathType;
+import frc.robot.commands.TurnToAngleCommand;
+import frc.robot.commands.TurnToPointCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIO;
@@ -35,6 +38,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -50,6 +54,10 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick =
       new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
+
+  private final JoystickButton alignToAmpButton = new JoystickButton(driverJoystick, IOConstants.ALIGN_TO_AMP_BUTTON_ID);
+  private final JoystickButton alignToSourceButton = new JoystickButton(driverJoystick, IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
+  private final JoystickButton alignToSpeakerButton = new JoystickButton(driverJoystick, IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
   
   private final TrajectoryFactory trajectoryFactory = new TrajectoryFactory();
 
@@ -105,6 +113,9 @@ public class RobotContainer {
   }
 
   public void configureButtonBindings() {
+    alignToAmpButton.whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation()));
+    alignToSourceButton.whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation()));
+    alignToSpeakerButton.whileTrue(new TurnToPointCommand(driveBase::getPose, FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE2D, driveBase));
   }
 
   protected Command getSimpleAuto(Pose2d startingPosition) {
