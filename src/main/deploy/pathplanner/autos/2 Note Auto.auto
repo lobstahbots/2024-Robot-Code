@@ -18,10 +18,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "note1pivot"
+                  "name": "intakePivot"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "note1pivot"
           }
         },
         {

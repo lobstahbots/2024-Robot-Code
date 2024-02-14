@@ -166,5 +166,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("note1pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_1_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_1_SHOOTING_ANGLE).getDegrees() < 2));
     NamedCommands.registerCommand("note2pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_2_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_2_SHOOTING_ANGLE).getDegrees() < 2));
     NamedCommands.registerCommand("note3pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_3_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_3_SHOOTING_ANGLE).getDegrees() < 2));
+    NamedCommands.registerCommand("intakePivot", new RotatePivotCommand(pivot, AutoConstants.INTAKE_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.INTAKE_ANGLE).getDegrees() < 2));
   }
 }

@@ -18,10 +18,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "note1pivot"
+                  "name": "intakePivot"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "note1pivot"
           }
         },
         {
@@ -49,10 +55,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "note2pivot"
+                  "name": "intakePivot"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "note2pivot"
           }
         },
         {

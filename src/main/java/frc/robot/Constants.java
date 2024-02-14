@@ -53,6 +53,8 @@ public final class Constants {
     public static final Rotation2d NOTE_1_SHOOTING_ANGLE = Rotation2d.fromDegrees(0);
     public static final Rotation2d NOTE_2_SHOOTING_ANGLE = Rotation2d.fromDegrees(0);
     public static final Rotation2d NOTE_3_SHOOTING_ANGLE = Rotation2d.fromDegrees(0);
+
+    public static final Rotation2d INTAKE_ANGLE = Rotation2d.fromDegrees(0);
   }
   
   public static class IOConstants {
