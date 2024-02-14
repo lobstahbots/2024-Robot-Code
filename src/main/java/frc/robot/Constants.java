@@ -64,6 +64,9 @@ public final class Constants {
     public static final int STRAFE_Y_AXIS = 1;
     public static final int ROTATION_AXIS = 2;
     public static final double JOYSTICK_DEADBAND = 0.1;
+    public static final int ALIGN_TO_AMP_BUTTON_ID = 2;
+    public static final int ALIGN_TO_SOURCE_BUTTON_ID = 3;
+    public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 4;
   }
   
   public static class RobotConstants {
@@ -94,6 +97,12 @@ public final class Constants {
 
     public static final double PATH_MAX_ACCEL = 3;
     public static final double PATH_MAX_VELOCITY = 3;
+
+    public static final double TURN_KP = 0.1;
+    public static final double TURN_KI = 0;
+    public static final double TURN_KD = 0;
+
+    public static final double TURN_DEADBAND = 0.1;
 
     public static class FrontLeftModuleConstants {
       public static final int moduleID = 0;
@@ -221,5 +230,12 @@ public final class Constants {
   public static class TempConstants {
     public static final int OVERHEAT_TEMP = 80;
     public static final int SAFE_TEMP = 65;
+  }
+
+  public static class FieldConstants {
+    public static final Pose2d RED_ALLIANCE_SPEAKER_POSE2D = new Pose2d(0.5, 5.5, Rotation2d.fromDegrees(180));
+    public static final Pose2d BLUE_ALLIANCE_SPEAKER_POSE2D = new Pose2d(16, 5.5, Rotation2d.fromDegrees(180));
+    public static final Pose2d BLUE_ALLIANCE_AMP_POSE2D = new Pose2d(1.8, 8 , Rotation2d.fromDegrees(-90));
+    public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(16, 0.5, Rotation2d.fromDegrees(-30));
   }
 }
