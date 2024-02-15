@@ -136,13 +136,13 @@ public final class Constants {
   
   public static class IntakeConstants {
     public static final double INTAKE_SPEED = 1;
-    public static final int INTAKE_MOTOR_ID = 0;
+    public static final int INTAKE_MOTOR_ID = 33;
   } 
   
   public static class ShooterConstants {
     public static final double SHOOTER_SPEED = 1;
-    public static final int UPPER_SHOOTER_ID = 0;
-    public static final int LOWER_SHOOTER_ID = 0;
+    public static final int UPPER_SHOOTER_ID = 24;
+    public static final int LOWER_SHOOTER_ID = 22;
   }
   
   public static class SimConstants {
@@ -181,8 +181,8 @@ public final class Constants {
     public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(-55);
     public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(-33);
 
-    public static final int LEFT_MOTOR_ID = 10;
-    public static final int RIGHT_MOTOR_ID = 11;
+    public static final int LEFT_MOTOR_ID = 25;
+    public static final int RIGHT_MOTOR_ID = 26;
   }
 
   public static class ClimberConstants {
