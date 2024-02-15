@@ -147,7 +147,6 @@ public class AutoFactory {
         } else if (startingPosition == PathConstants.STATION_3) {
             pathname = "Station3SimpleAuto";
         }
-        System.out.println("Pathfinding " + pathname);
         return getPathFindToPathCommand(pathname, PathType.CHOREO);
     }
 
@@ -159,7 +158,6 @@ public class AutoFactory {
     }
 
     public Command getCharacterizationRoutine() {
-        System.out.println(responses.get().size());
         CharacterizableSubsystem subsystem = (CharacterizableSubsystem) responses.get().get(1);
         CharacterizationRoutine routine = (CharacterizationRoutine) responses.get().get(0);
 
