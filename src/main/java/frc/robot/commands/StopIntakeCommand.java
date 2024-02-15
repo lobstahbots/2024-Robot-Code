@@ -5,13 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.intake.Intake;
 
 public class StopIntakeCommand extends Command {
   private final Intake intake;
   
   /**
-   * Command to stop {@link Intake}.
+   * Command to stop the {@link Intake}.
+   * 
    * @param intake The intake subsystem.
    */
   public StopIntakeCommand(Intake intake) {
@@ -21,7 +22,7 @@ public class StopIntakeCommand extends Command {
 
   @Override
   public void execute() {
-    intake.stopMotor();
+    intake.stopIntakeMotor();
   }
 
   @Override
