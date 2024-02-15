@@ -4,22 +4,34 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.TrajectoryFactory.PathType;
+import frc.robot.commands.MoveClimberCommand;
+import frc.robot.commands.SpinIntakeCommand;
+import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.ClimberSparkMax;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.GyroIO;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeSparkMax;
 import frc.robot.subsystems.NavXGyro;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveModuleReal;
 import frc.robot.subsystems.SwerveModuleSim;
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,10 +42,27 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveBase driveBase;
+  private final Shooter shooter = new Shooter(ShooterConstants.UPPER_SHOOTER_ID, ShooterConstants.LOWER_SHOOTER_ID);
+  private final Climber climber = new Climber(new ClimberSparkMax(ClimberConstants.LEFT_CLIMBER_ID, ClimberConstants.RIGHT_CLIMBER_ID));
+  private final Intake intake = new Intake(new IntakeSparkMax(IntakeConstants.INTAKE_MOTOR_ID));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick =
       new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
+  private final Joystick operatorJoystick =
+      new Joystick(IOConstants.OPERATOR_CONTROLLER_PORT);
+  private final JoystickButton shooterButton =
+      new JoystickButton(operatorJoystick, IOConstants.SHOOTER_BUTTON_ID);
+  private final JoystickButton intakeButton =
+      new JoystickButton(operatorJoystick, IOConstants.INTAKE_BUTTON_ID);
+  private final JoystickButton climberUpButton =
+      new JoystickButton(operatorJoystick, IOConstants.CLIMBERUP_BUTTON_ID);
+  private final JoystickButton climberDownButton =
+      new JoystickButton(operatorJoystick, IOConstants.CLIMBERDOWN_BUTTON_ID);
+  private final JoystickButton slowdownButton =
+      new JoystickButton(driverJoystick, IOConstants.SLOWDOWN_BUTTON_ID);
+
+
   
   private final TrajectoryFactory trajectoryFactory = new TrajectoryFactory();
 
@@ -82,6 +111,16 @@ public class RobotContainer {
   }
 
   public void configureButtonBindings() {
+    slowdownButton.whileTrue(new SwerveDriveCommand(driveBase,
+          () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
+          () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
+          () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
+          DriveConstants.FIELD_CENTRIC));
+    shooterButton.whileTrue(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
+    climberUpButton.whileTrue(new MoveClimberCommand(climber));
+    climberDownButton.whileTrue(new MoveClimberCommand(climber));
+    intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
+
   }
 
 }

@@ -35,6 +35,11 @@ public final class Constants {
     public static final int STRAFE_Y_AXIS = 1;
     public static final int ROTATION_AXIS = 2;
     public static final double JOYSTICK_DEADBAND = 0.1;
+    public static final int SHOOTER_BUTTON_ID = 1;
+    public static final int INTAKE_BUTTON_ID = 1;
+    public static final int CLIMBERUP_BUTTON_ID = 1;
+    public static final int CLIMBERDOWN_BUTTON_ID = 1;
+    public static final int SLOWDOWN_BUTTON_ID = 1;
   }
   public static class RobotConstants {
     public static final double WHEELBASE = Units.inchesToMeters(20);
@@ -50,6 +55,7 @@ public final class Constants {
     public static final double MAX_ACCELERATION = 4;
     public static final double MAX_DRIVE_SPEED = 5;
     public static final double MAX_ANGULAR_SPEED = MAX_DRIVE_SPEED / RobotConstants.RADIUS;
+    public static final double SLOWDOWN_PERCENT = 0.5;
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
     public static final int ANGLE_MOTOR_CURRENT_LIMIT = 40;
     public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
@@ -157,6 +163,8 @@ public final class Constants {
 
   public static class ClimberConstants {
     public static final double CLIMBER_SPEED = 1.0;
+    public static final int LEFT_CLIMBER_ID = 1;
+    public static final int RIGHT_CLIMBER_ID = 1;
   }
 
   public static class TempConstants {
