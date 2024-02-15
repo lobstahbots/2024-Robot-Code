@@ -110,7 +110,6 @@ public class SwerveModule {
 
   /** Returns the current drive position of the module in meters. */
   public double getPositionMeters() {
-    SmartDashboard.putNumber("pos" + moduleID, inputs.drivePosition.getRadians());
     return inputs.drivePosition.getRadians() * RobotConstants.WHEEL_DIAMETER / 2;
   }
 

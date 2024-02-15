@@ -52,7 +52,6 @@ public class PivotSim implements PivotIO {
     this.arm.setColor(new Color8Bit(Color.kBlue));
     this.shooter.setColor(new Color8Bit(Color.kYellow));
     this.shooterIndexer.setColor(new Color8Bit(Color.kYellow));
-    SmartDashboard.putData("Pivot", pivot);
   }
 
    public void updateInputs(PivotIOInputs inputs) {
