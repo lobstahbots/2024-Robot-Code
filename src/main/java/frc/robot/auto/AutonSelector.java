@@ -6,30 +6,32 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-public class AutonSelector extends SubsystemBase {
+public class AutonSelector<V> extends SubsystemBase {
   private static final int maxQuestions = 4;
-  private static final AutoRoutine defaultRoutine =
-      new AutoRoutine("Do Nothing", List.of(), Commands.none());
 
-  private final LoggedDashboardChooser<AutoRoutine> routineChooser;
+  private final LoggedDashboardChooser<AutoRoutine<V>> routineChooser;
   private final List<StringPublisher> questionPublishers;
   private final List<SwitchableChooser> questionChoosers;
 
-  private AutoRoutine lastRoutine;
-  private List<AutoQuestionResponse> lastResponses;
+  private AutoRoutine<V> lastRoutine;
+  private Map<String, V> lastResponses;
 
-  public AutonSelector(String key) {
+  public AutonSelector(String key, String defaultName, List<AutoQuestion<V>> defaultQuestions, Supplier<Command> defaultCommands) {
     routineChooser = new LoggedDashboardChooser<>(key + "/Routine");
+    AutoRoutine<V> defaultRoutine = new AutoRoutine<V>(defaultName, defaultQuestions, defaultCommands);
     routineChooser.addDefaultOption(defaultRoutine.name(), defaultRoutine);
     lastRoutine = defaultRoutine;
-    lastResponses = List.of();
+    lastResponses = Map.of();
 
     // Publish questions and choosers
     questionPublishers = new ArrayList<>();
@@ -47,7 +49,7 @@ public class AutonSelector extends SubsystemBase {
   }
 
   /** Registers a new auto routine that can be selected. */
-  public void addRoutine(String name, List<AutoQuestion> questions, Command command) {
+  public void addRoutine(String name, List<AutoQuestion<V>> questions, Supplier<Command> command) {
     if (questions.size() > maxQuestions) {
       throw new RuntimeException(
           "Auto routine contained more than "
@@ -55,17 +57,17 @@ public class AutonSelector extends SubsystemBase {
               + " questions: "
               + name);
     }
-    routineChooser.addOption(name, new AutoRoutine(name, questions, command));
+    routineChooser.addOption(name, new AutoRoutine<V>(name, questions, command));
   }
 
   /** Returns the selected auto command. */
   public Command getCommand() {
-    return lastRoutine.command();
+    return lastRoutine.command().get();
   }
 
   /** Returns the selected question responses. */
-  public List<AutoQuestionResponse> getResponses() {
-    return lastResponses;
+  public List<V> getResponses() {
+    return new ArrayList<V>(lastResponses.values());
   }
 
   public void periodic() {
@@ -87,9 +89,7 @@ public class AutonSelector extends SubsystemBase {
           questionChoosers
               .get(i)
               .setOptions(
-                  questions.get(i).responses().stream()
-                      .map((AutoQuestionResponse response) -> response.toString())
-                      .toArray(String[]::new));
+                  questions.get(i).responses().keySet().stream().toArray(String[]::new));
         } else {
           questionPublishers.get(i).set("");
           questionChoosers.get(i).setOptions(new String[] {});
@@ -99,35 +99,21 @@ public class AutonSelector extends SubsystemBase {
 
     // Update the routine and responses
     lastRoutine = selectedRoutine;
-    lastResponses = new ArrayList<>();
+    lastResponses = new HashMap<>();
     for (int i = 0; i < lastRoutine.questions().size(); i++) {
       String responseString = questionChoosers.get(i).get();
-      lastResponses.add(
+      lastResponses.put(
+          responseString == null ? "" : responseString,
           responseString == null
-              ? lastRoutine.questions().get(i).responses().get(0)
-              : AutoQuestionResponse.valueOf(responseString));
+              ? lastRoutine.questions().get(i).responses().values().stream().findFirst().get()
+              : lastRoutine.questions().get(i).responses().get(responseString));
     }
   }
 
   /** A customizable auto routine associated with a single command. */
-  private static final record AutoRoutine(
-      String name, List<AutoQuestion> questions, Command command) {}
+  private static final record AutoRoutine<V>(
+      String name, List<AutoQuestion<V>> questions, Supplier<Command> command) {}
 
   /** A question to ask for customizing an auto routine. */
-  public static record AutoQuestion(String question, List<AutoQuestionResponse> responses) {}
-
-  /** Responses to auto routine questions. */
-  public static enum AutoQuestionResponse {
-    YES,
-    NO,
-    HYBRID,
-    MID,
-    HIGH,
-    WALL_SIDE,
-    FIELD_SIDE,
-    CENTER,
-    RETURN,
-    BALANCE,
-    BALANCE_THROW
-  }
+  public static record AutoQuestion<V>(String question, Map<String, V> responses) {}
 }
