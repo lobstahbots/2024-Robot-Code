@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IOConstants;
@@ -14,6 +15,7 @@ import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.TrajectoryFactory.PathType;
+import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.TurnToPointCommand;
 import frc.robot.commands.SwerveDriveCommand;
@@ -28,10 +30,12 @@ import frc.robot.subsystems.pivot.PivotSparkMax;
 import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.subsystems.vision.PhotonVisionReal;
 
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -62,7 +66,7 @@ public class RobotContainer {
   private final TrajectoryFactory trajectoryFactory = new TrajectoryFactory();
 
   private final LoggedDashboardChooser<Pose2d> startingPositionChooser = new LoggedDashboardChooser<>("Starting Position");
-  private final LoggedDashboardChooser<Function<Pose2d, Command>> autoChooser = new LoggedDashboardChooser<>("Auto Chooser");
+  private final LoggedDashboardChooser<Supplier<Command>> autoChooser = new LoggedDashboardChooser<>("Auto Chooser");
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -88,6 +92,8 @@ public class RobotContainer {
     setTeleopDefaultCommands();
 
     smartDashSetup();
+
+    registerNamedCommands();
   }
 
   private void setTeleopDefaultCommands() {
@@ -105,7 +111,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get().apply(startingPositionChooser.get());
+    return autoChooser.get().get();
   }
 
   public void setAutonDefaultCommands() {
@@ -118,7 +124,8 @@ public class RobotContainer {
     alignToSpeakerButton.whileTrue(new TurnToPointCommand(driveBase::getPose, FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE2D, driveBase));
   }
 
-  protected Command getSimpleAuto(Pose2d startingPosition) {
+  protected Command getSimpleAuto() {
+    Pose2d startingPosition = startingPositionChooser.get();
     String pathname = "";
     if (startingPosition == PathConstants.STATION_1) {
       pathname = "Station1SimpleAuto";
@@ -130,12 +137,46 @@ public class RobotContainer {
     return trajectoryFactory.getPathFindToPathCommand(pathname, PathType.CHOREO);
   }
 
+  protected Command getOneNoteAuto() {
+    return trajectoryFactory.getPathFindToPoseCommand(AutoConstants.FIRST_NOTE_SHOOTING_POSITION)
+      .alongWith(new RotatePivotCommand(pivot, AutoConstants.FIRST_NOTE_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.FIRST_NOTE_SHOOTING_ANGLE).getDegrees() < 2));
+      // .andThen(new SpinShooterCommand(shooter, ShooterConstants.lowerShooterSpeed, ShooterConstants.upperShooterSpeed));
+      // TODO: uncomment the above line when shooter is created
+  }
+
+  protected Command getTwoNoteAuto() {
+    return getOneNoteAuto().andThen(new PathPlannerAuto("2 Note Auto"));
+  }
+
+  protected Command getThreeNoteAuto() {
+    return getOneNoteAuto().andThen(new PathPlannerAuto("3 Note Auto"));
+  }
+
+  protected Command getFourNoteAuto() {
+    return getOneNoteAuto().andThen(new PathPlannerAuto("4 Note Auto"));
+  }
+
   public void smartDashSetup() {
-    autoChooser.addDefaultOption("Do Nothing", pose -> new WaitUntilCommand(() -> false));
+    autoChooser.addDefaultOption("Do Nothing", () -> new WaitUntilCommand(() -> false));
     autoChooser.addOption("Simple Auto", this::getSimpleAuto);
+    autoChooser.addOption("One-Note Auto", this::getOneNoteAuto);
+    autoChooser.addOption("Two-Note Auto", this::getTwoNoteAuto);
+    autoChooser.addOption("Three-Note Auto", this::getThreeNoteAuto);
+    autoChooser.addOption("Four-Note Auto", this::getFourNoteAuto);
 
     startingPositionChooser.addDefaultOption("Station 1", PathConstants.STATION_1);
     startingPositionChooser.addOption("Station 2", PathConstants.STATION_2);
     startingPositionChooser.addOption("Station 3", PathConstants.STATION_3);
+  }
+
+  private void registerNamedCommands() {
+    /*
+    NamedCommands.registerCommand("intake", new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
+    NamedCommands.registerCommand("shoot", new SpinShooterCommand(shooter, ShooterConstants.lowerShooterSpeed, ShooterConstants.upperShooterSpeed));
+    */
+    NamedCommands.registerCommand("note1pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_1_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_1_SHOOTING_ANGLE).getDegrees() < 2));
+    NamedCommands.registerCommand("note2pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_2_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_2_SHOOTING_ANGLE).getDegrees() < 2));
+    NamedCommands.registerCommand("note3pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_3_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_3_SHOOTING_ANGLE).getDegrees() < 2));
+    NamedCommands.registerCommand("intakePivot", new RotatePivotCommand(pivot, AutoConstants.INTAKE_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.INTAKE_ANGLE).getDegrees() < 2));
   }
 }
