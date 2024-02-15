@@ -37,6 +37,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -58,6 +59,7 @@ public class RobotContainer {
   private final JoystickButton alignToAmpButton = new JoystickButton(driverJoystick, IOConstants.ALIGN_TO_AMP_BUTTON_ID);
   private final JoystickButton alignToSourceButton = new JoystickButton(driverJoystick, IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
   private final JoystickButton alignToSpeakerButton = new JoystickButton(driverJoystick, IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
+  private final JoystickButton driveToggleButton = new JoystickButton(driverJoystick, IOConstants.TOGGLE_DRIVE_CENTRICITY_BUTTON_ID);
   
   private final TrajectoryFactory trajectoryFactory = new TrajectoryFactory();
 
@@ -96,7 +98,7 @@ public class RobotContainer {
           () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
           () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
           () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
-          DriveConstants.FIELD_CENTRIC));
+          () -> DriveConstants.FIELD_CENTRIC));
   }
 
   /**
@@ -116,6 +118,7 @@ public class RobotContainer {
     alignToAmpButton.whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation()));
     alignToSourceButton.whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation()));
     alignToSpeakerButton.whileTrue(new TurnToPointCommand(driveBase::getPose, FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE2D, driveBase));
+    driveToggleButton.onTrue(new InstantCommand(() -> DriveConstants.FIELD_CENTRIC = !DriveConstants.FIELD_CENTRIC));
   }
 
   protected Command getSimpleAuto(Pose2d startingPosition) {

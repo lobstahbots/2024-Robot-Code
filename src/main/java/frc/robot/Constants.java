@@ -43,9 +43,10 @@ public final class Constants {
     public static final int STRAFE_Y_AXIS = 1;
     public static final int ROTATION_AXIS = 2;
     public static final double JOYSTICK_DEADBAND = 0.1;
-    public static final int ALIGN_TO_AMP_BUTTON_ID = 2;
+    public static final int ALIGN_TO_AMP_BUTTON_ID = 5;
     public static final int ALIGN_TO_SOURCE_BUTTON_ID = 3;
     public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 4;
+    public static final int TOGGLE_DRIVE_CENTRICITY_BUTTON_ID = 2;
   }
   
   public static class RobotConstants {
@@ -71,7 +72,7 @@ public final class Constants {
       new Translation2d(-RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0));
 
-    public static final boolean FIELD_CENTRIC = true;
+    public static boolean FIELD_CENTRIC = true;
     public static final boolean IS_OPEN_LOOP = false;
 
     public static final double PATH_MAX_ACCEL = 3;
