@@ -16,7 +16,6 @@ import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
-import frc.robot.TrajectoryFactory.PathType;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.TurnToPointCommand;
 import frc.robot.auto.AutonSelector;
@@ -37,15 +36,9 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeSparkMax;
 import java.util.List;
 import java.util.Map;
-
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 import com.revrobotics.CANSparkMax.IdleMode;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -66,18 +59,15 @@ public class RobotContainer {
   private final Intake intake;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final Joystick driverJoystick =
-      new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
-
-  private final JoystickButton alignToAmpButton = new JoystickButton(driverJoystick, IOConstants.ALIGN_TO_AMP_BUTTON_ID);
-  private final JoystickButton alignToSourceButton = new JoystickButton(driverJoystick, IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
-  private final JoystickButton alignToSpeakerButton = new JoystickButton(driverJoystick, IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
-  
-  private final TrajectoryFactory trajectoryFactory = new TrajectoryFactory();
-
-  private final LoggedDashboardChooser<Pose2d> startingPositionChooser = new LoggedDashboardChooser<>("Starting Position");
-  private final LoggedDashboardChooser<Function<Pose2d, Command>> autoChooser = new LoggedDashboardChooser<>("Auto Chooser");
   private final Joystick driverJoystick = new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
+
+  private final JoystickButton alignToAmpButton = new JoystickButton(driverJoystick,
+      IOConstants.ALIGN_TO_AMP_BUTTON_ID);
+  private final JoystickButton alignToSourceButton = new JoystickButton(driverJoystick,
+      IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
+  private final JoystickButton alignToSpeakerButton = new JoystickButton(driverJoystick,
+      IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
+
   private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
       () -> Commands.none());
   private final AutoFactory autoFactory;
@@ -146,10 +136,13 @@ public class RobotContainer {
     driveBase.setBrakingMode(IdleMode.kBrake);
   }
 
-   public void configureButtonBindings() {
-    alignToAmpButton.whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation()));
-    alignToSourceButton.whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation()));
-    alignToSpeakerButton.whileTrue(new TurnToPointCommand(driveBase::getPose, FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE2D, driveBase));
+  public void configureButtonBindings() {
+    alignToAmpButton
+        .whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation()));
+    alignToSourceButton
+        .whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation()));
+    alignToSpeakerButton
+        .whileTrue(new TurnToPointCommand(driveBase::getPose, FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE2D, driveBase));
   }
 
   public void smartDashSetup() {
