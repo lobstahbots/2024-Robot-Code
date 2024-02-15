@@ -3,11 +3,21 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Auto Chooser/Question #1 Chooser": "String Chooser",
+      "/SmartDashboard/Auto Chooser/Question #2 Chooser": "String Chooser",
+      "/SmartDashboard/Auto Chooser/Question #3 Chooser": "String Chooser",
+      "/SmartDashboard/Auto Chooser/Question #4 Chooser": "String Chooser",
+      "/SmartDashboard/Auto Chooser/Routine": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Pivot": "Mechanism2d",
       "/SmartDashboard/Starting Position": "String Chooser"
     },
     "windows": {
+      "/FMSInfo": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field": {
         "bottom": 1476,
         "height": 8.210550308227539,
