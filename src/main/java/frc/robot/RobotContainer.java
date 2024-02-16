@@ -165,8 +165,8 @@ public class RobotContainer {
         DriveConstants.FIELD_CENTRIC));
     shooterButton
         .whileTrue(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
-    climberUpButton.whileTrue(new MoveClimberCommand(climber));
-    climberDownButton.whileTrue(new MoveClimberCommand(climber));
+    climberUpButton.whileTrue(new MoveClimberCommand(climber, ClimberConstants.CLIMBER_SPEED));
+    climberDownButton.whileTrue(new MoveClimberCommand(climber, -ClimberConstants.CLIMBER_SPEED));
     intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
   }
 

@@ -18,10 +18,10 @@ public interface ClimberIO {
     }
 
     /* Moves the left side climber. */
-    public default void moveLeftClimber() {}
+    public default void moveLeftClimber(double leftClimberMotorSpeed) {}
 
     /* Moves the right side climber. */
-    public default void moveRightClimber() {}
+    public default void moveRightClimber(double rightClimberMotorSpeed) {}
     
     /* Stops the climber motors. */
     public default void stopClimber() {}
