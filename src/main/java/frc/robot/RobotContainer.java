@@ -52,6 +52,8 @@ public class RobotContainer {
   private final DriveBase driveBase;
   private final Pivot pivot;
 
+  private boolean fieldCentric = DriveConstants.FIELD_CENTRIC;
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick =
       new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
@@ -98,7 +100,7 @@ public class RobotContainer {
           () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
           () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
           () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
-          () -> DriveConstants.FIELD_CENTRIC));
+          () -> fieldCentric));
   }
 
   /**
@@ -118,7 +120,7 @@ public class RobotContainer {
     alignToAmpButton.whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation()));
     alignToSourceButton.whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation()));
     alignToSpeakerButton.whileTrue(new TurnToPointCommand(driveBase::getPose, FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE2D, driveBase));
-    driveToggleButton.onTrue(new InstantCommand(() -> DriveConstants.FIELD_CENTRIC = !DriveConstants.FIELD_CENTRIC));
+    driveToggleButton.onTrue(new InstantCommand(() -> fieldCentric = !fieldCentric));
   }
 
   protected Command getSimpleAuto(Pose2d startingPosition) {
