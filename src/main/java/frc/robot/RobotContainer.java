@@ -20,6 +20,7 @@ import frc.robot.TrajectoryFactory.PathType;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.TurnToPointCommand;
 import frc.robot.commands.MoveClimberCommand;
+import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.SpinIntakeCommand;
 import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.SwerveDriveCommand;
@@ -38,12 +39,9 @@ import frc.robot.subsystems.pivot.PivotSparkMax;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.subsystems.vision.PhotonVisionReal;
-
 import java.util.function.Function;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.revrobotics.CANSparkMax.IdleMode;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -83,6 +81,7 @@ public class RobotContainer {
   private final JoystickButton climberUpButton = new JoystickButton(operatorJoystick, IOConstants.CLIMBERUP_BUTTON_ID);
   private final JoystickButton climberDownButton = new JoystickButton(operatorJoystick,
       IOConstants.CLIMBERDOWN_BUTTON_ID);
+  private final JoystickButton retractPivotButton = new JoystickButton(operatorJoystick, IOConstants.RESET_PIVOT_ANGLE_BUTTON_ID);
   private final JoystickButton slowdownButton = new JoystickButton(driverJoystick, IOConstants.SLOWDOWN_BUTTON_ID);
 
   private final TrajectoryFactory trajectoryFactory = new TrajectoryFactory();
@@ -136,6 +135,7 @@ public class RobotContainer {
             () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
             () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
             DriveConstants.FIELD_CENTRIC));
+    pivot.setDefaultCommand(new RotatePivotCommand(pivot, () -> pivot.getPosition().getDegrees() + operatorJoystick.getRawAxis(IOConstants.PIVOT_ANGLE_AXIS)));
   }
 
   /**
@@ -168,6 +168,7 @@ public class RobotContainer {
     climberUpButton.whileTrue(new MoveClimberCommand(climber, ClimberConstants.CLIMBER_SPEED));
     climberDownButton.whileTrue(new MoveClimberCommand(climber, -ClimberConstants.CLIMBER_SPEED));
     intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
+    retractPivotButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.PIVOT_RESTING_ANGLE));
   }
 
   protected Command getSimpleAuto(Pose2d startingPosition) {

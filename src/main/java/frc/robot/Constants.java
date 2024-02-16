@@ -51,6 +51,8 @@ public final class Constants {
     public static final int CLIMBERUP_BUTTON_ID = 1;
     public static final int CLIMBERDOWN_BUTTON_ID = 1;
     public static final int SLOWDOWN_BUTTON_ID = 1;
+    public static final int RESET_PIVOT_ANGLE_BUTTON_ID = 1;
+    public static final int PIVOT_ANGLE_AXIS = 0;
   }
   
   public static class RobotConstants {
@@ -195,6 +197,7 @@ public final class Constants {
     public static final double ARM_PITCH = Units.degreesToRadians(0);
     public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(-55);
     public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(-33);
+    public static final double PIVOT_RESTING_ANGLE = Units.degreesToRadians(20);
 
     public static final int LEFT_MOTOR_ID = 10;
     public static final int RIGHT_MOTOR_ID = 11;
