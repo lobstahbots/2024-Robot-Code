@@ -22,13 +22,13 @@ public class Climber extends SubsystemBase {
   }
 
   /* Moves the leftside climber. */
-  public void moveLeftClimber() {
-   io.moveLeftClimber();
+  public void moveLeftClimber(double speed) {
+   io.moveLeftClimber(speed);
   }
 
   /* Moves the rightside climber. */
-  public void moveRightClimber() {
-    io.moveRightClimber();
+  public void moveRightClimber(double speed) {
+    io.moveRightClimber(speed);
   }
     
   /*Stops the climber motors. */
