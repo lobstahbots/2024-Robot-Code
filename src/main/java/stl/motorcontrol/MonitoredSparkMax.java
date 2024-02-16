@@ -2,11 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package stl.motorcontrol;
 
 import com.revrobotics.CANSparkMax;
 
-import frc.robot.subsystems.TemperatureMonitor.Monitorable;
+import stl.motorcontrol.TemperatureMonitor.Monitorable;
 
 /** A temperature-monitored SPARK MAX motor controller. */
 public class MonitoredSparkMax extends CANSparkMax implements Monitorable {

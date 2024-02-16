@@ -2,7 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.drive;
+import java.util.Optional;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -27,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotConstants;
+import frc.robot.subsystems.vision.PhotonVision;
 
 public class DriveBase extends SubsystemBase {
   /** Creates a new SwerveDriveBase. */
@@ -37,6 +40,7 @@ public class DriveBase extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private boolean isOpenLoop;
   private Rotation2d simRotation = new Rotation2d();
+  private final PhotonVision photonVision;
 
   private SwerveModuleState[] setpointStates =
       new SwerveModuleState[] {
@@ -48,14 +52,14 @@ public class DriveBase extends SubsystemBase {
 
   private Field2d field;
 
-  public DriveBase(GyroIO gyroIO, SwerveModuleIO frontLeft, SwerveModuleIO frontRight, SwerveModuleIO backLeft, SwerveModuleIO backRight, boolean isOpenLoop) {
+  public DriveBase(GyroIO gyroIO, PhotonVision photonVision, SwerveModuleIO frontLeft, SwerveModuleIO frontRight, SwerveModuleIO backLeft, SwerveModuleIO backRight, boolean isOpenLoop) {
 
     this.modules = new SwerveModule[]{new SwerveModule(frontLeft, 0), new SwerveModule(frontRight, 1), new SwerveModule(backLeft, 2), new SwerveModule(backRight, 3)};
     
     this.gyro = gyroIO;
 
     gyro.zeroGyro();
-    
+    this.photonVision = photonVision;
     swerveOdometry = new SwerveDrivePoseEstimator(DriveConstants.KINEMATICS, gyroInputs.yawPosition, getPositions(), new Pose2d());
 
     field = new Field2d();
@@ -238,6 +242,8 @@ public Rotation2d getGyroAngle() {
     } else {
       swerveOdometry.update(gyroInputs.yawPosition, getPositions());
     }
+    Optional<Pose2d> estimatedPose = photonVision.getEstimatedPose(getPose());
+    if (estimatedPose.isPresent()) swerveOdometry.addVisionMeasurement(estimatedPose.get(), photonVision.getTimestamp());
     field.setRobotPose(getPose());
     SmartDashboard.putString("Pose", getPose().toString());
     Logger.recordOutput("Odometry", getPose());
