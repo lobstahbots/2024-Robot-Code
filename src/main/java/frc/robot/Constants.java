@@ -48,13 +48,13 @@ public final class Constants {
 
   public static class AutoConstants {
     public static final Pose2d FIRST_NOTE_SHOOTING_POSITION = new Pose2d(0, 0, Rotation2d.fromRotations(0));
-    public static final Rotation2d FIRST_NOTE_SHOOTING_ANGLE = Rotation2d.fromDegrees(0);
+    public static final Rotation2d FIRST_NOTE_SHOOTING_ANGLE = Rotation2d.fromDegrees(20);
 
-    public static final Rotation2d NOTE_1_SHOOTING_ANGLE = Rotation2d.fromDegrees(0);
-    public static final Rotation2d NOTE_2_SHOOTING_ANGLE = Rotation2d.fromDegrees(0);
-    public static final Rotation2d NOTE_3_SHOOTING_ANGLE = Rotation2d.fromDegrees(0);
+    public static final Rotation2d NOTE_1_SHOOTING_ANGLE = Rotation2d.fromDegrees(21);
+    public static final Rotation2d NOTE_2_SHOOTING_ANGLE = Rotation2d.fromDegrees(22);
+    public static final Rotation2d NOTE_3_SHOOTING_ANGLE = Rotation2d.fromDegrees(23);
 
-    public static final Rotation2d INTAKE_ANGLE = Rotation2d.fromDegrees(0);
+    public static final Rotation2d INTAKE_ANGLE = Rotation2d.fromDegrees(190);
   }
   
   public static class IOConstants {
