@@ -178,6 +178,11 @@ public class RobotContainer {
             2, "Station 3", 3))),
         autoFactory::getSimpleAuto);
 
+    autoChooser.addRoutine("One-Note Auto", List.of(), autoFactory::getOneNoteAuto);
+    autoChooser.addRoutine("Two-Note Auto", List.of(), autoFactory::getTwoNoteAuto);
+    autoChooser.addRoutine("Three-Note Auto", List.of(), autoFactory::getThreeNoteAuto);
+    autoChooser.addRoutine("Four-Note Auto", List.of(), autoFactory::getFourNoteAuto);
+
     autoChooser.addRoutine("Characterize", List.of(
         new AutoQuestion<>("Which Subsystem?", Map.of("DriveBase", driveBase, "Pivot", pivot)),
         new AutoQuestion<>("Which Routine", Map.of("Quasistatic Foward", CharacterizationRoutine.QUASISTATIC_FORWARD,
