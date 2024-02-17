@@ -21,9 +21,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PathConstants;
+import frc.robot.commands.RotatePivotCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.shooter.NoteVisualizer;
 import frc.robot.subsystems.shooter.Shooter;
 import stl.sysId.CharacterizableSubsystem;
 
@@ -32,6 +34,7 @@ public class AutoFactory {
     private final DriveBase driveBase;
     private final Intake intake;
     private final Shooter shooter;
+    private final Pivot pivot;
 
     public AutoFactory(DriveBase driveBase, Shooter shooter, Intake intake, Pivot pivot,
             Supplier<List<Object>> responsesSupplier) {
@@ -39,6 +42,7 @@ public class AutoFactory {
         this.driveBase = driveBase;
         this.intake = intake;
         this.shooter = shooter;
+        this.pivot = pivot;
     }
 
     /**
@@ -140,7 +144,7 @@ public class AutoFactory {
 
     public Command getSimpleAuto() {
         int driverStation = (int) responses.get().get(0);
-        return getPathFindToPoseCommand(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[driverStation - 1]).get();
+        return getPathFindToPoseCommand(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[driverStation - 1]).get().andThen(NoteVisualizer.shoot()).andThen(new RotatePivotCommand(pivot, -40));
     }
 
     public enum CharacterizationRoutine {

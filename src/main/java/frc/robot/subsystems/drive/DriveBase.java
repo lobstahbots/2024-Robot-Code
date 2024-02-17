@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotConstants;
+import frc.robot.subsystems.shooter.NoteVisualizer;
 import frc.robot.subsystems.vision.PhotonVision;
 import stl.sysId.CharacterizableSubsystem;
 
@@ -82,6 +83,8 @@ public class DriveBase extends CharacterizableSubsystem {
         () -> {return DriverStation.getAlliance().get() ==  DriverStation.Alliance.Red;},
       this 
     );
+
+    NoteVisualizer.setRobotPoseSupplier(this::getPose);
   }
 
   /**Resets pose of odometry to a given pose.

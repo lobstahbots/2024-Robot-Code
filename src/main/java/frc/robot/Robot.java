@@ -57,7 +57,7 @@ public class Robot extends LoggedRobot {
       String logPath = log.getAbsolutePath();
       // System.out.println(logPath);
       // logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-      Logger.addDataReceiver(new WPILOGWriter(logPath)); // Save outputs to a new log
+      Logger.addDataReceiver(new WPILOGWriter(logPath, 0.02)); // Save outputs to a new log
   }
   
   // Logger.getInstance().disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
