@@ -84,6 +84,7 @@ public class RobotContainer {
   private final JoystickButton climberDownButton = new JoystickButton(operatorJoystick,
       IOConstants.CLIMBERDOWN_BUTTON_ID);
   private final JoystickButton retractPivotButton = new JoystickButton(operatorJoystick, IOConstants.RESET_PIVOT_ANGLE_BUTTON_ID);
+  private final JoystickButton slowdownButton = new JoystickButton(driverJoystick, IOConstants.SLOWDOWN_BUTTON_ID);
   
   private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
       () -> Commands.none());
@@ -153,6 +154,11 @@ public class RobotContainer {
         .whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation()));
     alignToSpeakerButton
         .whileTrue(new TurnToPointCommand(driveBase::getPose, FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(), driveBase));
+    slowdownButton.whileTrue(new SwerveDriveCommand(driveBase,
+        () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
+        () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
+        () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
+        () -> DriveConstants.FIELD_CENTRIC));
     shooterButton.whileTrue(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
     climberUpButton.whileTrue(new MoveClimberCommand(climber, ClimberConstants.CLIMBER_SPEED));
     climberDownButton.whileTrue(new MoveClimberCommand(climber, -ClimberConstants.CLIMBER_SPEED));

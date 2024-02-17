@@ -72,6 +72,7 @@ public final class Constants {
     public static final double MAX_ACCELERATION = 4;
     public static final double MAX_DRIVE_SPEED = 5;
     public static final double MAX_ANGULAR_SPEED = MAX_DRIVE_SPEED / RobotConstants.RADIUS;
+    public static final double SLOWDOWN_PERCENT = 0.5;
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
     public static final int ANGLE_MOTOR_CURRENT_LIMIT = 40;
     public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
