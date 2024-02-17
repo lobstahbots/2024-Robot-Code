@@ -16,15 +16,19 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PathConstants;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.shooter.Shooter;
+import stl.command.DeferInitializeCommand;
 import stl.sysId.CharacterizableSubsystem;
+import stl.trajectory.AlliancePoseMirror;
 
 public class AutoFactory {
     private final Supplier<List<Object>> responses;
@@ -55,16 +59,16 @@ public class AutoFactory {
      * @param targetPose The desired end pose of the generated path.
      * @return The constructed path following command
      */
-    public Command getPathFindToPoseCommand(Pose2d targetPose) {
+    public Supplier<Command> getPathFindToPoseCommand(Pose2d targetPose) {
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        Command pathfindingCommand = AutoBuilder.pathfindToPose(
-                targetPose,
-                PathConstants.CONSTRAINTS,
-                0.0, // Goal end velocity in meters/sec
-                0.0 // Rotation delay distance in meters. This is how far the robot should travel
-                    // before attempting to rotate.
-        );
+        Supplier<Command> pathfindingCommand = () -> AutoBuilder.pathfindToPoseFlipped(
+            targetPose,
+            PathConstants.CONSTRAINTS,
+            0.0, // Goal end velocity in meters/sec
+            0.0 // Rotation delay distance in meters. This is how far the robot should travel
+                // before attempting to rotate.
+    );
 
         return pathfindingCommand;
     }
@@ -117,7 +121,7 @@ public class AutoFactory {
      * @return The constructed path following command through provided poses, with
      *         set end rotation.
      */
-    public Command getPathFromWaypoints(Rotation2d goalEndRotationHolonomic, Pose2d... poses) {
+    public Supplier<Command> getPathFromWaypoints(Rotation2d goalEndRotationHolonomic, Pose2d... poses) {
         List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(poses);
 
         // Create the path using the bezier points created above
@@ -128,7 +132,7 @@ public class AutoFactory {
                                                                 // rotation will have no effect.
         );
 
-        Command pathCommand = AutoBuilder.pathfindThenFollowPath(
+        Supplier<Command> pathCommand = () -> AutoBuilder.pathfindThenFollowPath(
                 path,
                 PathConstants.CONSTRAINTS,
                 3.0 // Rotation delay distance in meters. This is how far the robot should travel
@@ -138,16 +142,8 @@ public class AutoFactory {
     }
 
     public Command getSimpleAuto() {
-        String pathname = "";
-        Pose2d startingPosition = (Pose2d) responses.get().get(0);
-        if (startingPosition == PathConstants.STATION_1) {
-            pathname = "Station1SimpleAuto";
-        } else if (startingPosition == PathConstants.STATION_2) {
-            pathname = "Station2SimpleAuto";
-        } else if (startingPosition == PathConstants.STATION_3) {
-            pathname = "Station3SimpleAuto";
-        }
-        return getPathFindToPathCommand(pathname, PathType.CHOREO);
+        int driverStation = (int) responses.get().get(0);
+        return getPathFindToPoseCommand(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[driverStation - 1]).get();
     }
 
     public enum CharacterizationRoutine {
@@ -158,8 +154,8 @@ public class AutoFactory {
     }
 
     public Command getCharacterizationRoutine() {
-        CharacterizableSubsystem subsystem = (CharacterizableSubsystem) responses.get().get(1);
-        CharacterizationRoutine routine = (CharacterizationRoutine) responses.get().get(0);
+        CharacterizableSubsystem subsystem = (CharacterizableSubsystem) responses.get().get(0);
+        CharacterizationRoutine routine = (CharacterizationRoutine) responses.get().get(1);
 
         var sysIdRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
