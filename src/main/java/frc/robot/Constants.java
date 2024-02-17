@@ -9,6 +9,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -223,8 +224,8 @@ public final class Constants {
   }
 
   public static class FieldConstants {
-    public static final Pose2d RED_ALLIANCE_SPEAKER_POSE2D = new Pose2d(0.5, 5.5, Rotation2d.fromDegrees(180));
-    public static final Pose2d BLUE_ALLIANCE_SPEAKER_POSE2D = new Pose2d(16, 5.5, Rotation2d.fromDegrees(180));
+    public static final Pose3d RED_ALLIANCE_SPEAKER_POSE3D = new Pose3d(16.317, 5.55, 2.1, new Rotation3d(0, 0, Units.degreesToRadians(180)));
+    public static final Pose3d BLUE_ALLIANCE_SPEAKER_POSE3D = new Pose3d(0.225, 5.55, 2.1, new Rotation3d(0, 0, Units.degreesToRadians(180)));
     public static final Pose2d BLUE_ALLIANCE_AMP_POSE2D = new Pose2d(1.8, 8 , Rotation2d.fromDegrees(-90));
     public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(16, 0.5, Rotation2d.fromDegrees(-30));
   }
