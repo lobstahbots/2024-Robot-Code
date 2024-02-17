@@ -169,6 +169,21 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "2,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Field Centric",
+              "_title": "Field Centric",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
           }
         }
       }
@@ -188,9 +203,9 @@
     }
   ],
   "windowGeometry": {
-    "x": 0.0,
-    "y": 0.0,
-    "width": 1920.0,
-    "height": 1050.0
+    "x": -8.0,
+    "y": -8.0,
+    "width": 1936.0,
+    "height": 1066.0
   }
 }
