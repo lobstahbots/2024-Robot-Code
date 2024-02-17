@@ -144,7 +144,7 @@ public class AutoFactory {
 
     public Command getSimpleAuto() {
         int driverStation = (int) responses.get().get(0);
-        return getPathFindToPoseCommand(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[driverStation - 1]).get().andThen(NoteVisualizer.shoot()).andThen(new RotatePivotCommand(pivot, -40));
+        return getPathFindToPoseCommand(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[driverStation - 1]).get();
     }
 
     public enum CharacterizationRoutine {
