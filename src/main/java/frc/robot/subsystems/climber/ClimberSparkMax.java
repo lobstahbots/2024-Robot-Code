@@ -10,8 +10,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import frc.robot.Constants.ClimberConstants;
-
 public class ClimberSparkMax implements ClimberIO {
   public final CANSparkMax leftClimberMotor;
   public final CANSparkMax rightClimberMotor;
@@ -35,13 +33,13 @@ public class ClimberSparkMax implements ClimberIO {
   }
 
   /* Moves the leftside climber. */
-  public void moveLeftClimber() {
-    leftClimberMotor.set(ClimberConstants.CLIMBER_SPEED);
+  public void moveLeftClimber(double speed) {
+    leftClimberMotor.set(speed);
   }
 
    /* Moves the rightside climber. */
-  public void moveRightClimber() {
-    rightClimberMotor.set(ClimberConstants.CLIMBER_SPEED);
+  public void moveRightClimber(double speed) {
+    rightClimberMotor.set(speed);
   }
   
   /* Stops the climber motors. */
