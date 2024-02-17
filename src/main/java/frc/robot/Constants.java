@@ -72,7 +72,7 @@ public final class Constants {
       new Translation2d(-RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0));
 
-    public static final boolean FIELD_CENTRIC = true;
+    public static boolean FIELD_CENTRIC = true;
     public static final boolean IS_OPEN_LOOP = false;
 
     public static final double PATH_MAX_ACCEL = 3;
