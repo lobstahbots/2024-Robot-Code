@@ -8,18 +8,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climber.Climber;
 
 public class MoveClimberCommand extends Command {
-  public final Climber climber;
+  private final Climber climber;
+  private final double climberSpeed; 
 
   /** Creates a new MoveClimberCommand. */
-  public MoveClimberCommand(Climber climber) {
+  public MoveClimberCommand(Climber climber, double climberSpeed) {
     this.climber = climber;
+    this.climberSpeed = climberSpeed;
     addRequirements(climber);
   }
 
   @Override
   public void execute() {
-    climber.moveLeftClimber();
-    climber.moveRightClimber();
+    climber.moveLeftClimber(climberSpeed);
+    climber.moveRightClimber(climberSpeed);
   }
 
   @Override
