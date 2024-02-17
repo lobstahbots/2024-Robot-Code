@@ -8,11 +8,11 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class ConstructLaterCommand extends Command {
+public class DeferInitializeCommand extends Command {
   private final Supplier<Command> commandSupplier;
   private Command command;
 
-  public ConstructLaterCommand(Supplier<Command> commandSupplier) {
+  public DeferInitializeCommand(Supplier<Command> commandSupplier) {
     this.commandSupplier = commandSupplier;
     m_requirements.addAll(commandSupplier.get().getRequirements());
   }

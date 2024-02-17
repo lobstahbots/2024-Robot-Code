@@ -25,13 +25,14 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotConstants;
+import frc.robot.subsystems.shooter.NoteVisualizer;
 import frc.robot.subsystems.vision.PhotonVision;
+import stl.sysId.CharacterizableSubsystem;
 
-public class DriveBase extends SubsystemBase {
+public class DriveBase extends CharacterizableSubsystem {
   /** Creates a new SwerveDriveBase. */
   private final SwerveModule[] modules; 
 
@@ -73,8 +74,8 @@ public class DriveBase extends SubsystemBase {
         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(0.3, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(0.3, 0.0, 0.0), // Rotation PID constants
+            new PIDConstants(1, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(1, 0.0, 0.0), // Rotation PID constants
             4.5, // Max module speed, in m/s
             0.4, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -82,6 +83,8 @@ public class DriveBase extends SubsystemBase {
         () -> {return DriverStation.getAlliance().get() ==  DriverStation.Alliance.Red;},
       this 
     );
+
+    NoteVisualizer.setRobotPoseSupplier(this::getPose);
   }
 
   /**Resets pose of odometry to a given pose.
@@ -232,6 +235,14 @@ public Rotation2d getGyroAngle() {
   return gyroInputs.yawPosition;
 }
 
+@Override
+/**Runs motors during characterization voltage ramp routines.*/
+public void runVolts(double volts) {
+  for(SwerveModule module: modules) {
+    module.runVolts(volts);
+  }
+}
+
   @Override
   public void periodic() {
     if(Robot.isSimulation()) {
@@ -249,10 +260,11 @@ public Rotation2d getGyroAngle() {
     Logger.recordOutput("Odometry", getPose());
      gyro.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
+    SmartDashboard.putBoolean("Field Centric", DriveConstants.FIELD_CENTRIC);
     for (var module : modules) {
       module.periodic();
     }
- //   // Clear setpoint logs
+  // Clear setpoint logs
        Logger.recordOutput("SwerveStates/Desired", new double[] {});
     if (DriverStation.isDisabled()) {
       // Stop moving while disabled
