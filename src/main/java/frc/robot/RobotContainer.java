@@ -10,7 +10,6 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
@@ -41,6 +40,7 @@ import frc.robot.subsystems.vision.PhotonVisionReal;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeSparkMax;
+
 import java.util.List;
 import java.util.Map;
 import edu.wpi.first.wpilibj.Joystick;
@@ -169,8 +169,8 @@ public class RobotContainer {
 
   public void smartDashSetup() {
     autoChooser.addRoutine("Simple Auto", List.of(
-        new AutoQuestion<>("Starting Position?", Map.of("Station 1", PathConstants.STATION_1, "Station 2",
-            PathConstants.STATION_2, "Station 3", PathConstants.STATION_3))),
+        new AutoQuestion<>("Starting Position?", Map.of("Station 1", 1, "Station 2",
+            2, "Station 3", 3))),
         autoFactory::getSimpleAuto);
 
     autoChooser.addRoutine("Characterize", List.of(

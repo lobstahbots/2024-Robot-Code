@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -24,14 +24,14 @@ public class AutonSelector<V> extends SubsystemBase {
   private final List<SwitchableChooser> questionChoosers;
 
   private AutoRoutine<V> lastRoutine;
-  private Map<String, V> lastResponses;
+  private LinkedHashMap<String, V> lastResponses;
 
   public AutonSelector(String key, String defaultName, List<AutoQuestion<V>> defaultQuestions, Supplier<Command> defaultCommands) {
     routineChooser = new LoggedDashboardChooser<>(key + "/Routine");
     AutoRoutine<V> defaultRoutine = new AutoRoutine<V>(defaultName, defaultQuestions, defaultCommands);
     routineChooser.addDefaultOption(defaultRoutine.name(), defaultRoutine);
     lastRoutine = defaultRoutine;
-    lastResponses = Map.of();
+    lastResponses = new LinkedHashMap<>();
 
     // Publish questions and choosers
     questionPublishers = new ArrayList<>();
@@ -99,7 +99,7 @@ public class AutonSelector<V> extends SubsystemBase {
 
     // Update the routine and responses
     lastRoutine = selectedRoutine;
-    lastResponses = new HashMap<>();
+    lastResponses = new LinkedHashMap<>();
     for (int i = 0; i < lastRoutine.questions().size(); i++) {
       String responseString = questionChoosers.get(i).get();
       lastResponses.put(

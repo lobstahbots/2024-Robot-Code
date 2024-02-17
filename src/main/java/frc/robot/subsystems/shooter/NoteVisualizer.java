@@ -9,14 +9,13 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PivotConstants;
+import stl.trajectory.AlliancePoseMirror;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -24,7 +23,6 @@ import org.littletonrobotics.junction.Logger;
 
 public class NoteVisualizer {
   private static final Translation3d blueSpeaker = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.getTranslation();
-  private static final Translation3d redSpeaker = FieldConstants.RED_ALLIANCE_SPEAKER_POSE3D.getTranslation();
   private static final Transform3d launcherTransform =
       new Transform3d(PivotConstants.ORIGIN_TO_ARM_MOUNT_X_DIST, PivotConstants.ORIGIN_TO_ARM_MOUNT_Y_DIST, PivotConstants.ORIGIN_TO_ARM_MOUNT_Z_DIST, new Rotation3d(PivotConstants.ARM_INITIAL_ROLL, PivotConstants.ARM_PITCH, PivotConstants.ARM_YAW));
   private static final double shotSpeed = 5.0; // Meters per sec
@@ -40,11 +38,8 @@ public class NoteVisualizer {
                 () -> {
                   final Pose3d startPose =
                       new Pose3d(robotPoseSupplier.get()).transformBy(launcherTransform);
-                  final boolean isRed =
-                      DriverStation.getAlliance().isPresent()
-                          && DriverStation.getAlliance().get().equals(Alliance.Red);
                   final Pose3d endPose =
-                      new Pose3d(isRed ? redSpeaker : blueSpeaker, startPose.getRotation());
+                      AlliancePoseMirror.mirrorPose3d(new Pose3d(blueSpeaker, startPose.getRotation()));
 
                   final double duration =
                       startPose.getTranslation().getDistance(endPose.getTranslation()) / shotSpeed;

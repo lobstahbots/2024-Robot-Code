@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.drive;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 

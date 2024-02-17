@@ -207,8 +207,8 @@ public final class Constants {
 
   public static class ClimberConstants {
     public static final double CLIMBER_SPEED = 1.0;
-    public static final int LEFT_CLIMBER_ID = 1;
-    public static final int RIGHT_CLIMBER_ID = 1;
+    public static final int LEFT_CLIMBER_ID = 27;
+    public static final int RIGHT_CLIMBER_ID = 28;
   }
   
   public static class VisionConstants {
@@ -225,9 +225,12 @@ public final class Constants {
   }
 
   public static class FieldConstants {
-    public static final Pose3d RED_ALLIANCE_SPEAKER_POSE3D = new Pose3d(16.317, 5.55, 2.1, new Rotation3d(0, 0, Units.degreesToRadians(180)));
+    public static final double FIELD_LENGTH = 16.54;
     public static final Pose3d BLUE_ALLIANCE_SPEAKER_POSE3D = new Pose3d(0.225, 5.55, 2.1, new Rotation3d(0, 0, Units.degreesToRadians(180)));
     public static final Pose2d BLUE_ALLIANCE_AMP_POSE2D = new Pose2d(1.8, 8 , Rotation2d.fromDegrees(-90));
     public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(16, 0.5, Rotation2d.fromDegrees(-30));
+    public static final Pose2d[] MIDLINE_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(8.258, 7.462, new Rotation2d()), new Pose2d(8.258, 5.785, new Rotation2d()), new Pose2d(8.258, 4.109, new Rotation2d()), new Pose2d(8.258, 2.432, new Rotation2d()), new Pose2d(8.258, 0.756, new Rotation2d())};
+    public static final Pose2d[] BLUE_WING_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(2.884, 4.109, new Rotation2d()), new Pose2d(2.884, 5.557, new Rotation2d()), new Pose2d(2.884, 7.004, new Rotation2d())};
+    public static final Pose2d BLUE_ALLIANCE_LOADING_STATION_POSE = new Pose2d(15, 1, new Rotation2d());
   }
 }
