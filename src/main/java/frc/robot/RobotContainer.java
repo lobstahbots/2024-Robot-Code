@@ -187,13 +187,11 @@ public class RobotContainer {
   }
 
   private void registerNamedCommands() {
-    /*
     NamedCommands.registerCommand("intake", new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
-    NamedCommands.registerCommand("shoot", new SpinShooterCommand(shooter, ShooterConstants.lowerShooterSpeed, ShooterConstants.upperShooterSpeed));
-    */
-    NamedCommands.registerCommand("note1pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_1_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_1_SHOOTING_ANGLE).getDegrees() < 2));
-    NamedCommands.registerCommand("note2pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_2_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_2_SHOOTING_ANGLE).getDegrees() < 2));
-    NamedCommands.registerCommand("note3pivot", new RotatePivotCommand(pivot, AutoConstants.NOTE_3_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.NOTE_3_SHOOTING_ANGLE).getDegrees() < 2));
-    NamedCommands.registerCommand("intakePivot", new RotatePivotCommand(pivot, AutoConstants.INTAKE_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.INTAKE_ANGLE).getDegrees() < 2));
+    NamedCommands.registerCommand("shoot", new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
+    NamedCommands.registerCommand("note1pivot", autoFactory.getPivotCommand(AutoConstants.NOTE_1_SHOOTING_ANGLE));
+    NamedCommands.registerCommand("note2pivot", autoFactory.getPivotCommand(AutoConstants.NOTE_2_SHOOTING_ANGLE));
+    NamedCommands.registerCommand("note3pivot", autoFactory.getPivotCommand(AutoConstants.NOTE_3_SHOOTING_ANGLE));
+    NamedCommands.registerCommand("intakePivot", autoFactory.getPivotCommand(AutoConstants.INTAKE_ANGLE));
   }
 }
