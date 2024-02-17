@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -159,6 +160,18 @@ public class AutoFactory {
         return getPathFindToPoseCommand(AutoConstants.FIRST_NOTE_SHOOTING_POSITION).get()
             .alongWith(getPivotCommand(AutoConstants.FIRST_NOTE_SHOOTING_ANGLE))
             .andThen(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
+    }
+
+    public Command getTwoNoteAuto() {
+        return getOneNoteAuto().andThen(new PathPlannerAuto("2 Note Auto"));
+    }
+
+    public Command getThreeNoteAuto() {
+        return getOneNoteAuto().andThen(new PathPlannerAuto("3 Note Auto"));
+    }
+
+    public Command getFourNoteAuto() {
+        return getOneNoteAuto().andThen(new PathPlannerAuto("4 Note Auto"));
     }
 
     public enum CharacterizationRoutine {
