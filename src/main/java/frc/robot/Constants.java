@@ -9,6 +9,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -43,9 +44,17 @@ public final class Constants {
     public static final int STRAFE_Y_AXIS = 1;
     public static final int ROTATION_AXIS = 2;
     public static final double JOYSTICK_DEADBAND = 0.1;
-    public static final int ALIGN_TO_AMP_BUTTON_ID = 2;
+    public static final int ALIGN_TO_AMP_BUTTON_ID = 5;
     public static final int ALIGN_TO_SOURCE_BUTTON_ID = 3;
     public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 4;
+    public static final int SHOOTER_BUTTON_ID = 1;
+    public static final int INTAKE_BUTTON_ID = 1;
+    public static final int CLIMBERUP_BUTTON_ID = 1;
+    public static final int CLIMBERDOWN_BUTTON_ID = 1;
+    public static final int SLOWDOWN_BUTTON_ID = 1;
+    public static final int RESET_PIVOT_ANGLE_BUTTON_ID = 1;
+    public static final int PIVOT_ANGLE_AXIS = 0;
+    public static final int TOGGLE_DRIVE_CENTRICITY_BUTTON_ID = 2;
   }
   
   public static class RobotConstants {
@@ -71,7 +80,7 @@ public final class Constants {
       new Translation2d(-RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0));
 
-    public static final boolean FIELD_CENTRIC = true;
+    public static boolean FIELD_CENTRIC = true;
     public static final boolean IS_OPEN_LOOP = false;
 
     public static final double PATH_MAX_ACCEL = 3;
@@ -189,6 +198,7 @@ public final class Constants {
     public static final double ARM_PITCH = Units.degreesToRadians(0);
     public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(-55);
     public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(-33);
+    public static final double PIVOT_RESTING_ANGLE = Units.degreesToRadians(20);
 
     public static final int LEFT_MOTOR_ID = 25;
     public static final int RIGHT_MOTOR_ID = 26;
@@ -196,6 +206,8 @@ public final class Constants {
 
   public static class ClimberConstants {
     public static final double CLIMBER_SPEED = 1.0;
+    public static final int LEFT_CLIMBER_ID = 1;
+    public static final int RIGHT_CLIMBER_ID = 1;
   }
   
   public static class VisionConstants {
@@ -212,8 +224,8 @@ public final class Constants {
   }
 
   public static class FieldConstants {
-    public static final Pose2d RED_ALLIANCE_SPEAKER_POSE2D = new Pose2d(0.5, 5.5, Rotation2d.fromDegrees(180));
-    public static final Pose2d BLUE_ALLIANCE_SPEAKER_POSE2D = new Pose2d(16, 5.5, Rotation2d.fromDegrees(180));
+    public static final Pose3d RED_ALLIANCE_SPEAKER_POSE3D = new Pose3d(16.317, 5.55, 2.1, new Rotation3d(0, 0, Units.degreesToRadians(180)));
+    public static final Pose3d BLUE_ALLIANCE_SPEAKER_POSE3D = new Pose3d(0.225, 5.55, 2.1, new Rotation3d(0, 0, Units.degreesToRadians(180)));
     public static final Pose2d BLUE_ALLIANCE_AMP_POSE2D = new Pose2d(1.8, 8 , Rotation2d.fromDegrees(-90));
     public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(16, 0.5, Rotation2d.fromDegrees(-30));
   }
