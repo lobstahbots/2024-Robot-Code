@@ -249,6 +249,7 @@ public Rotation2d getGyroAngle() {
     Logger.recordOutput("Odometry", getPose());
      gyro.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
+    SmartDashboard.putBoolean("Field Centric", DriveConstants.FIELD_CENTRIC);
     for (var module : modules) {
       module.periodic();
     }

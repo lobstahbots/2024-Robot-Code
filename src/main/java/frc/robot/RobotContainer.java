@@ -45,6 +45,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -75,6 +76,7 @@ public class RobotContainer {
       IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
   private final JoystickButton alignToSpeakerButton = new JoystickButton(driverJoystick,
       IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
+  private final JoystickButton driveToggleButton = new JoystickButton(driverJoystick, IOConstants.TOGGLE_DRIVE_CENTRICITY_BUTTON_ID);
   private final Joystick operatorJoystick = new Joystick(IOConstants.OPERATOR_CONTROLLER_PORT);
   private final JoystickButton shooterButton = new JoystickButton(operatorJoystick, IOConstants.SHOOTER_BUTTON_ID);
   private final JoystickButton intakeButton = new JoystickButton(operatorJoystick, IOConstants.INTAKE_BUTTON_ID);
@@ -134,7 +136,7 @@ public class RobotContainer {
             () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
             () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
             () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
-            DriveConstants.FIELD_CENTRIC));
+            () -> DriveConstants.FIELD_CENTRIC));
     pivot.setDefaultCommand(new RotatePivotCommand(pivot, () -> pivot.getPosition().getDegrees() + operatorJoystick.getRawAxis(IOConstants.PIVOT_ANGLE_AXIS)));
   }
 
@@ -162,13 +164,14 @@ public class RobotContainer {
         () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
         () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
         () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
-        DriveConstants.FIELD_CENTRIC));
+        () -> DriveConstants.FIELD_CENTRIC));
     shooterButton
         .whileTrue(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
     climberUpButton.whileTrue(new MoveClimberCommand(climber, ClimberConstants.CLIMBER_SPEED));
     climberDownButton.whileTrue(new MoveClimberCommand(climber, -ClimberConstants.CLIMBER_SPEED));
     intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
     retractPivotButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.PIVOT_RESTING_ANGLE));
+    driveToggleButton.onTrue(new InstantCommand(() -> DriveConstants.FIELD_CENTRIC = !DriveConstants.FIELD_CENTRIC));
   }
 
   protected Command getSimpleAuto(Pose2d startingPosition) {
