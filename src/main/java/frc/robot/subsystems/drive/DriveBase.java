@@ -257,6 +257,7 @@ public void runVolts(double volts) {
     Logger.recordOutput("Odometry", getPose());
      gyro.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
+    SmartDashboard.putBoolean("Field Centric", DriveConstants.FIELD_CENTRIC);
     for (var module : modules) {
       module.periodic();
     }
