@@ -5,14 +5,12 @@
 package frc.robot;
 
 import frc.robot.AutoFactory.CharacterizationRoutine;
-import frc.robot.AutoFactory.PathType;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
@@ -44,22 +42,13 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeSparkMax;
 
-import java.util.function.Supplier;
-
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.revrobotics.CANSparkMax.IdleMode;
-
 import java.util.List;
 import java.util.Map;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -136,13 +125,13 @@ public class RobotContainer {
       pivot = new Pivot(new PivotSim());
     }
 
+    registerNamedCommands();
+
     this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, autoChooser::getResponses);
 
     setTeleopDefaultCommands();
     
     smartDashSetup();
-
-    registerNamedCommands();
   }
 
   private void setTeleopDefaultCommands() {
@@ -181,25 +170,6 @@ public class RobotContainer {
     intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
     retractPivotButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.PIVOT_RESTING_ANGLE));
     driveToggleButton.onTrue(new InstantCommand(() -> DriveConstants.FIELD_CENTRIC = !DriveConstants.FIELD_CENTRIC));
-  }
-
-  protected Command getOneNoteAuto() {
-    return trajectoryFactory.getPathFindToPoseCommand(AutoConstants.FIRST_NOTE_SHOOTING_POSITION)
-      .alongWith(new RotatePivotCommand(pivot, AutoConstants.FIRST_NOTE_SHOOTING_ANGLE.getRadians()).until(() -> pivot.getPosition().minus(AutoConstants.FIRST_NOTE_SHOOTING_ANGLE).getDegrees() < 2));
-      // .andThen(new SpinShooterCommand(shooter, ShooterConstants.lowerShooterSpeed, ShooterConstants.upperShooterSpeed));
-      // TODO: uncomment the above line when shooter is created
-  }
-
-  protected Command getTwoNoteAuto() {
-    return getOneNoteAuto().andThen(new PathPlannerAuto("2 Note Auto"));
-  }
-
-  protected Command getThreeNoteAuto() {
-    return getOneNoteAuto().andThen(new PathPlannerAuto("3 Note Auto"));
-  }
-
-  protected Command getFourNoteAuto() {
-    return getOneNoteAuto().andThen(new PathPlannerAuto("4 Note Auto"));
   }
 
   public void smartDashSetup() {

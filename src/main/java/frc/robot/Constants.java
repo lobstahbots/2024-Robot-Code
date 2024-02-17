@@ -224,6 +224,8 @@ public final class Constants {
 
     public static final int LEFT_MOTOR_ID = 25;
     public static final int RIGHT_MOTOR_ID = 26;
+
+    public static final double MAX_PIVOT_ERROR = 2;
   }
 
   public static class ClimberConstants {
