@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotConstants;
+import frc.robot.Constants.SimConstants;
 import frc.robot.subsystems.shooter.NoteVisualizer;
 import frc.robot.subsystems.vision.PhotonVision;
 import stl.sysId.CharacterizableSubsystem;
@@ -37,19 +38,21 @@ public class DriveBase extends CharacterizableSubsystem {
   private final SwerveModule[] modules; 
 
   private SwerveDrivePoseEstimator swerveOdometry;
-  private final GyroIO gyro;
-  private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
-  private boolean isOpenLoop;
-  private Rotation2d simRotation = new Rotation2d();
-  private final PhotonVision photonVision;
-
-  private SwerveModuleState[] setpointStates =
+  private SwerveSetpointGenerator setpointGenerator;
+  private SwerveSetpoint swerveSetpoint =
+  new SwerveSetpoint(
+      new ChassisSpeeds(),
       new SwerveModuleState[] {
         new SwerveModuleState(),
         new SwerveModuleState(),
         new SwerveModuleState(),
         new SwerveModuleState()
-      };
+      });
+  private final GyroIO gyro;
+  private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
+  private boolean isOpenLoop;
+  private Rotation2d simRotation = new Rotation2d();
+  private final PhotonVision photonVision;
 
   private Field2d field;
 
@@ -62,7 +65,8 @@ public class DriveBase extends CharacterizableSubsystem {
     gyro.zeroGyro();
     this.photonVision = photonVision;
     swerveOdometry = new SwerveDrivePoseEstimator(DriveConstants.KINEMATICS, gyroInputs.yawPosition, getPositions(), new Pose2d());
-
+    setpointGenerator = new SwerveSetpointGenerator(DriveConstants.KINEMATICS, DriveConstants.MODULE_LOCATIONS);
+    
     field = new Field2d();
     SmartDashboard.putData("Field", field);
 
@@ -142,21 +146,10 @@ public class DriveBase extends CharacterizableSubsystem {
  */
 public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
   ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
-  SwerveModuleState[] newStates = DriveConstants.KINEMATICS.toSwerveModuleStates(discreteSpeeds);
-  SwerveDriveKinematics.desaturateWheelSpeeds(newStates, DriveConstants.MAX_DRIVE_SPEED);
-  setModuleStates(newStates);
-}
-
-/**
- * Drives the robot field-relative according to provided {@link ChassisSpeeds}.
- * 
- * @param chassisSpeeds The desired ChassisSpeeds. Should be robot relative.
- */
-public void driveFieldRelative(ChassisSpeeds chassisSpeeds) {
-  ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
-  SwerveModuleState[] newStates = DriveConstants.KINEMATICS.toSwerveModuleStates(getFieldRelativeChassisSpeeds(discreteSpeeds));
-  SwerveDriveKinematics.desaturateWheelSpeeds(newStates, DriveConstants.MAX_DRIVE_SPEED);
-  setModuleStates(newStates);
+  Logger.recordOutput("Unoptimized:", DriveConstants.KINEMATICS.toSwerveModuleStates(discreteSpeeds));
+  swerveSetpoint = setpointGenerator.generateSetpoint(DriveConstants.MODULE_LIMITS, swerveSetpoint, discreteSpeeds, SimConstants.LOOP_TIME);
+  SwerveDriveKinematics.desaturateWheelSpeeds(swerveSetpoint.moduleStates, DriveConstants.MAX_DRIVE_SPEED);
+  setModuleStates(swerveSetpoint.moduleStates);
 }
 
 /**Sets desired SwerveModuleStates. Optimizes states.
@@ -166,12 +159,13 @@ public void driveFieldRelative(ChassisSpeeds chassisSpeeds) {
  */
 public SwerveModuleState[] setModuleStates(SwerveModuleState[] desiredStates) {
   SwerveModuleState[] optimizedStates = new SwerveModuleState[4];
-  SwerveDriveKinematics.desaturateWheelSpeeds(
-      desiredStates, DriveConstants.MAX_DRIVE_SPEED);
+  // SwerveDriveKinematics.desaturateWheelSpeeds(
+  //     desiredStates, DriveConstants.MAX_DRIVE_SPEED);
   for(SwerveModule module: modules) {
     optimizedStates[module.getModuleID()] = module.setDesiredState(desiredStates[module.getModuleID()], isOpenLoop);
-    setpointStates = optimizedStates;
   }
+  swerveSetpoint.moduleStates = optimizedStates;
+  Logger.recordOutput("states", swerveSetpoint.moduleStates);
   return optimizedStates;
 }
 
@@ -265,7 +259,7 @@ public void runVolts(double volts) {
       module.periodic();
     }
   // Clear setpoint logs
-       Logger.recordOutput("SwerveStates/Desired", new double[] {});
+    Logger.recordOutput("SwerveStates/Desired", new double[] {});
     if (DriverStation.isDisabled()) {
       // Stop moving while disabled
       for (var module : modules) {
@@ -275,7 +269,8 @@ public void runVolts(double volts) {
 
     else {
     Logger.recordOutput("SwerveStates/Measured", getStates());
-    Logger.recordOutput("SwerveStates/Desired", setpointStates);
+    Logger.recordOutput("SwerveStates/Desired", swerveSetpoint.moduleStates);
+    Logger.recordOutput("SwerveStates/SetpointSpeeds", swerveSetpoint.chassisSpeeds);
     Logger.recordOutput("Odometry/Robot", getPose());
     
     //Log 3D odometry pose

@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.drive.SwerveKinematicLimits;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -58,8 +59,8 @@ public final class Constants {
   }
   
   public static class RobotConstants {
-    public static final double WHEELBASE = Units.inchesToMeters(20);
-    public static final double TRACK_WIDTH = Units.inchesToMeters(20);
+    public static final double WHEELBASE = Units.inchesToMeters(28);
+    public static final double TRACK_WIDTH = Units.inchesToMeters(28);
     public static final double RADIUS = Units.inchesToMeters(new Translation2d(20, 20).getNorm());
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(3);
     public static final double DRIVE_GEAR_RATIO = 4.71;
@@ -75,11 +76,16 @@ public final class Constants {
     public static final double SLOWDOWN_PERCENT = 0.5;
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
     public static final int ANGLE_MOTOR_CURRENT_LIMIT = 40;
-    public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
+    public static final Translation2d[] MODULE_LOCATIONS = new Translation2d[]{
       new Translation2d(RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(-RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
-      new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0));
+      new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0)
+    };
+    public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
+      MODULE_LOCATIONS[0], MODULE_LOCATIONS[1], MODULE_LOCATIONS[2], MODULE_LOCATIONS[3]
+    );
+    public static final SwerveKinematicLimits MODULE_LIMITS = new SwerveKinematicLimits(MAX_DRIVE_SPEED, MAX_ACCELERATION, MAX_ANGULAR_SPEED);
 
     public static boolean FIELD_CENTRIC = true;
     public static final boolean IS_OPEN_LOOP = false;
