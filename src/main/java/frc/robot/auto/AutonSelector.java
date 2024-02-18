@@ -1,4 +1,4 @@
-//Credit to 6328 Mechanical Advantage for on-the-fly updating auton selection code.
+// Custom implementation incorporating pair key-value mapping of 6328 Mechanical Advantage for on-the-fly updating auton selection code.
 
 package frc.robot.auto;
 
