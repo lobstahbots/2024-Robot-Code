@@ -62,10 +62,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveBase driveBase;
   private final Pivot pivot;
-  private final Shooter shooter = new Shooter(ShooterConstants.UPPER_SHOOTER_ID, ShooterConstants.LOWER_SHOOTER_ID);
-  private final Climber climber = new Climber(
-      new ClimberSparkMax(ClimberConstants.LEFT_CLIMBER_ID, ClimberConstants.RIGHT_CLIMBER_ID));
-  private final Intake intake = new Intake(new IntakeSparkMax(IntakeConstants.INTAKE_MOTOR_ID));
+//   private final Shooter shooter = new Shooter(ShooterConstants.UPPER_SHOOTER_ID, ShooterConstants.LOWER_SHOOTER_ID);
+//   private final Climber climber = new Climber(
+//       new ClimberSparkMax(ClimberConstants.LEFT_CLIMBER_ID, ClimberConstants.RIGHT_CLIMBER_ID));
+//   private final Intake intake = new Intake(new IntakeSparkMax(IntakeConstants.INTAKE_MOTOR_ID));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick = new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
@@ -78,17 +78,17 @@ public class RobotContainer {
       IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
   private final JoystickButton driveToggleButton = new JoystickButton(driverJoystick, IOConstants.TOGGLE_DRIVE_CENTRICITY_BUTTON_ID);
   private final Joystick operatorJoystick = new Joystick(IOConstants.OPERATOR_CONTROLLER_PORT);
-  private final JoystickButton shooterButton = new JoystickButton(operatorJoystick, IOConstants.SHOOTER_BUTTON_ID);
-  private final JoystickButton intakeButton = new JoystickButton(operatorJoystick, IOConstants.INTAKE_BUTTON_ID);
-  private final JoystickButton climberUpButton = new JoystickButton(operatorJoystick, IOConstants.CLIMBERUP_BUTTON_ID);
-  private final JoystickButton climberDownButton = new JoystickButton(operatorJoystick,
-      IOConstants.CLIMBERDOWN_BUTTON_ID);
+//   private final JoystickButton shooterButton = new JoystickButton(operatorJoystick, IOConstants.SHOOTER_BUTTON_ID);
+//   private final JoystickButton intakeButton = new JoystickButton(operatorJoystick, IOConstants.INTAKE_BUTTON_ID);
+//   private final JoystickButton climberUpButton = new JoystickButton(operatorJoystick, IOConstants.CLIMBERUP_BUTTON_ID);
+//   private final JoystickButton climberDownButton = new JoystickButton(operatorJoystick,
+//       IOConstants.CLIMBERDOWN_BUTTON_ID);
   private final JoystickButton retractPivotButton = new JoystickButton(operatorJoystick, IOConstants.RESET_PIVOT_ANGLE_BUTTON_ID);
   private final JoystickButton slowdownButton = new JoystickButton(driverJoystick, IOConstants.SLOWDOWN_BUTTON_ID);
   
   private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
       () -> Commands.none());
-  private final AutoFactory autoFactory;
+//   private final AutoFactory autoFactory;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -122,7 +122,7 @@ public class RobotContainer {
       pivot = new Pivot(new PivotSim());
     }
 
-    this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, autoChooser::getResponses);
+    // this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, autoChooser::getResponses);
 
     setTeleopDefaultCommands();
     
@@ -159,25 +159,25 @@ public class RobotContainer {
         () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
         () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
         () -> DriveConstants.FIELD_CENTRIC));
-    shooterButton.whileTrue(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
-    climberUpButton.whileTrue(new MoveClimberCommand(climber, ClimberConstants.CLIMBER_SPEED));
-    climberDownButton.whileTrue(new MoveClimberCommand(climber, -ClimberConstants.CLIMBER_SPEED));
-    intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
+    // shooterButton.whileTrue(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
+    // climberUpButton.whileTrue(new MoveClimberCommand(climber, ClimberConstants.CLIMBER_SPEED));
+    // climberDownButton.whileTrue(new MoveClimberCommand(climber, -ClimberConstants.CLIMBER_SPEED));
+    // intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
     retractPivotButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.PIVOT_RESTING_ANGLE));
     driveToggleButton.onTrue(new InstantCommand(() -> DriveConstants.FIELD_CENTRIC = !DriveConstants.FIELD_CENTRIC));
   }
 
   public void smartDashSetup() {
-    autoChooser.addRoutine("Simple Auto", List.of(
-        new AutoQuestion<>("Starting Position?", Map.of("Station 1", 1, "Station 2",
-            2, "Station 3", 3))),
-        autoFactory::getSimpleAuto);
+//     autoChooser.addRoutine("Simple Auto", List.of(
+//         new AutoQuestion<>("Starting Position?", Map.of("Station 1", 1, "Station 2",
+//             2, "Station 3", 3))),
+//         autoFactory::getSimpleAuto);
 
-    autoChooser.addRoutine("Characterize", List.of(
-        new AutoQuestion<>("Which Subsystem?", Map.of("DriveBase", driveBase, "Pivot", pivot)),
-        new AutoQuestion<>("Which Routine", Map.of("Quasistatic Foward", CharacterizationRoutine.QUASISTATIC_FORWARD,
-            "Quasistatic Backward", CharacterizationRoutine.QUASISTATIC_BACKWARD, "Dynamic Forward",
-            CharacterizationRoutine.DYNAMIC_FORWARD, "Dynamic Backward", CharacterizationRoutine.DYNAMIC_BACKWARD))),
-        autoFactory::getCharacterizationRoutine);
-  }
+//     autoChooser.addRoutine("Characterize", List.of(
+//         new AutoQuestion<>("Which Subsystem?", Map.of("DriveBase", driveBase, "Pivot", pivot)),
+//         new AutoQuestion<>("Which Routine", Map.of("Quasistatic Foward", CharacterizationRoutine.QUASISTATIC_FORWARD,
+//             "Quasistatic Backward", CharacterizationRoutine.QUASISTATIC_BACKWARD, "Dynamic Forward",
+//             CharacterizationRoutine.DYNAMIC_FORWARD, "Dynamic Backward", CharacterizationRoutine.DYNAMIC_BACKWARD))),
+//         autoFactory::getCharacterizationRoutine);
+   }
 }

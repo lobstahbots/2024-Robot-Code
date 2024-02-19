@@ -48,7 +48,7 @@ public class Robot extends LoggedRobot {
       File log = new File (Filesystem.getOperatingDirectory(), "log");
       String logPath = log.getAbsolutePath();
       System.out.println(logPath);
-      Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+      // Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
       Logger.addDataReceiver(new WPILOGWriter(logPath)); // Save outputs to a new log
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
   } else {
