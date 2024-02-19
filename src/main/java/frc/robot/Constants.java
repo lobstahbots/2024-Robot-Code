@@ -157,6 +157,8 @@ public final class Constants {
     public static final double TURN_PID_I = 0;
     public static final double TURN_PID_D = 0;
     public static final double TURN_PID_FF = 0;
+
+    public static final double AIM_VELOCITY_COMPENSATION_DEADBAND = 0.3;
   }
   
   public static class IntakeConstants {

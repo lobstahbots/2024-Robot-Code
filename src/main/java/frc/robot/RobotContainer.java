@@ -22,6 +22,7 @@ import frc.robot.auto.AutonSelector;
 import frc.robot.auto.AutonSelector.AutoQuestion;
 import frc.robot.commands.MoveClimberCommand;
 import frc.robot.commands.RotatePivotCommand;
+import frc.robot.commands.ShootWhileMovingCommand;
 import frc.robot.commands.SpinIntakeCommand;
 import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.SwerveDriveCommand;
@@ -144,7 +145,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.getCommand();
+    // return autoChooser.getCommand();
+    return new ShootWhileMovingCommand(driveBase, driveBase::getPose, driveBase.getRobotRelativeSpeeds(), FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d().getTranslation(), false, false);
   }
 
   public void configureButtonBindings() {
