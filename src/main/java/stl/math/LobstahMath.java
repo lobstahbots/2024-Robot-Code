@@ -5,16 +5,23 @@
 package stl.math;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
-/** This class stores relevant methods for mathematical operations, conversions, and scaling. */
+/**
+ * This class stores relevant methods for mathematical operations, conversions,
+ * and scaling.
+ */
 public class LobstahMath {
 
   /**
-   * Scales a number on a range of values to a corresponding value on a different range
+   * Scales a number on a range of values to a corresponding value on a different
+   * range
    * 
-   * @param x The number to scale.
-   * @param inputMin The original range's lower bound
-   * @param inputMax The original range's upper bound
+   * @param x         The number to scale.
+   * @param inputMin  The original range's lower bound
+   * @param inputMax  The original range's upper bound
    * @param outputMin The new range's lower bound
    * @param outputMax The new range's upper bound
    */
@@ -31,11 +38,12 @@ public class LobstahMath {
   }
 
   /**
-   * Clamps and scales a number to a range of values to a corresponding value on a different range
+   * Clamps and scales a number to a range of values to a corresponding value on a
+   * different range
    * 
-   * @param x The number to scale.
-   * @param inputMin The original range's lower bound
-   * @param inputMax The original range's upper bound
+   * @param x         The number to scale.
+   * @param inputMin  The original range's lower bound
+   * @param inputMax  The original range's upper bound
    * @param outputMin The new range's lower bound
    * @param outputMax The new range's upper bound
    */
@@ -46,7 +54,8 @@ public class LobstahMath {
   }
 
   /**
-   * Calculates turning output based on current and desired angle, for gyro values clamped between 180 and -180 degrees.
+   * Calculates turning output based on current and desired angle, for gyro values
+   * clamped between 180 and -180 degrees.
    * 
    * @param currentAngle The current gyro heading in degrees, 180 to -180.
    * @param desiredAngle The desired gyro heading in degrees, 180 to -180.
@@ -62,22 +71,62 @@ public class LobstahMath {
   /**
    * Wraps value to fit within a range.
    * 
-   * @param lowThreshold Lowest acceptable value.
+   * @param lowThreshold  Lowest acceptable value.
    * @param highThreshold Highest acceptable value.
    */
   public static double wrapValue(double value, double lowThreshold, double highThreshold) {
     double range = highThreshold - lowThreshold;
 
-    if(value < lowThreshold) {
-      while(value < lowThreshold) {
+    if (value < lowThreshold) {
+      while (value < lowThreshold) {
         value += range;
       }
     }
-    if(value > highThreshold) {
+    if (value > highThreshold) {
       value %= range;
     }
 
     return value;
+  }
+
+  /**
+   * Unwraps an angle that has been previously wrapped from -pi to pi.
+   * 
+   * @param ref   The reference angle
+   * @param angle The angle to adjust
+   * @return The adjusted angle
+   */
+  public static double unwrapAngle(double ref, double angle) {
+    double diff = angle - ref;
+    if (diff > Math.PI) {
+      return angle - 2.0 * Math.PI;
+    } else if (diff < -Math.PI) {
+      return angle + 2.0 * Math.PI;
+    } else {
+      return angle;
+    }
+  }
+  
+  /**
+   * Obtains a Rotation2d that points in the opposite direction from this
+   * rotation.
+   * 
+   * @return The rotation rotated by 180 degrees.
+   */
+  public static Rotation2d flipRotation(Rotation2d rotation) {
+    return rotation.rotateBy(Rotation2d.fromRadians(Math.PI));
+  }
+
+  /**
+   * Converts a {@link ChassisSpeeds} object to a {@link Twist2d}.
+   * 
+   * @param chassisSpeeds The ChassisSpeeds to convert
+   * @return A Twist2d representing the same vxMetersPerSecond, vyMetersPerSecond,
+   *         and omegaRadiansPerSecond.
+   */
+  public static Twist2d toTwist2d(ChassisSpeeds chassisSpeeds) {
+    return new Twist2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond,
+        chassisSpeeds.omegaRadiansPerSecond);
   }
 
 }
