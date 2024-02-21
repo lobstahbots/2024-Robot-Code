@@ -24,8 +24,8 @@ public class Shooter extends SubsystemBase {
    * @param lowerShooterMotorID The CAN ID of the lower shooter motor
    */
   public Shooter(int upperShooterMotorID, int lowerShooterMotorID) {
-    this.upperShooterMotor = new MonitoredSparkMax(upperShooterMotorID, MotorType.kBrushless);
-    this.lowerShooterMotor = new MonitoredSparkMax(lowerShooterMotorID, MotorType.kBrushless);
+    this.upperShooterMotor = new MonitoredSparkMax(upperShooterMotorID, MotorType.kBrushless, "Upper shooter motor");
+    this.lowerShooterMotor = new MonitoredSparkMax(lowerShooterMotorID, MotorType.kBrushless, "Lower shooter motor");
     this.upperShooterMotor.setInverted(true);
     this.lowerShooterMotor.setInverted(false);
     this.upperShooterMotor.setIdleMode(IdleMode.kBrake);

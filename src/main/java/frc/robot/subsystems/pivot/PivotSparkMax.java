@@ -33,8 +33,8 @@ public class PivotSparkMax implements PivotIO {
    * @param rightMotorID The CAN ID of the right motor.
    */
   public PivotSparkMax(int leftMotorID, int rightMotorID) {
-    this.leftMotor = new MonitoredSparkMax(leftMotorID, MotorType.kBrushless);
-    this.rightMotor = new MonitoredSparkMax(rightMotorID, MotorType.kBrushless);
+    this.leftMotor = new MonitoredSparkMax(leftMotorID, MotorType.kBrushless, "Left pivot motor");
+    this.rightMotor = new MonitoredSparkMax(rightMotorID, MotorType.kBrushless, "Right pivot motor");
     
     this.encoder = leftMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
