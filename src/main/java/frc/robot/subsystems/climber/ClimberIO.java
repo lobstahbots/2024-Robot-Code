@@ -27,4 +27,6 @@ public interface ClimberIO {
     public default void stopClimber() {}
 
     public default void updateInputs(ClimberIOInputs inputs) {}
+
+    public default void periodic() {}
 }

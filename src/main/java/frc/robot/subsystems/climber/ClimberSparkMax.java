@@ -66,4 +66,8 @@ public class ClimberSparkMax implements ClimberIO {
     inputs.rightClimberVoltage = rightClimberMotor.getBusVoltage() * rightClimberMotor.getAppliedOutput(); 
     inputs.rightClimberCurrent = rightClimberMotor.getOutputCurrent();
   }
+
+  public void periodic() {
+    monitor.monitor();
+  }
 }
