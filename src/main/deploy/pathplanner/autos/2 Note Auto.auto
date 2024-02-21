@@ -27,13 +27,13 @@
         {
           "type": "named",
           "data": {
-            "name": "note1pivot"
+            "name": "intake"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "intake"
+            "name": "note1pivot"
           }
         },
         {

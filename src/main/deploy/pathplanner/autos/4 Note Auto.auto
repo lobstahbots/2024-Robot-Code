@@ -27,13 +27,13 @@
         {
           "type": "named",
           "data": {
-            "name": "note1pivot"
+            "name": "intake"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "intake"
+            "name": "note1pivot"
           }
         },
         {
@@ -64,13 +64,13 @@
         {
           "type": "named",
           "data": {
-            "name": "note2pivot"
+            "name": "intake"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "intake"
+            "name": "note2pivot"
           }
         },
         {
@@ -101,13 +101,13 @@
         {
           "type": "named",
           "data": {
-            "name": "note3pivot"
+            "name": "intake"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "intake"
+            "name": "note3pivot"
           }
         },
         {
