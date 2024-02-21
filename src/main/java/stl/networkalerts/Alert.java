@@ -55,7 +55,7 @@ public class Alert {
    * the appropriate entries will be added to NetworkTables.
    *
    * @param text Text to be displayed when the alert is active.
-   * @param type Alert level specifying urgency.
+   * @param type {@link AlertType} specifying urgency.
    */
   public Alert(String text, AlertType type) {
     this("Alerts", text, type);
@@ -67,7 +67,7 @@ public class Alert {
    *
    * @param group Group identifier, also used as NetworkTables title
    * @param text Text to be displayed when the alert is active.
-   * @param type Alert level specifying urgency.
+   * @param type {@link AlertType} specifying urgency.
    */
   public Alert(String group, String text, AlertType type) {
     if (!groups.containsKey(group)) {
@@ -82,7 +82,8 @@ public class Alert {
 
   /**
    * Sets whether the alert should currently be displayed. When activated, the alert text will also
-   * be sent to the console.
+   * be sent to the console or reported as an error/warning to the DriverStation, depending on type.
+   * @param active Boolean specifying whether or not the alert should be active.
    */
   public void set(boolean active) {
     if (active && !this.active) {
@@ -102,7 +103,12 @@ public class Alert {
     this.active = active;
   }
 
-  /** Updates current alert text. */
+  /**
+   * Updates current alert text. If the text is different from the previous text and the alert is
+   * active the alert text will also be sent to the console or reported as an error/warning,
+   * similar to {@link #set set}.
+   * @param text The new text.
+   */
   public void setText(String text) {
     if (active && !text.equals(this.text)) {
       switch (type) {
