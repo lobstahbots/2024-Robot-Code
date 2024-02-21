@@ -123,7 +123,7 @@ public class Alert {
   private static class SendableAlerts implements Sendable {
     public final List<Alert> alerts = new ArrayList<>();
 
-    public String[] getStrings(AlertType type) {
+    public String[] getAlertStrings(AlertType type) {
       Predicate<Alert> activeFilter = (Alert x) -> x.type == type && x.active;
       Comparator<Alert> timeSorter =
           (Alert a1, Alert a2) -> (int) (a2.activeStartTime - a1.activeStartTime);
@@ -137,9 +137,9 @@ public class Alert {
     @Override
     public void initSendable(SendableBuilder builder) {
       builder.setSmartDashboardType("Alerts");
-      builder.addStringArrayProperty("errors", () -> getStrings(AlertType.ERROR), null);
-      builder.addStringArrayProperty("warnings", () -> getStrings(AlertType.WARNING), null);
-      builder.addStringArrayProperty("infos", () -> getStrings(AlertType.INFO), null);
+      builder.addStringArrayProperty("errors", () -> getAlertStrings(AlertType.ERROR), null);
+      builder.addStringArrayProperty("warnings", () -> getAlertStrings(AlertType.WARNING), null);
+      builder.addStringArrayProperty("infos", () -> getAlertStrings(AlertType.INFO), null);
     }
   }
 
