@@ -167,7 +167,7 @@ public class RobotContainer {
         .whileTrue(new TurnToPointCommand(driveBase::getPose, FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(), driveBase));
     slowdownButton.whileTrue(new SwerveDriveCommand(driveBase,
         () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
-        () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
+        () -> -DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
         () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
         () -> DriveConstants.FIELD_CENTRIC));
     shooterButton.whileTrue(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
