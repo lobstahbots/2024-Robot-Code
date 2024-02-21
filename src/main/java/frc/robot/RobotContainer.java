@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.AutoFactory.CharacterizationRoutine;
+import frc.robot.Constants.AlertConstants;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
@@ -37,16 +38,22 @@ import frc.robot.subsystems.pivot.PivotSim;
 import frc.robot.subsystems.pivot.PivotSparkMax;
 import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.subsystems.vision.PhotonVisionReal;
+import stl.networkalerts.Alert;
+import stl.networkalerts.Alert.AlertType;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeSparkMax;
 
 import java.util.List;
 import java.util.Map;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 /**
@@ -89,6 +96,10 @@ public class RobotContainer {
   private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
       () -> Commands.none());
   private final AutoFactory autoFactory;
+
+  private final Alert endgameAlert1 = new Alert(String.format("Endgame started - %d seconds remaining", AlertConstants.ENDGAME_ALERT_1_TIME), AlertType.INFO);
+  private final Alert endgameAlert2 = new Alert(String.format("%d seconds remaining", AlertConstants.ENDGAME_ALERT_2_TIME), AlertType.INFO);
+  private final Alert lowBatteryAlert = new Alert(String.format("Low battery voltage - below %f volts", AlertConstants.LOW_BATTERY_VOLTAGE), AlertType.WARNING);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -179,5 +190,15 @@ public class RobotContainer {
             "Quasistatic Backward", CharacterizationRoutine.QUASISTATIC_BACKWARD, "Dynamic Forward",
             CharacterizationRoutine.DYNAMIC_FORWARD, "Dynamic Backward", CharacterizationRoutine.DYNAMIC_BACKWARD))),
         autoFactory::getCharacterizationRoutine);
+
+    new Trigger(() -> DriverStation.isTeleop() && AlertConstants.ENDGAME_ALERT_2_TIME < DriverStation.getMatchTime() && DriverStation.getMatchTime() < AlertConstants.ENDGAME_ALERT_1_TIME)
+        .onTrue(new InstantCommand(() -> endgameAlert1.set(true)))
+        .onFalse(new InstantCommand(() -> endgameAlert1.set(false)));
+    new Trigger(() -> DriverStation.isTeleop() && 0 < DriverStation.getMatchTime() && DriverStation.getMatchTime() < AlertConstants.ENDGAME_ALERT_2_TIME)
+        .onTrue(new InstantCommand(() -> endgameAlert2.set(true)))
+        .onFalse(new InstantCommand(() -> endgameAlert2.set(false)));
+    new Trigger(() -> RobotController.getBatteryVoltage() < AlertConstants.LOW_BATTERY_VOLTAGE)
+        .onTrue(new InstantCommand(() -> lowBatteryAlert.set(true)))
+        .onFalse(new InstantCommand(() -> lowBatteryAlert.set(false)));
   }
 }
