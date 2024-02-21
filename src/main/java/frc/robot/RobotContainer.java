@@ -100,6 +100,8 @@ public class RobotContainer {
   private final Alert endgameAlert1 = new Alert(String.format("Endgame started - %d seconds remaining", AlertConstants.ENDGAME_ALERT_1_TIME), AlertType.INFO);
   private final Alert endgameAlert2 = new Alert(String.format("%d seconds remaining", AlertConstants.ENDGAME_ALERT_2_TIME), AlertType.INFO);
   private final Alert lowBatteryAlert = new Alert(String.format("Low battery voltage - below %f volts", AlertConstants.LOW_BATTERY_VOLTAGE), AlertType.WARNING);
+  private final Alert driverControllerDisconnectedAlert = new Alert("Driver controller disconnected", AlertType.ERROR);
+  private final Alert operatorControllerDisconnectedAlert =  new Alert("Operator controller disconnected", AlertType.ERROR);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -200,5 +202,11 @@ public class RobotContainer {
     new Trigger(() -> RobotController.getBatteryVoltage() < AlertConstants.LOW_BATTERY_VOLTAGE)
         .onTrue(new InstantCommand(() -> lowBatteryAlert.set(true)))
         .onFalse(new InstantCommand(() -> lowBatteryAlert.set(false)));
+    new Trigger(driverJoystick::isConnected)
+        .onTrue(new InstantCommand(() -> driverControllerDisconnectedAlert.set(false)))
+        .onFalse(new InstantCommand(() -> driverControllerDisconnectedAlert.set(true)));
+    new Trigger(operatorJoystick::isConnected)
+        .onTrue(new InstantCommand(() -> operatorControllerDisconnectedAlert.set(false)))
+        .onFalse(new InstantCommand(() -> operatorControllerDisconnectedAlert.set(true)));
   }
 }
