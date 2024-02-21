@@ -30,7 +30,6 @@ import frc.robot.commands.SpinShooterCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.pivot.Pivot;
-import frc.robot.subsystems.shooter.NoteVisualizer;
 import frc.robot.subsystems.shooter.Shooter;
 import stl.sysId.CharacterizableSubsystem;
 
@@ -156,10 +155,14 @@ public class AutoFactory {
         return new RotatePivotCommand(pivot, value.getRadians()).until(() -> pivot.getPosition().minus(value).getDegrees() < PivotConstants.MAX_PIVOT_ERROR);
     }
 
+    public Command getShootCommand() {
+        return new WaitCommand(ShooterConstants.SHOOT_TIME).deadlineWith(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
+    }
+
     public Command getOneNoteAuto() {
         return getPathFindToPoseCommand(AutoConstants.FIRST_NOTE_SHOOTING_POSITION).get()
             .alongWith(getPivotCommand(AutoConstants.FIRST_NOTE_SHOOTING_ANGLE))
-            .andThen(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
+            .andThen(getShootCommand());
     }
 
     public Command getTwoNoteAuto() {
