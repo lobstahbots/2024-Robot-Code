@@ -20,7 +20,7 @@ public class MonitoredSparkMax extends CANSparkMax implements Monitorable {
    * @param type The motor type connected to the controller. Brushless motor wires must be connected
    *     to their matching colors and the hall sensor must be plugged in. Brushed motors must be
    *     connected to the Red and Black terminals only.
-   * @param label The label associated with this motor, for use in {@link stl.networkalerts.Alert NetworkAlerts}.
+   * @param label The label associated with this motor, for use in {@link frc.robot.networkalerts.Alert NetworkAlerts}.
    */
   public MonitoredSparkMax(int deviceId, MotorType type, String label) {
     super(deviceId, type);

@@ -9,8 +9,8 @@ import java.util.List;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.TempConstants;
-import stl.networkalerts.Alert;
-import stl.networkalerts.Alert.AlertType;
+import frc.robot.networkalerts.Alert;
+import frc.robot.networkalerts.Alert.AlertType;
 
 /**
  * Class to monitor the temperature of some items.
