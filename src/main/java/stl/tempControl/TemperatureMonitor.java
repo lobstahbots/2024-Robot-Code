@@ -4,10 +4,13 @@
 
 package stl.tempControl;
 
+import java.util.HashMap;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.TempConstants;
+import stl.networkalerts.Alert;
+import stl.networkalerts.Alert.AlertType;
 
 /**
  * Class to monitor the temperature of some items.
@@ -29,13 +32,31 @@ public class TemperatureMonitor {
          * @return The temperature.
          */
         public double getMotorTemperature();
+        /**
+         * Gets the label for this.
+         * @return The label.
+         */
+        public String getLabel();
     }
     private double overheatTime = -1;
     private boolean disabled = false;
     private List<Monitorable> motors;
+    private final HashMap<String, Alert> alerts;
 
     public TemperatureMonitor(List<Monitorable> motors) {
         this.motors = motors;
+        alerts = new HashMap<>(motors.size(), 1); // Load factor can be 1 because the size will never change
+        for (var motor: motors) {
+            alerts.put(motor.getLabel(), new Alert(
+                String.format(
+                    "%s has overheated above %d C. It and related motors will be disabled until its temperature drops below %d C.",
+                    motor.getLabel(),
+                    TempConstants.OVERHEAT_TEMP,
+                    TempConstants.SAFE_TEMP
+                ),
+                AlertType.ERROR
+            ));
+        }
     }
 
     public void monitor() {
@@ -43,9 +64,11 @@ public class TemperatureMonitor {
         for (Monitorable motor : motors) {
             double temp = motor.getMotorTemperature();
             if (temp > TempConstants.SAFE_TEMP) safe = false;
+            else alerts.get(motor.getLabel()).set(false);
             if (temp > TempConstants.OVERHEAT_TEMP && overheatTime == -1) overheatTime = Timer.getFPGATimestamp();
             else if (temp > TempConstants.OVERHEAT_TEMP && Timer.getFPGATimestamp() - overheatTime >= 2) {
                 disabled = true;
+                alerts.get(motor.getLabel()).set(true);
             }
             if (disabled) {
                 motor.setDisabled(true);

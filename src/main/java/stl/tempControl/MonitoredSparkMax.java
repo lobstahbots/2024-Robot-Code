@@ -10,9 +10,26 @@ import stl.tempControl.TemperatureMonitor.Monitorable;
 
 /** A temperature-monitored SPARK MAX motor controller. */
 public class MonitoredSparkMax extends CANSparkMax implements Monitorable {
-    private boolean disabled = false;
-    /**
+  private boolean disabled = false;
+  private final String label;
+  
+  /**
    * Create a new object to control a SPARK MAX motor Controller
+   *
+   * @param deviceId The device ID.
+   * @param type The motor type connected to the controller. Brushless motor wires must be connected
+   *     to their matching colors and the hall sensor must be plugged in. Brushed motors must be
+   *     connected to the Red and Black terminals only.
+   * @param label The label associated with this motor, for use in {@link stl.networkalerts.Alert NetworkAlerts}.
+   */
+  public MonitoredSparkMax(int deviceId, MotorType type, String label) {
+    super(deviceId, type);
+    this.label = label;
+  }
+
+  /**
+   * Create a new object to control a SPARK MAX motor Controller with default label "Motor deviceId",
+   * where deviceId is the device ID.
    *
    * @param deviceId The device ID.
    * @param type The motor type connected to the controller. Brushless motor wires must be connected
@@ -20,7 +37,7 @@ public class MonitoredSparkMax extends CANSparkMax implements Monitorable {
    *     connected to the Red and Black terminals only.
    */
   public MonitoredSparkMax(int deviceId, MotorType type) {
-    super(deviceId, type);
+    this(deviceId, type, String.format("Motor %d", deviceId));
   }
 
   public void setDisabled(boolean disable) {
@@ -38,5 +55,9 @@ public class MonitoredSparkMax extends CANSparkMax implements Monitorable {
 
   public void setVoltage(double outputVolts) {
     if (!disabled) super.setVoltage(outputVolts);
+  }
+
+  public String getLabel() {
+    return label;
   }
 }
