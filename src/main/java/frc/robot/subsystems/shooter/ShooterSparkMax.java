@@ -5,8 +5,8 @@
 package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import stl.motorcontrol.MonitoredSparkMax;
-import stl.motorcontrol.TemperatureMonitor;
+import stl.tempControl.MonitoredSparkMax;
+import stl.tempControl.TemperatureMonitor;
 
 import java.util.Arrays;
 
