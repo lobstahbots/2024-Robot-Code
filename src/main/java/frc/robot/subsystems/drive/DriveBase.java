@@ -25,30 +25,34 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotConstants;
+import frc.robot.Constants.SimConstants;
+import frc.robot.subsystems.shooter.NoteVisualizer;
 import frc.robot.subsystems.vision.PhotonVision;
+import stl.sysId.CharacterizableSubsystem;
 
-public class DriveBase extends SubsystemBase {
+public class DriveBase extends CharacterizableSubsystem {
   /** Creates a new SwerveDriveBase. */
   private final SwerveModule[] modules; 
 
   private SwerveDrivePoseEstimator swerveOdometry;
-  private final GyroIO gyro;
-  private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
-  private boolean isOpenLoop;
-  private Rotation2d simRotation = new Rotation2d();
-  private final PhotonVision photonVision;
-
-  private SwerveModuleState[] setpointStates =
+  private SwerveSetpointGenerator setpointGenerator;
+  private SwerveSetpoint swerveSetpoint =
+  new SwerveSetpoint(
+      new ChassisSpeeds(),
       new SwerveModuleState[] {
         new SwerveModuleState(),
         new SwerveModuleState(),
         new SwerveModuleState(),
         new SwerveModuleState()
-      };
+      });
+  private final GyroIO gyro;
+  private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
+  private boolean isOpenLoop;
+  private Rotation2d simRotation = new Rotation2d();
+  private final PhotonVision photonVision;
 
   private Field2d field;
 
@@ -61,7 +65,8 @@ public class DriveBase extends SubsystemBase {
     gyro.zeroGyro();
     this.photonVision = photonVision;
     swerveOdometry = new SwerveDrivePoseEstimator(DriveConstants.KINEMATICS, gyroInputs.yawPosition, getPositions(), new Pose2d());
-
+    setpointGenerator = new SwerveSetpointGenerator(DriveConstants.KINEMATICS, DriveConstants.MODULE_LOCATIONS);
+    
     field = new Field2d();
     SmartDashboard.putData("Field", field);
 
@@ -73,8 +78,8 @@ public class DriveBase extends SubsystemBase {
         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(0.3, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(0.3, 0.0, 0.0), // Rotation PID constants
+            new PIDConstants(1, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(1, 0.0, 0.0), // Rotation PID constants
             4.5, // Max module speed, in m/s
             0.4, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -82,6 +87,8 @@ public class DriveBase extends SubsystemBase {
         () -> {return DriverStation.getAlliance().get() ==  DriverStation.Alliance.Red;},
       this 
     );
+
+    NoteVisualizer.setRobotPoseSupplier(this::getPose);
   }
 
   /**Resets pose of odometry to a given pose.
@@ -139,21 +146,10 @@ public class DriveBase extends SubsystemBase {
  */
 public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
   ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
-  SwerveModuleState[] newStates = DriveConstants.KINEMATICS.toSwerveModuleStates(discreteSpeeds);
-  SwerveDriveKinematics.desaturateWheelSpeeds(newStates, DriveConstants.MAX_DRIVE_SPEED);
-  setModuleStates(newStates);
-}
-
-/**
- * Drives the robot field-relative according to provided {@link ChassisSpeeds}.
- * 
- * @param chassisSpeeds The desired ChassisSpeeds. Should be robot relative.
- */
-public void driveFieldRelative(ChassisSpeeds chassisSpeeds) {
-  ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
-  SwerveModuleState[] newStates = DriveConstants.KINEMATICS.toSwerveModuleStates(getFieldRelativeChassisSpeeds(discreteSpeeds));
-  SwerveDriveKinematics.desaturateWheelSpeeds(newStates, DriveConstants.MAX_DRIVE_SPEED);
-  setModuleStates(newStates);
+  Logger.recordOutput("Unoptimized:", DriveConstants.KINEMATICS.toSwerveModuleStates(discreteSpeeds));
+  swerveSetpoint = setpointGenerator.generateSetpoint(DriveConstants.MODULE_LIMITS, swerveSetpoint, discreteSpeeds, SimConstants.LOOP_TIME);
+  SwerveDriveKinematics.desaturateWheelSpeeds(swerveSetpoint.moduleStates, DriveConstants.MAX_DRIVE_SPEED);
+  setModuleStates(swerveSetpoint.moduleStates);
 }
 
 /**Sets desired SwerveModuleStates. Optimizes states.
@@ -163,12 +159,13 @@ public void driveFieldRelative(ChassisSpeeds chassisSpeeds) {
  */
 public SwerveModuleState[] setModuleStates(SwerveModuleState[] desiredStates) {
   SwerveModuleState[] optimizedStates = new SwerveModuleState[4];
-  SwerveDriveKinematics.desaturateWheelSpeeds(
-      desiredStates, DriveConstants.MAX_DRIVE_SPEED);
+  // SwerveDriveKinematics.desaturateWheelSpeeds(
+  //     desiredStates, DriveConstants.MAX_DRIVE_SPEED);
   for(SwerveModule module: modules) {
     optimizedStates[module.getModuleID()] = module.setDesiredState(desiredStates[module.getModuleID()], isOpenLoop);
-    setpointStates = optimizedStates;
   }
+  swerveSetpoint.moduleStates = optimizedStates;
+  Logger.recordOutput("states", swerveSetpoint.moduleStates);
   return optimizedStates;
 }
 
@@ -232,6 +229,14 @@ public Rotation2d getGyroAngle() {
   return gyroInputs.yawPosition;
 }
 
+@Override
+/**Runs motors during characterization voltage ramp routines.*/
+public void runVolts(double volts) {
+  for(SwerveModule module: modules) {
+    module.runVolts(volts);
+  }
+}
+
   @Override
   public void periodic() {
     if(Robot.isSimulation()) {
@@ -249,11 +254,12 @@ public Rotation2d getGyroAngle() {
     Logger.recordOutput("Odometry", getPose());
      gyro.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
+    SmartDashboard.putBoolean("Field Centric", DriveConstants.FIELD_CENTRIC);
     for (var module : modules) {
       module.periodic();
     }
- //   // Clear setpoint logs
-       Logger.recordOutput("SwerveStates/Desired", new double[] {});
+  // Clear setpoint logs
+    Logger.recordOutput("SwerveStates/Desired", new double[] {});
     if (DriverStation.isDisabled()) {
       // Stop moving while disabled
       for (var module : modules) {
@@ -263,7 +269,8 @@ public Rotation2d getGyroAngle() {
 
     else {
     Logger.recordOutput("SwerveStates/Measured", getStates());
-    Logger.recordOutput("SwerveStates/Desired", setpointStates);
+    Logger.recordOutput("SwerveStates/Desired", swerveSetpoint.moduleStates);
+    Logger.recordOutput("SwerveStates/SetpointSpeeds", swerveSetpoint.chassisSpeeds);
     Logger.recordOutput("Odometry/Robot", getPose());
     
     //Log 3D odometry pose

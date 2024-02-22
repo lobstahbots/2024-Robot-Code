@@ -18,8 +18,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.PivotConstants;
-import stl.motorcontrol.MonitoredSparkMax;
-import stl.motorcontrol.TemperatureMonitor;
+import stl.tempControl.MonitoredSparkMax;
+import stl.tempControl.TemperatureMonitor;
 
 public class PivotSparkMax implements PivotIO {
   private final MonitoredSparkMax leftMotor;

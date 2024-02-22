@@ -20,8 +20,8 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.SwerveConstants;
 import stl.math.LobstahMath;
-import stl.motorcontrol.MonitoredSparkMax;
-import stl.motorcontrol.TemperatureMonitor;
+import stl.tempControl.MonitoredSparkMax;
+import stl.tempControl.TemperatureMonitor;
 
 public class SwerveModuleReal implements SwerveModuleIO {
   private final MonitoredSparkMax angleMotor;

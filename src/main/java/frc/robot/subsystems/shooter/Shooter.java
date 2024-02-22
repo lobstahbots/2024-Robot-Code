@@ -5,6 +5,13 @@
 package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import stl.tempControl.MonitoredSparkMax;
+import stl.tempControl.TemperatureMonitor;
+
+import java.util.Arrays;
+
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */

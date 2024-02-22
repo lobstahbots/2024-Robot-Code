@@ -2,11 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package stl.motorcontrol;
+package stl.tempControl;
 
 import com.revrobotics.CANSparkMax;
 
-import stl.motorcontrol.TemperatureMonitor.Monitorable;
+import stl.tempControl.TemperatureMonitor.Monitorable;
 
 /** A temperature-monitored SPARK MAX motor controller. */
 public class MonitoredSparkMax extends CANSparkMax implements Monitorable {

@@ -11,10 +11,10 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PivotConstants;
+import stl.sysId.CharacterizableSubsystem;
 
-public class Pivot extends SubsystemBase {
+public class Pivot extends CharacterizableSubsystem {
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
   private PivotIO io;
   private final ArmFeedforward feedforward = new ArmFeedforward(
@@ -57,9 +57,17 @@ public class Pivot extends SubsystemBase {
     controller.reset(inputs.position.getRadians());
   }
 
+  /** Gets pivot rotation. */
   public Rotation2d getPosition() {
     return inputs.position;
   }
+
+  @Override
+  /**Runs pivot motors during characterization voltage ramp routines.*/
+  public void runVolts(double volts) {
+    io.setVoltage(volts);
+  }
+
 
   @Override
   public void periodic() {

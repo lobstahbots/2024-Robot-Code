@@ -14,7 +14,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SwerveConstants;
 
@@ -42,6 +41,14 @@ public class SwerveModule {
     this.angleController = new PIDController(SwerveConstants.TURN_PID_P, SwerveConstants.TURN_PID_I,
         SwerveConstants.TURN_PID_D);
     angleController.enableContinuousInput(SwerveConstants.TURN_PID_MIN_INPUT, SwerveConstants.TURN_PID_MAX_INPUT);
+  }
+
+  /** Sets voltage of drive motor and holds angle at 0 for use during characterization ramp routines. 
+   * @param voltage The voltage to set the drive motor to.
+  */
+  public void runVolts(double voltage) {
+    io.setDriveVoltage(voltage);
+    io.setTurnVoltage(angleController.calculate(getAngle().getRadians(), 0));
   }
 
   /**Sets the voltages of both motors to 0 */
@@ -102,7 +109,6 @@ public class SwerveModule {
 
   /** Returns the current drive position of the module in meters. */
   public double getPositionMeters() {
-    SmartDashboard.putNumber("pos" + moduleID, inputs.drivePosition.getRadians());
     return inputs.drivePosition.getRadians() * RobotConstants.WHEEL_DIAMETER / 2;
   }
 
