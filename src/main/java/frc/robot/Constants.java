@@ -174,6 +174,7 @@ public final class Constants {
   
   public static class SimConstants {
     public static final double LOOP_TIME = 0.02;
+    public static final boolean REPLAY = false;
   }
 
   public static class PivotConstants {
