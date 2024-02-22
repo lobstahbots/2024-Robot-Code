@@ -4,21 +4,39 @@
 
 package frc.robot.subsystems.shooter;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import stl.tempControl.MonitoredSparkMax;
-import stl.tempControl.TemperatureMonitor;
 
-import java.util.Arrays;
-
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
-  public Shooter() {}
+    /** Creates a new Intake.
+   * @param io The {@link ShooterIO} used to construct the Intake.
+   */
+    private ShooterIO io;
+    private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
+  public Shooter(ShooterIO io) {
+    this.io = io;
+
+  }
+  /**
+   * Sets the intake motor speed to the given speed
+   * @param shooterMotorSpeed
+   */
+  public void setShooterSpeed(double upperShooterMotorSpeed, double lowerShooterMotorSpeed) {
+    io.setShooterMotorSpeed(upperShooterMotorSpeed, lowerShooterMotorSpeed);
+  }
+  
+  /** Stops the intake motor. */
+  public void stopMotor() {
+    io.stopShooterMotor();
+  }
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    io.updateInputs(inputs);
+    Logger.processInputs("Shooter", inputs);
+    io.periodic();
   }
 }

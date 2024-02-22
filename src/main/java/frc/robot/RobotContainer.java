@@ -69,7 +69,7 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick = new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
-
+  private final Shooter shooter = new Shooter(new ShooterSparkMax(ShooterConstants.UPPER_SHOOTER_ID, ShooterConstants.LOWER_SHOOTER_ID));
   private final JoystickButton alignToAmpButton = new JoystickButton(driverJoystick,
       IOConstants.ALIGN_TO_AMP_BUTTON_ID);
   private final JoystickButton alignToSourceButton = new JoystickButton(driverJoystick,

@@ -4,16 +4,16 @@
 
 package frc.robot.subsystems.shooter;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import stl.tempControl.MonitoredSparkMax;
-import stl.tempControl.TemperatureMonitor;
-
 import java.util.Arrays;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-public class ShooterSparkMax extends SubsystemBase {
+
+import stl.tempControl.MonitoredSparkMax;
+import stl.tempControl.TemperatureMonitor;
+
+public class ShooterSparkMax implements ShooterIO {
   private final MonitoredSparkMax upperShooterMotor;
   private final MonitoredSparkMax lowerShooterMotor;
   private final TemperatureMonitor monitor;
@@ -37,8 +37,10 @@ public class ShooterSparkMax extends SubsystemBase {
   }
 
   /**
-   * Spins theS shooter motors at the given speed.
-   * @param shooterSpeed The speed to set the shooter to.
+   * Spins the shooter motors at the given speeds.
+   * @param upperShooterSpeed the speed to set the upper shooter to
+   * @param lowerShooterSpeed the speed to set the lower shooter to
+   
    */
   public void setShooterSpeed(double upperShooterSpeed, double lowerShooterSpeed) {
     upperShooterMotor.set(upperShooterSpeed);
@@ -52,7 +54,16 @@ public class ShooterSparkMax extends SubsystemBase {
     upperShooterMotor.stopMotor();
     lowerShooterMotor.stopMotor();
   }
-
+  public void updateInputs(ShooterIOInputs inputs) {
+      inputs.upperShooterMotorVoltage = upperShooterMotor.getBusVoltage() * upperShooterMotor.getAppliedOutput();
+      inputs.upperShooterMotorTemperature = upperShooterMotor.getMotorTemperature();
+      inputs.upperShooterMotorCurrent = upperShooterMotor.getOutputCurrent();
+      inputs.upperShooterMotorCurrent = upperShooterMotor.getEncoder().getVelocity();
+      inputs.lowerShooterMotorVoltage = lowerShooterMotor.getBusVoltage() * lowerShooterMotor.getAppliedOutput();
+      inputs.lowerShooterMotorTemperature = lowerShooterMotor.getMotorTemperature();
+      inputs.lowerShooterMotorCurrent = lowerShooterMotor.getOutputCurrent();
+      inputs.lowerShooterMotorCurrent = lowerShooterMotor.getEncoder().getVelocity();
+    }
   public void periodic() {
     monitor.monitor();
   }

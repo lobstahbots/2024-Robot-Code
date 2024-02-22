@@ -16,11 +16,10 @@ public interface ShooterIO {
     }
     /** Sets the shooter motor speed.  
      * 
-     * @param shooterMotorSpeed The speed to set the shooter to.
+     * @param upperShooterMotorSpeed The speed to set the upper shooter to.
+     * @param lowerShooterMotorSpeed The speed to set the lower shooter to.
      */
-    public default void setUpperShooterMotorSpeed(double shooterMotorSpeed) {}
-
-    public default void setLowerShooterMotorSpeed(double shooterMotorSpeed) {}
+    public default void setShooterMotorSpeed(double upperShooterMotorSpeed, double lowerShooterMotorSpeed) {}
     
     public default void stopShooterMotor() {}
     

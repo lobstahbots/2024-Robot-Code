@@ -5,12 +5,12 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.shooter.ShooterSparkMax;
+import frc.robot.subsystems.shooter.Shooter;
 
 public class StopShooterCommand extends Command {
-  private final ShooterSparkMax shooter;
+  private final Shooter shooter;
   
-  public StopShooterCommand(ShooterSparkMax shooter) {
+  public StopShooterCommand(Shooter shooter) {
     this.shooter = shooter;
     addRequirements(shooter);
   }
