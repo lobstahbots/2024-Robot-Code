@@ -33,6 +33,7 @@ import frc.robot.subsystems.drive.NavXGyro;
 import frc.robot.subsystems.drive.SwerveModuleReal;
 import frc.robot.subsystems.drive.SwerveModuleSim;
 import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.pivot.PivotKinematics;
 import frc.robot.subsystems.pivot.PivotSim;
 import frc.robot.subsystems.pivot.PivotSparkMax;
 import frc.robot.subsystems.vision.PhotonVision;
@@ -124,6 +125,8 @@ public class RobotContainer {
 
     this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, autoChooser::getResponses);
 
+    PivotKinematics.setAngles();
+
     setTeleopDefaultCommands();
     
     smartDashSetup();
@@ -136,6 +139,7 @@ public class RobotContainer {
             () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
             () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
             () -> DriveConstants.FIELD_CENTRIC));
+    pivot.setDefaultCommand(new RotatePivotCommand(pivot, PivotKinematics.getShotAngle(() -> FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(), driveBase::getPose)));
   }
 
   /**
