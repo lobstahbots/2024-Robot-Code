@@ -36,7 +36,7 @@ import frc.robot.subsystems.intake.IntakeSparkMax;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotSim;
 import frc.robot.subsystems.pivot.PivotSparkMax;
-import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterSparkMax;
 import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.subsystems.vision.PhotonVisionReal;
 import java.util.function.Function;
@@ -60,7 +60,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveBase driveBase;
-  private final Shooter shooter = new Shooter(ShooterConstants.UPPER_SHOOTER_ID, ShooterConstants.LOWER_SHOOTER_ID);
+  private final ShooterSparkMax shooter = new ShooterSparkMax(ShooterConstants.UPPER_SHOOTER_ID, ShooterConstants.LOWER_SHOOTER_ID);
   private final Climber climber = new Climber(
       new ClimberSparkMax(ClimberConstants.LEFT_CLIMBER_ID, ClimberConstants.RIGHT_CLIMBER_ID));
   private final Intake intake = new Intake(new IntakeSparkMax(IntakeConstants.INTAKE_MOTOR_ID));
