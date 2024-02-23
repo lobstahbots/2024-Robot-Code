@@ -58,11 +58,11 @@ public class ShooterSparkMax implements ShooterIO {
       inputs.upperShooterMotorVoltage = upperShooterMotor.getBusVoltage() * upperShooterMotor.getAppliedOutput();
       inputs.upperShooterMotorTemperature = upperShooterMotor.getMotorTemperature();
       inputs.upperShooterMotorCurrent = upperShooterMotor.getOutputCurrent();
-      inputs.upperShooterMotorCurrent = upperShooterMotor.getEncoder().getVelocity();
+      inputs.upperShooterMotorVelocity = upperShooterMotor.getEncoder().getVelocity();
       inputs.lowerShooterMotorVoltage = lowerShooterMotor.getBusVoltage() * lowerShooterMotor.getAppliedOutput();
       inputs.lowerShooterMotorTemperature = lowerShooterMotor.getMotorTemperature();
       inputs.lowerShooterMotorCurrent = lowerShooterMotor.getOutputCurrent();
-      inputs.lowerShooterMotorCurrent = lowerShooterMotor.getEncoder().getVelocity();
+      inputs.lowerShooterMotorVelocity = lowerShooterMotor.getEncoder().getVelocity();
     }
   public void periodic() {
     monitor.monitor();
