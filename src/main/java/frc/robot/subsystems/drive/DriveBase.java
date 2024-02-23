@@ -8,10 +8,6 @@ import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -19,8 +15,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.geometry.Twist3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -34,7 +28,6 @@ import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
-import frc.robot.subsystems.shooter.NoteVisualizer;
 import frc.robot.subsystems.vision.PhotonVision;
 import stl.sysId.CharacterizableSubsystem;
 
@@ -132,8 +125,7 @@ public class DriveBase extends CharacterizableSubsystem {
    * @return The robot-relative {@link ChassisSpeeds}.
    */
   public ChassisSpeeds getRobotRelativeSpeeds() {
-    return ChassisSpeeds.fromFieldRelativeSpeeds(DriveConstants.KINEMATICS.toChassisSpeeds(getStates()),
-        gyroInputs.yawPosition);
+    return DriveConstants.KINEMATICS.toChassisSpeeds(getStates());
   }
 
   /**
