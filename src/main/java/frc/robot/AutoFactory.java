@@ -48,17 +48,17 @@ public class AutoFactory {
         this.shooter = shooter;
         this.pivot = pivot;
 
-          AutoBuilder.configureHolonomic(
+        AutoBuilder.configureHolonomic(
         driveBase::getPose, // Robot pose supplier
         driveBase::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
         driveBase::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         driveBase::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(1, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(1, 0.0, 0.0), // Rotation PID constants
+            new PIDConstants(5, 0.0, 0.5), // Translation PID constants
+            new PIDConstants(5, 0.0, 0.5), // Rotation PID constants
             4.5, // Max module speed, in m/s
             0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-            new ReplanningConfig() // Default path replanning config. See the API for the options here
+            new ReplanningConfig(true, true) // Default path replanning config. See the API for the options here
         ),
         () -> {
           return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
@@ -110,7 +110,7 @@ public class AutoFactory {
      *                 as CHOREO.
      * @return The constructed path following command
      */
-    public Command getPathFindToPathCommand(String pathname, PathType pathType) {
+    public Supplier<Command> getPathFindToPathCommand(String pathname, PathType pathType) {
         PathPlannerPath path;
         switch (pathType) {
             case CHOREO:
@@ -124,7 +124,7 @@ public class AutoFactory {
         }
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
+        Supplier<Command> pathfindingCommand = () -> AutoBuilder.pathfindThenFollowPath(
                 path,
                 PathConstants.CONSTRAINTS,
                 3.0 // Rotation delay distance in meters. This is how far the robot should travel
