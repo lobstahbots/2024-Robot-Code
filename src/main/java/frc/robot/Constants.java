@@ -241,4 +241,10 @@ public final class Constants {
     public static final Pose2d[] BLUE_WING_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(2.884, 4.109, new Rotation2d()), new Pose2d(2.884, 5.557, new Rotation2d()), new Pose2d(2.884, 7.004, new Rotation2d())};
     public static final Pose2d BLUE_ALLIANCE_LOADING_STATION_POSE = new Pose2d(15, 1, new Rotation2d());
   }
+
+  public static class AlertConstants {
+    public static final double LOW_BATTERY_VOLTAGE = 11.5;
+    public static final int ENDGAME_ALERT_1_TIME = 45;
+    public static final int ENDGAME_ALERT_2_TIME = 30;
+  }
 }

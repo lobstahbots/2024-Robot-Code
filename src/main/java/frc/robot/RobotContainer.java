@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.AutoFactory.CharacterizationRoutine;
+import frc.robot.Constants.AlertConstants;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
@@ -18,6 +19,8 @@ import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.TurnToPointCommand;
+import frc.robot.networkalerts.Alert;
+import frc.robot.networkalerts.Alert.AlertType;
 import frc.robot.auto.AutonSelector;
 import frc.robot.auto.AutonSelector.AutoQuestion;
 import frc.robot.commands.MoveClimberCommand;
@@ -43,10 +46,14 @@ import frc.robot.subsystems.intake.IntakeSparkMax;
 
 import java.util.List;
 import java.util.Map;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 /**
@@ -89,6 +96,12 @@ public class RobotContainer {
   private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
       () -> Commands.none());
   private final AutoFactory autoFactory;
+
+  private final Alert endgameAlert1 = new Alert(String.format("Endgame started - %d seconds remaining", AlertConstants.ENDGAME_ALERT_1_TIME), AlertType.INFO);
+  private final Alert endgameAlert2 = new Alert(String.format("%d seconds remaining", AlertConstants.ENDGAME_ALERT_2_TIME), AlertType.INFO);
+  private final Alert lowBatteryAlert = new Alert(String.format("Low battery voltage - below %f volts", AlertConstants.LOW_BATTERY_VOLTAGE), AlertType.WARNING);
+  private final Alert driverControllerDisconnectedAlert = new Alert("Driver controller disconnected", AlertType.ERROR);
+  private final Alert operatorControllerDisconnectedAlert =  new Alert("Operator controller disconnected", AlertType.ERROR);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -156,7 +169,7 @@ public class RobotContainer {
         .whileTrue(new TurnToPointCommand(driveBase::getPose, FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(), driveBase));
     slowdownButton.whileTrue(new SwerveDriveCommand(driveBase,
         () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
-        () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
+        () -> -DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
         () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
         () -> DriveConstants.FIELD_CENTRIC));
     shooterButton.whileTrue(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
@@ -179,5 +192,21 @@ public class RobotContainer {
             "Quasistatic Backward", CharacterizationRoutine.QUASISTATIC_BACKWARD, "Dynamic Forward",
             CharacterizationRoutine.DYNAMIC_FORWARD, "Dynamic Backward", CharacterizationRoutine.DYNAMIC_BACKWARD))),
         autoFactory::getCharacterizationRoutine);
+
+    new Trigger(() -> DriverStation.isTeleop() && AlertConstants.ENDGAME_ALERT_2_TIME < DriverStation.getMatchTime() && DriverStation.getMatchTime() < AlertConstants.ENDGAME_ALERT_1_TIME)
+        .onTrue(new InstantCommand(() -> endgameAlert1.set(true)))
+        .onFalse(new InstantCommand(() -> endgameAlert1.set(false)));
+    new Trigger(() -> DriverStation.isTeleop() && 0 < DriverStation.getMatchTime() && DriverStation.getMatchTime() < AlertConstants.ENDGAME_ALERT_2_TIME)
+        .onTrue(new InstantCommand(() -> endgameAlert2.set(true)))
+        .onFalse(new InstantCommand(() -> endgameAlert2.set(false)));
+    new Trigger(() -> RobotController.getBatteryVoltage() < AlertConstants.LOW_BATTERY_VOLTAGE)
+        .onTrue(new InstantCommand(() -> lowBatteryAlert.set(true)))
+        .onFalse(new InstantCommand(() -> lowBatteryAlert.set(false)));
+    new Trigger(driverJoystick::isConnected)
+        .onTrue(new InstantCommand(() -> driverControllerDisconnectedAlert.set(false)))
+        .onFalse(new InstantCommand(() -> driverControllerDisconnectedAlert.set(true)));
+    new Trigger(operatorJoystick::isConnected)
+        .onTrue(new InstantCommand(() -> operatorControllerDisconnectedAlert.set(false)))
+        .onFalse(new InstantCommand(() -> operatorControllerDisconnectedAlert.set(true)));
   }
 }
