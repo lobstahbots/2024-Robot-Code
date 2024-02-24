@@ -10,8 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class Shooter extends SubsystemBase {
-  /** Creates a new Shooter. */
-    /** Creates a new Intake.
+  /** Creates a new Shooter.
    * @param io The {@link ShooterIO} used to construct the Intake.
    */
     private ShooterIO io;
