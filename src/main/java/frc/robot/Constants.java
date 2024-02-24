@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.drive.SwerveKinematicLimits;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -79,8 +80,8 @@ public final class Constants {
   }
   
   public static class RobotConstants {
-    public static final double WHEELBASE = Units.inchesToMeters(20);
-    public static final double TRACK_WIDTH = Units.inchesToMeters(20);
+    public static final double WHEELBASE = Units.inchesToMeters(28);
+    public static final double TRACK_WIDTH = Units.inchesToMeters(28);
     public static final double RADIUS = Units.inchesToMeters(new Translation2d(20, 20).getNorm());
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(3);
     public static final double DRIVE_GEAR_RATIO = 4.71;
@@ -96,11 +97,16 @@ public final class Constants {
     public static final double SLOWDOWN_PERCENT = 0.5;
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
     public static final int ANGLE_MOTOR_CURRENT_LIMIT = 40;
-    public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
+    public static final Translation2d[] MODULE_LOCATIONS = new Translation2d[]{
       new Translation2d(RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(-RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
-      new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0));
+      new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0)
+    };
+    public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
+      MODULE_LOCATIONS[0], MODULE_LOCATIONS[1], MODULE_LOCATIONS[2], MODULE_LOCATIONS[3]
+    );
+    public static final SwerveKinematicLimits MODULE_LIMITS = new SwerveKinematicLimits(MAX_DRIVE_SPEED, MAX_ACCELERATION, MAX_ANGULAR_SPEED);
 
     public static boolean FIELD_CENTRIC = true;
     public static final boolean IS_OPEN_LOOP = false;
@@ -172,6 +178,8 @@ public final class Constants {
     public static final double TURN_PID_I = 0;
     public static final double TURN_PID_D = 0;
     public static final double TURN_PID_FF = 0;
+
+    public static final double AIM_VELOCITY_COMPENSATION_DEADBAND = 0.3;
   }
   
   public static class IntakeConstants {
@@ -188,6 +196,7 @@ public final class Constants {
   
   public static class SimConstants {
     public static final double LOOP_TIME = 0.02;
+    public static final boolean REPLAY = false;
   }
 
   public static class PivotConstants {
@@ -210,17 +219,18 @@ public final class Constants {
 
     public static final double PIVOT_SIM_ROTATION_POINT_DISTANCE_INCHES = 5;
     public static final double ORIGIN_TO_TOWER_MOUNT_X_DIST = Units.inchesToMeters(16.5);
-    public static final double ORIGIN_TO_ARM_MOUNT_X_DIST = Units.inchesToMeters(7);
+    public static final double ORIGIN_TO_ARM_MOUNT_X_DIST = Units.inchesToMeters(13.5);
     public static final double ORIGIN_TO_TOWER_MOUNT_Y_DIST = Units.inchesToMeters(8.65);
-    public static final double ORIGIN_TO_ARM_MOUNT_Y_DIST = Units.inchesToMeters(0);
-    public static final double ORIGIN_TO_ARM_MOUNT_Z_DIST = Units.inchesToMeters(14);
+    public static final double ORIGIN_TO_ARM_MOUNT_Z_OFFSET_DIST = Units.inchesToMeters(-2);
+    public static final double ORIGIN_TO_ARM_MOUNT_Z_DIST = Units.inchesToMeters(12);
+    public static final double ORIGIN_TO_ARM_MOUNT_Y_DIST = Units.inchesToMeters(6);
     public static final double ORIGIN_TO_TOWER_MOUNT_Z_DIST = Units.inchesToMeters(3.375);
     public static final Rotation3d TOWER_ROTATION = new Rotation3d(Units.degreesToRadians(90), 0, Units.degreesToRadians(90));
-    public static final double ARM_INITIAL_ROLL = Units.degreesToRadians(-45);
+    public static final double ARM_INITIAL_ROLL = Units.degreesToRadians(-10);
     public static final double ARM_YAW = Units.degreesToRadians(90);
     public static final double ARM_PITCH = Units.degreesToRadians(0);
-    public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(-55);
-    public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(-33);
+    public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(19);
+    public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(90);
     public static final double PIVOT_RESTING_ANGLE = Units.degreesToRadians(20);
 
     public static final int LEFT_MOTOR_ID = 25;
@@ -256,5 +266,11 @@ public final class Constants {
     public static final Pose2d[] MIDLINE_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(8.258, 7.462, new Rotation2d()), new Pose2d(8.258, 5.785, new Rotation2d()), new Pose2d(8.258, 4.109, new Rotation2d()), new Pose2d(8.258, 2.432, new Rotation2d()), new Pose2d(8.258, 0.756, new Rotation2d())};
     public static final Pose2d[] BLUE_WING_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(2.884, 4.109, new Rotation2d()), new Pose2d(2.884, 5.557, new Rotation2d()), new Pose2d(2.884, 7.004, new Rotation2d())};
     public static final Pose2d BLUE_ALLIANCE_LOADING_STATION_POSE = new Pose2d(15, 1, new Rotation2d());
+  }
+
+  public static class AlertConstants {
+    public static final double LOW_BATTERY_VOLTAGE = 11.5;
+    public static final int ENDGAME_ALERT_1_TIME = 45;
+    public static final int ENDGAME_ALERT_2_TIME = 30;
   }
 }

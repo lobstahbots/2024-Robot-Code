@@ -7,6 +7,7 @@ package frc.robot;
 
 import java.io.File;
 
+import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -18,6 +19,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.SimConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -44,20 +46,22 @@ public class Robot extends LoggedRobot {
     Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
     Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
     Logger.recordMetadata("Lobstah Bots", "2024 Robot Code");
+
+    File log = new File (Filesystem.getOperatingDirectory(), "log");
+    String logPath = log.getAbsolutePath();
+
     if (Robot.isReal()) {
-      File log = new File (Filesystem.getOperatingDirectory(), "log");
-      String logPath = log.getAbsolutePath();
-      System.out.println(logPath);
-      Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
       Logger.addDataReceiver(new WPILOGWriter(logPath)); // Save outputs to a new log
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
   } else {
+    if(SimConstants.REPLAY) {
+      String replayPath = logPath + "\\Log_24-02-22_02-19-32.wpilog";
+      Logger.setReplaySource(new WPILOGReader(replayPath));
+      Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(replayPath, "_replay")));
+    } else {
       setUseTiming(false); // Run as fast as possible
-      File log = new File (Filesystem.getOperatingDirectory(), "log");
-      String logPath = log.getAbsolutePath();
-      // System.out.println(logPath);
-      // logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
       Logger.addDataReceiver(new WPILOGWriter(logPath, 0.02)); // Save outputs to a new log
+    }
   }
   
   // Logger.getInstance().disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
