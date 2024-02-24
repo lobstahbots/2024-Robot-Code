@@ -174,6 +174,7 @@ public final class Constants {
   
   public static class SimConstants {
     public static final double LOOP_TIME = 0.02;
+    public static final boolean REPLAY = false;
   }
 
   public static class PivotConstants {
@@ -196,17 +197,18 @@ public final class Constants {
 
     public static final double PIVOT_SIM_ROTATION_POINT_DISTANCE_INCHES = 5;
     public static final double ORIGIN_TO_TOWER_MOUNT_X_DIST = Units.inchesToMeters(16.5);
-    public static final double ORIGIN_TO_ARM_MOUNT_X_DIST = Units.inchesToMeters(7);
+    public static final double ORIGIN_TO_ARM_MOUNT_X_DIST = Units.inchesToMeters(13.5);
     public static final double ORIGIN_TO_TOWER_MOUNT_Y_DIST = Units.inchesToMeters(8.65);
-    public static final double ORIGIN_TO_ARM_MOUNT_Y_DIST = Units.inchesToMeters(0);
-    public static final double ORIGIN_TO_ARM_MOUNT_Z_DIST = Units.inchesToMeters(14);
+    public static final double ORIGIN_TO_ARM_MOUNT_Z_OFFSET_DIST = Units.inchesToMeters(-2);
+    public static final double ORIGIN_TO_ARM_MOUNT_Z_DIST = Units.inchesToMeters(12);
+    public static final double ORIGIN_TO_ARM_MOUNT_Y_DIST = Units.inchesToMeters(6);
     public static final double ORIGIN_TO_TOWER_MOUNT_Z_DIST = Units.inchesToMeters(3.375);
     public static final Rotation3d TOWER_ROTATION = new Rotation3d(Units.degreesToRadians(90), 0, Units.degreesToRadians(90));
-    public static final double ARM_INITIAL_ROLL = Units.degreesToRadians(-45);
+    public static final double ARM_INITIAL_ROLL = Units.degreesToRadians(-10);
     public static final double ARM_YAW = Units.degreesToRadians(90);
     public static final double ARM_PITCH = Units.degreesToRadians(0);
-    public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(-55);
-    public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(-33);
+    public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(19);
+    public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(90);
     public static final double PIVOT_RESTING_ANGLE = Units.degreesToRadians(20);
 
     public static final int LEFT_MOTOR_ID = 25;
@@ -240,5 +242,11 @@ public final class Constants {
     public static final Pose2d[] MIDLINE_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(8.258, 7.462, new Rotation2d()), new Pose2d(8.258, 5.785, new Rotation2d()), new Pose2d(8.258, 4.109, new Rotation2d()), new Pose2d(8.258, 2.432, new Rotation2d()), new Pose2d(8.258, 0.756, new Rotation2d())};
     public static final Pose2d[] BLUE_WING_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(2.884, 4.109, new Rotation2d()), new Pose2d(2.884, 5.557, new Rotation2d()), new Pose2d(2.884, 7.004, new Rotation2d())};
     public static final Pose2d BLUE_ALLIANCE_LOADING_STATION_POSE = new Pose2d(15, 1, new Rotation2d());
+  }
+
+  public static class AlertConstants {
+    public static final double LOW_BATTERY_VOLTAGE = 11.5;
+    public static final int ENDGAME_ALERT_1_TIME = 45;
+    public static final int ENDGAME_ALERT_2_TIME = 30;
   }
 }

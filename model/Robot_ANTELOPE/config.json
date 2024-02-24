@@ -1,0 +1,79 @@
+{
+  "sourceUrl": "https://cad.onshape.com/documents/750ccf2fd39df82c2334d0d5/w/8d87ddf4d6dc91b55eb9b967/e/01764016b249a5dc958deae6",
+  "rotations": [
+    {
+      "axis": "x",
+      "degrees": 90
+    },
+    {
+      "axis": "z",
+      "degrees": 90
+    }
+  ],
+  "position": [
+    0.00,
+    0,
+    0.125
+  ],
+  "cameras": [
+    {
+      "name": "Front Right",
+      "rotations": [
+        {
+          "axis": "y",
+          "degrees": -30
+        }
+      ],
+      "position": [
+        -0.075,
+        0,
+        0.465
+      ],
+      "resolution": [
+        960,
+        720
+      ],
+      "fov": 70
+    },
+    {
+      "name": "Front Left",
+      "rotations": [
+        {
+          "axis": "y",
+          "degrees": 30
+        }
+      ],
+      "position": [
+        -0.05,
+        -0.084,
+        0.44
+      ],
+      "resolution": [
+        320,
+        240
+      ],
+      "fov": 70
+    },
+{
+      "name": "Back",
+      "rotations": [
+        {
+          "axis": "y",
+          "degrees": 30
+        }
+      ],
+      "position": [
+        -0.05,
+        -0.084,
+        0.44
+      ],
+      "resolution": [
+        320,
+        240
+      ],
+      "fov": 70
+    }
+  ],
+  "components": [{}, {}],
+  "name": "ANTELOPE"
+}

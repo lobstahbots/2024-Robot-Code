@@ -42,8 +42,8 @@ public class SwerveModuleReal implements SwerveModuleIO {
   public SwerveModuleReal (int moduleID, int angleMotorID, int driveMotorID, double angularOffsetDegrees, boolean inverted) {
     this.moduleID = moduleID;
 
-    this.angleMotor = new MonitoredSparkMax(angleMotorID, MotorType.kBrushless);
-    this.driveMotor = new MonitoredSparkMax(driveMotorID, MotorType.kBrushless);
+    this.angleMotor = new MonitoredSparkMax(angleMotorID, MotorType.kBrushless, String.format("Swerve module %d angle motor", moduleID));
+    this.driveMotor = new MonitoredSparkMax(driveMotorID, MotorType.kBrushless, String.format("Swerve module %d drive motor", moduleID));
 
     angleMotor.restoreFactoryDefaults();
     driveMotor.restoreFactoryDefaults();
