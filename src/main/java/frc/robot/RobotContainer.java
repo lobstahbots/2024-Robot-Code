@@ -125,9 +125,9 @@ public class RobotContainer {
       pivot = new Pivot(new PivotSim());
     }
 
-    registerNamedCommands();
-
     this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, autoChooser::getResponses);
+
+    registerNamedCommands();
 
     setTeleopDefaultCommands();
     
