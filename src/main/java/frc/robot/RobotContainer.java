@@ -138,8 +138,6 @@ public class RobotContainer {
 
     this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, autoChooser::getResponses);
 
-    PivotKinematics.setAngles();
-
     setTeleopDefaultCommands();
     
     smartDashSetup();
