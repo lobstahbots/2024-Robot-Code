@@ -157,6 +157,8 @@ public final class Constants {
     public static final double TURN_PID_I = 0;
     public static final double TURN_PID_D = 0;
     public static final double TURN_PID_FF = 0;
+
+    public static final double AIM_VELOCITY_COMPENSATION_DEADBAND = 0.3;
   }
   
   public static class IntakeConstants {
@@ -166,8 +168,8 @@ public final class Constants {
   
   public static class ShooterConstants {
     public static final double SHOOTER_SPEED = 1;
-    public static final int UPPER_SHOOTER_ID = 24;
-    public static final int LOWER_SHOOTER_ID = 22;
+    public static final int UPPER_SHOOTER_ID = 5;
+    public static final int LOWER_SHOOTER_ID = 32;
   }
   
   public static class SimConstants {
