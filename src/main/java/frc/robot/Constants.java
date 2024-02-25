@@ -162,14 +162,17 @@ public final class Constants {
   }
   
   public static class IntakeConstants {
-    public static final double INTAKE_SPEED = 1;
+    public static final double INTAKE_SPEED = 0.5;
     public static final int INTAKE_MOTOR_ID = 33;
+    public static final int INDEXER_MOTOR_ID = 44;
+    public static final double CURRENT_LIMIT = 40;
   } 
   
   public static class ShooterConstants {
     public static final double SHOOTER_SPEED = 1;
     public static final int UPPER_SHOOTER_ID = 5;
     public static final int LOWER_SHOOTER_ID = 32;
+    public static final double CURRENT_LIMIT = 40;
   }
   
   public static class SimConstants {
@@ -231,7 +234,7 @@ public final class Constants {
   
   public static class TempConstants {
     public static final int OVERHEAT_TEMP = 80;
-    public static final int SAFE_TEMP = 65;
+    public static final int SAFE_TEMP = 80;
   }
 
   public static class FieldConstants {
