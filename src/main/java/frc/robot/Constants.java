@@ -210,9 +210,12 @@ public final class Constants {
     public static final double ARM_INITIAL_ROLL = Units.degreesToRadians(-10);
     public static final double ARM_YAW = Units.degreesToRadians(90);
     public static final double ARM_PITCH = Units.degreesToRadians(0);
-    public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(19);
-    public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(90);
+    public static final double PIVOT_MIN_SIM_ANGLE = Units.degreesToRadians(19);
+    public static final double PIVOT_MAX_SIM_ANGLE = Units.degreesToRadians(90);
     public static final double PIVOT_RESTING_ANGLE = Units.degreesToRadians(20);
+
+    public static final double PIVOT_MAX_ANGLE_DEGREES = 134;
+    public static final double PIVOT_OFFSET_DEGREES = 86;
 
     public static final int LEFT_MOTOR_ID = 25;
     public static final int RIGHT_MOTOR_ID = 26;

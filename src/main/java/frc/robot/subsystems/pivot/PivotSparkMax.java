@@ -69,7 +69,7 @@ public class PivotSparkMax implements PivotIO {
   }
 
   public void updateInputs(PivotIOInputs inputs) {
-    inputs.position = Rotation2d.fromRotations(encoder.getAbsolutePosition());
+    inputs.position = Rotation2d.fromRotations(encoder.getAbsolutePosition()).minus(Rotation2d.fromDegrees(PivotConstants.PIVOT_OFFSET_DEGREES));
 
     inputs.motorLeftAppliedVolts = leftMotor.getAppliedOutput() * leftMotor.getBusVoltage();
     inputs.motorLeftCurrentAmps = leftMotor.getOutputCurrent();

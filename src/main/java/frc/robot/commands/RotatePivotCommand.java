@@ -6,7 +6,9 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.pivot.Pivot;
 
 public class RotatePivotCommand extends Command {
@@ -35,12 +37,13 @@ public class RotatePivotCommand extends Command {
 
   @Override
   public void execute() {
-    pivot.setDesiredAngle(angleSupplier.getAsDouble());
+    pivot.setDesiredAngle(MathUtil.clamp(angleSupplier.getAsDouble(), 0, PivotConstants.PIVOT_MAX_ANGLE_DEGREES));
+    // pivot.runVolts(10);
   }
 
   @Override
   public void end(boolean interrupted) {
-    // pivot.stopPivot();
+    pivot.stopPivot();
   }
 
   @Override

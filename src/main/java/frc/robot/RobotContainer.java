@@ -152,7 +152,7 @@ public class RobotContainer {
             () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
             () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
             () -> DriveConstants.FIELD_CENTRIC));
-    // pivot.setDefaultCommand(new RotatePivotCommand(pivot, PivotKinematics.getShotAngle(() -> FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(), driveBase::getPose)));
+    pivot.setDefaultCommand(new RotatePivotCommand(pivot, pivot.getPosition().getRadians() + operatorJoystick.getRawAxis(IOConstants.PIVOT_ANGLE_AXIS)));
   }
 
   /**
