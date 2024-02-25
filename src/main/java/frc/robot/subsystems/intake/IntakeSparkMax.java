@@ -18,7 +18,7 @@ public class IntakeSparkMax implements IntakeIO {
      */
     public IntakeSparkMax(int intakeMotorID, int indexerMotorID){
         this.intakeMotor = new MonitoredSparkMax(intakeMotorID, MotorType.kBrushless, "Intake motor");
-        this.indexerMotor = new MonitoredSparkMax(intakeMotorID, MotorType.kBrushless, "Indexer motor");
+        this.indexerMotor = new MonitoredSparkMax(indexerMotorID, MotorType.kBrushless, "Indexer motor");
         this.intakeMotor.setIdleMode(IdleMode.kBrake);
         this.intakeMotor.setInverted(true);
         this.intakeMotor.setSmartCurrentLimit(40);
