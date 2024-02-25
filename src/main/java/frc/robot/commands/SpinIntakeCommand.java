@@ -21,11 +21,13 @@ public class SpinIntakeCommand extends Command {
   @Override
   public void execute() {
     intake.setIntakeMotorSpeed(speed);
+    intake.setIndexerMotorSpeed(speed);
   }
 
   @Override
   public void end(boolean interrupted) {
     intake.stopIntakeMotor();
+    intake.stopIndexerMotor();
   }
 
   @Override

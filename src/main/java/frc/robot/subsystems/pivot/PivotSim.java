@@ -54,7 +54,6 @@ public class PivotSim implements PivotIO {
     inputs.motorLeftCurrentAmps = pivotSim.getCurrentDrawAmps();
     inputs.motorRightCurrentAmps = pivotSim.getCurrentDrawAmps();
     inputs.position = Rotation2d.fromRadians(pivotSim.getAngleRads());
-    inputs.velocity = Rotation2d.fromRadians(pivotSim.getVelocityRadPerSec());
   }
 
   /**

@@ -12,7 +12,6 @@ public interface PivotIO {
   @AutoLog
   public static class PivotIOInputs {
     public Rotation2d position = new Rotation2d();
-    public Rotation2d velocity = new Rotation2d();
 
     public double motorLeftAppliedVolts = 0.0;
     public double motorLeftCurrentAmps = 0.0;
