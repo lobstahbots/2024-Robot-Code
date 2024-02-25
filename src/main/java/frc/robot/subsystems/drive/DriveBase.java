@@ -147,7 +147,7 @@ public class DriveBase extends CharacterizableSubsystem {
 public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
   ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
   Logger.recordOutput("Unoptimized:", DriveConstants.KINEMATICS.toSwerveModuleStates(discreteSpeeds));
-  swerveSetpoint = setpointGenerator.generateSetpoint(DriveConstants.MODULE_LIMITS, swerveSetpoint, discreteSpeeds, SimConstants.LOOP_TIME);
+  SwerveSetpoint swerveSetpoint = setpointGenerator.generateSetpoint(DriveConstants.MODULE_LIMITS, new SwerveSetpoint(chassisSpeeds, getStates()), discreteSpeeds, SimConstants.LOOP_TIME);
   SwerveDriveKinematics.desaturateWheelSpeeds(swerveSetpoint.moduleStates, DriveConstants.MAX_DRIVE_SPEED);
   setModuleStates(swerveSetpoint.moduleStates);
 }
