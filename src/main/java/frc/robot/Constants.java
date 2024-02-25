@@ -216,6 +216,7 @@ public final class Constants {
 
     public static final int LEFT_MOTOR_ID = 25;
     public static final int RIGHT_MOTOR_ID = 26;
+    public static final int ENCODER_CHANNEL = 3;
   }
 
   public static class ClimberConstants {

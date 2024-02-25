@@ -124,7 +124,7 @@ public class RobotContainer {
 
       driveBase = new DriveBase(new NavXGyro(), new PhotonVision(new PhotonVisionReal()), frontLeft, frontRight,
           backRight, backLeft, false);
-      pivot = new Pivot(new PivotSparkMax(PivotConstants.LEFT_MOTOR_ID, PivotConstants.RIGHT_MOTOR_ID));
+      pivot = new Pivot(new PivotSparkMax(PivotConstants.LEFT_MOTOR_ID, PivotConstants.RIGHT_MOTOR_ID, PivotConstants.ENCODER_CHANNEL));
     } else {
       SwerveModuleSim frontLeft = new SwerveModuleSim(FrontLeftModuleConstants.angleOffset);
       SwerveModuleSim frontRight = new SwerveModuleSim(FrontRightModuleConstants.angleOffset);
