@@ -8,7 +8,10 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Twist3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import frc.robot.Constants.PivotConstants;
@@ -74,5 +77,16 @@ public class Pivot extends CharacterizableSubsystem {
     io.updateInputs(inputs);
     Logger.processInputs("Pivot", inputs);
     io.periodic();
+    Logger.recordOutput("TowerPose",
+        new Pose3d(PivotConstants.ORIGIN_TO_TOWER_MOUNT_X_DIST, PivotConstants.ORIGIN_TO_TOWER_MOUNT_Y_DIST,
+            PivotConstants.ORIGIN_TO_TOWER_MOUNT_Z_DIST, PivotConstants.TOWER_ROTATION));
+    Pose3d pivotPose3d = new Pose3d(0.0,
+        0.0, 0.0,
+        new Rotation3d(0, PivotConstants.ARM_PITCH,
+            PivotConstants.ARM_YAW))
+        .exp(new Twist3d(0.0, 0.0, 0.0, PivotConstants.ARM_INITIAL_ROLL + inputs.position.getRadians(), 0, 0))
+        .exp(new Twist3d(0.0, PivotConstants.ORIGIN_TO_ARM_MOUNT_Y_DIST, PivotConstants.ORIGIN_TO_ARM_MOUNT_Z_OFFSET_DIST, 0.0, 0.0, 0.0));
+      pivotPose3d = new Pose3d(pivotPose3d.getX() + PivotConstants.ORIGIN_TO_ARM_MOUNT_X_DIST, pivotPose3d.getY(), pivotPose3d.getZ() + PivotConstants.ORIGIN_TO_ARM_MOUNT_Z_DIST, pivotPose3d.getRotation());
+        Logger.recordOutput("ArmPose", pivotPose3d);
   }
 }
