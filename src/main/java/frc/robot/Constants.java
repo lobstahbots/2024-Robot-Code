@@ -34,9 +34,30 @@ public final class Constants {
     public static final PathConstraints CONSTRAINTS = new PathConstraints(
             1, 1, 
             Units.degreesToRadians(540), Units.degreesToRadians(720));
+
+    public static final Pose2d NOTE_1_POSE = new Pose2d(2.9, 4.1, Rotation2d.fromDegrees(90));
+    public static final Pose2d NOTE_2_POSE = new Pose2d(2.9, 5.55, Rotation2d.fromDegrees(90));
+    public static final Pose2d NOTE_3_POSE = new Pose2d(2.9, 7, Rotation2d.fromDegrees(90));
+    public static final Pose2d CENTER_NOTE_1_POSE = new Pose2d(8.29, 0.76, Rotation2d.fromDegrees(90));
+    public static final Pose2d CENTER_NOTE_2_POSE = new Pose2d(8.29, 2.45, Rotation2d.fromDegrees(90));
+    public static final Pose2d CENTER_NOTE_3_POSE = new Pose2d(8.29, 4.1, Rotation2d.fromDegrees(90));
+    public static final Pose2d CENTER_NOTE_4_POSE = new Pose2d(8.29, 5.77, Rotation2d.fromDegrees(90));
+    public static final Pose2d CENTER_NOTE_5_POSE = new Pose2d(8.29, 7.44, Rotation2d.fromDegrees(90));
+
     public static final Pose2d STATION_1 = new Pose2d(0.4119143784046173, 7.161474227905273, Rotation2d.fromRotations(0));
     public static final Pose2d STATION_2 = new Pose2d(0.5068893432617188, 3.710716009140014, Rotation2d.fromRotations(0));
     public static final Pose2d STATION_3 = new Pose2d(0.44357267022132874, 2.3525, Rotation2d.fromRotations(0));
+  }
+
+  public static class AutoConstants {
+    public static final Pose2d FIRST_NOTE_SHOOTING_POSITION = new Pose2d(2.5, 4, Rotation2d.fromRotations(0));
+    public static final Rotation2d FIRST_NOTE_SHOOTING_ANGLE = Rotation2d.fromDegrees(20);
+
+    public static final Rotation2d NOTE_1_SHOOTING_ANGLE = Rotation2d.fromDegrees(21);
+    public static final Rotation2d NOTE_2_SHOOTING_ANGLE = Rotation2d.fromDegrees(22);
+    public static final Rotation2d NOTE_3_SHOOTING_ANGLE = Rotation2d.fromDegrees(23);
+
+    public static final Rotation2d INTAKE_ANGLE = Rotation2d.fromDegrees(190);
   }
   
   public static class IOConstants {
@@ -171,6 +192,7 @@ public final class Constants {
     public static final double SHOOTER_SPEED = 1;
     public static final int UPPER_SHOOTER_ID = 24;
     public static final int LOWER_SHOOTER_ID = 22;
+    public static final double SHOOT_TIME = 2; // in seconds
   }
   
   public static class SimConstants {
@@ -214,6 +236,8 @@ public final class Constants {
 
     public static final int LEFT_MOTOR_ID = 25;
     public static final int RIGHT_MOTOR_ID = 26;
+
+    public static final double MAX_PIVOT_ERROR = 2;
 
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
     static {

@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -23,9 +24,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PathConstants;
 import frc.robot.commands.RotatePivotCommand;
+import frc.robot.commands.SpinShooterCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.pivot.Pivot;
@@ -169,6 +174,32 @@ public class AutoFactory {
     public Command getSimpleAuto() {
         int driverStation = (int) responses.get().get(0);
         return getPathFindToPoseCommand(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[driverStation - 1]).get();
+    }
+
+    public Command getPivotCommand(Rotation2d value) {
+        return new RotatePivotCommand(pivot, value.getRadians()).until(() -> pivot.getPosition().minus(value).getDegrees() < PivotConstants.MAX_PIVOT_ERROR);
+    }
+
+    public Command getShootCommand() {
+        return new WaitCommand(ShooterConstants.SHOOT_TIME).deadlineWith(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
+    }
+
+    public Command getOneNoteAuto() {
+        return getPathFindToPoseCommand(AutoConstants.FIRST_NOTE_SHOOTING_POSITION).get()
+            .alongWith(getPivotCommand(AutoConstants.FIRST_NOTE_SHOOTING_ANGLE))
+            .andThen(getShootCommand());
+    }
+
+    public Command getTwoNoteAuto() {
+        return getOneNoteAuto().andThen(new PathPlannerAuto("2 Note Auto"));
+    }
+
+    public Command getThreeNoteAuto() {
+        return getOneNoteAuto().andThen(new PathPlannerAuto("3 Note Auto"));
+    }
+
+    public Command getFourNoteAuto() {
+        return getOneNoteAuto().andThen(new PathPlannerAuto("4 Note Auto"));
     }
 
     public enum CharacterizationRoutine {
