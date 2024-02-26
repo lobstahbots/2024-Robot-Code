@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
@@ -213,6 +214,12 @@ public final class Constants {
 
     public static final int LEFT_MOTOR_ID = 25;
     public static final int RIGHT_MOTOR_ID = 26;
+
+    public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
+    static {
+      shotAngleMap.put(1.039, Units.degreesToRadians(90.0));
+      shotAngleMap.put(24.0,Units.degreesToRadians(19.0));
+    }
   }
 
   public static class ClimberConstants {
