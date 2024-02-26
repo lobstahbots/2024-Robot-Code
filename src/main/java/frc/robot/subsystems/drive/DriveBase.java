@@ -128,19 +128,18 @@ public class DriveBase extends CharacterizableSubsystem {
     return DriveConstants.KINEMATICS.toChassisSpeeds(getStates());
   }
 
-  /**
-   * Drives the robot robot-relative according to provided {@link ChassisSpeeds}.
-   * 
-   * @param chassisSpeeds The desired ChassisSpeeds. Should be robot relative.
-   */
-  public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
-    ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
-    Logger.recordOutput("Unoptimized:", DriveConstants.KINEMATICS.toSwerveModuleStates(discreteSpeeds));
-    swerveSetpoint = setpointGenerator.generateSetpoint(DriveConstants.MODULE_LIMITS, swerveSetpoint, discreteSpeeds,
-        SimConstants.LOOP_TIME);
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveSetpoint.moduleStates, DriveConstants.MAX_DRIVE_SPEED);
-    setModuleStates(swerveSetpoint.moduleStates);
-  }
+/**
+ * Drives the robot robot-relative according to provided {@link ChassisSpeeds}.
+ * 
+ * @param chassisSpeeds The desired ChassisSpeeds. Should be robot relative.
+ */
+public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
+  ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
+  Logger.recordOutput("Unoptimized:", DriveConstants.KINEMATICS.toSwerveModuleStates(discreteSpeeds));
+  SwerveSetpoint swerveSetpoint = setpointGenerator.generateSetpoint(DriveConstants.MODULE_LIMITS, new SwerveSetpoint(chassisSpeeds, getStates()), discreteSpeeds, SimConstants.LOOP_TIME);
+  SwerveDriveKinematics.desaturateWheelSpeeds(swerveSetpoint.moduleStates, DriveConstants.MAX_DRIVE_SPEED);
+  setModuleStates(swerveSetpoint.moduleStates);
+}
 
   /**
    * Sets desired SwerveModuleStates. Optimizes states.
