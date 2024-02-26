@@ -40,7 +40,7 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotKinematics;
 import frc.robot.subsystems.pivot.PivotSim;
 import frc.robot.subsystems.pivot.PivotSparkMax;
-import frc.robot.subsystems.shooter.ShooterSparkMax;
+import frc.robot.subsystems.shooter.ShooterTalonFX;
 import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.subsystems.vision.PhotonVisionReal;
 import frc.robot.subsystems.shooter.Shooter;
@@ -79,7 +79,7 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick = new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
-  private final Shooter shooter = new Shooter(new ShooterSparkMax(ShooterConstants.UPPER_SHOOTER_ID, ShooterConstants.LOWER_SHOOTER_ID));
+  private final Shooter shooter = new Shooter(new ShooterTalonFX(ShooterConstants.UPPER_SHOOTER_ID, ShooterConstants.LOWER_SHOOTER_ID));
   private final JoystickButton alignToAmpButton = new JoystickButton(driverJoystick,
       IOConstants.ALIGN_TO_AMP_BUTTON_ID);
   private final JoystickButton alignToSourceButton = new JoystickButton(driverJoystick,

@@ -193,6 +193,7 @@ public final class Constants {
     public static final int UPPER_SHOOTER_ID = 24;
     public static final int LOWER_SHOOTER_ID = 22;
     public static final double SHOOT_TIME = 2; // in seconds
+    public static final int CURRENT_LIMIT = 40;
   }
   
   public static class SimConstants {
