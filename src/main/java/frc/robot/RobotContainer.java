@@ -86,7 +86,7 @@ public class RobotContainer {
       IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
   private final JoystickButton driveToggleButton = new JoystickButton(driverJoystick, IOConstants.TOGGLE_DRIVE_CENTRICITY_BUTTON_ID);
   private final Joystick operatorJoystick = new Joystick(IOConstants.OPERATOR_CONTROLLER_PORT);
-//   private final JoystickButton shooterButton = new JoystickButton(operatorJoystick, IOConstants.SHOOTER_BUTTON_ID);
+  private final JoystickButton shooterButton = new JoystickButton(operatorJoystick, IOConstants.SHOOTER_BUTTON_ID);
   private final JoystickButton intakeButton = new JoystickButton(operatorJoystick, IOConstants.INTAKE_BUTTON_ID);
 //   private final JoystickButton climberUpButton = new JoystickButton(operatorJoystick, IOConstants.CLIMBERUP_BUTTON_ID);
 //   private final JoystickButton climberDownButton = new JoystickButton(operatorJoystick,
@@ -155,7 +155,7 @@ public class RobotContainer {
     pivot.setDefaultCommand(new RotatePivotCommand(pivot, pivot.getPosition().getRadians() + operatorJoystick.getRawAxis(IOConstants.PIVOT_ANGLE_AXIS)));
   }
 
-  /**
+  /**        
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
@@ -176,7 +176,7 @@ public class RobotContainer {
         () -> -DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
         () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
         () -> DriveConstants.FIELD_CENTRIC));
-    // shooterButton.whileTrue(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
+    shooterButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
     // climberUpButton.whileTrue(new MoveClimberCommand(climber, ClimberConstants.CLIMBER_SPEED));
     // climberDownButton.whileTrue(new MoveClimberCommand(climber, -ClimberConstants.CLIMBER_SPEED));
     intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
