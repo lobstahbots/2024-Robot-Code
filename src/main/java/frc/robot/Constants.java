@@ -35,15 +35,6 @@ public final class Constants {
             1, 1, 
             Units.degreesToRadians(540), Units.degreesToRadians(720));
 
-    public static final Pose2d NOTE_1_POSE = new Pose2d(2.9, 4.1, Rotation2d.fromDegrees(90));
-    public static final Pose2d NOTE_2_POSE = new Pose2d(2.9, 5.55, Rotation2d.fromDegrees(90));
-    public static final Pose2d NOTE_3_POSE = new Pose2d(2.9, 7, Rotation2d.fromDegrees(90));
-    public static final Pose2d CENTER_NOTE_1_POSE = new Pose2d(8.29, 0.76, Rotation2d.fromDegrees(90));
-    public static final Pose2d CENTER_NOTE_2_POSE = new Pose2d(8.29, 2.45, Rotation2d.fromDegrees(90));
-    public static final Pose2d CENTER_NOTE_3_POSE = new Pose2d(8.29, 4.1, Rotation2d.fromDegrees(90));
-    public static final Pose2d CENTER_NOTE_4_POSE = new Pose2d(8.29, 5.77, Rotation2d.fromDegrees(90));
-    public static final Pose2d CENTER_NOTE_5_POSE = new Pose2d(8.29, 7.44, Rotation2d.fromDegrees(90));
-
     public static final Pose2d STATION_1 = new Pose2d(0.4119143784046173, 7.161474227905273, Rotation2d.fromRotations(0));
     public static final Pose2d STATION_2 = new Pose2d(0.5068893432617188, 3.710716009140014, Rotation2d.fromRotations(0));
     public static final Pose2d STATION_3 = new Pose2d(0.44357267022132874, 2.3525, Rotation2d.fromRotations(0));
@@ -119,7 +110,7 @@ public final class Constants {
     public static final double TURN_KI = 0;
     public static final double TURN_KD = 0;
 
-    public static final double TURN_DEADBAND = 0.1;
+    public static final double TURN_DEADBAND = 1;
 
     public static class FrontLeftModuleConstants {
       public static final int moduleID = 0;
@@ -230,8 +221,8 @@ public final class Constants {
     public static final double ARM_INITIAL_ROLL = Units.degreesToRadians(-10);
     public static final double ARM_YAW = Units.degreesToRadians(90);
     public static final double ARM_PITCH = Units.degreesToRadians(0);
-    public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(19);
-    public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(90);
+    public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(0);
+    public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(180);
     public static final double PIVOT_RESTING_ANGLE = Units.degreesToRadians(20);
 
     public static final int LEFT_MOTOR_ID = 25;
@@ -272,7 +263,9 @@ public final class Constants {
     public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(16, 0.5, Rotation2d.fromDegrees(-30));
     public static final Pose2d[] MIDLINE_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(8.258, 7.462, new Rotation2d()), new Pose2d(8.258, 5.785, new Rotation2d()), new Pose2d(8.258, 4.109, new Rotation2d()), new Pose2d(8.258, 2.432, new Rotation2d()), new Pose2d(8.258, 0.756, new Rotation2d())};
     public static final Pose2d[] BLUE_WING_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(2.884, 4.109, new Rotation2d()), new Pose2d(2.884, 5.557, new Rotation2d()), new Pose2d(2.884, 7.004, new Rotation2d())};
+    public static final Pose3d[] NOTES_SIM_POSES = new Pose3d[]{new Pose3d(2.884, 4.109, 0, new Rotation3d()), new Pose3d(2.884, 5.557, 0, new Rotation3d()), new Pose3d(2.884, 7.004, 0, new Rotation3d()), new Pose3d(8.258, 7.462, 0, new Rotation3d()), new Pose3d(8.258, 5.785, 0, new Rotation3d()), new Pose3d(8.258, 4.109, 0, new Rotation3d()), new Pose3d(8.258, 2.432, 0, new Rotation3d()), new Pose3d(8.258, 0.756, 0, new Rotation3d())};
     public static final Pose2d BLUE_ALLIANCE_LOADING_STATION_POSE = new Pose2d(15, 1, new Rotation2d());
+    public static final double PICKUP_OFFSET = 1;
   }
 
   public static class AlertConstants {
