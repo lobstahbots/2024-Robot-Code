@@ -203,6 +203,14 @@ public class RobotContainer {
             "Quasistatic Backward", CharacterizationRoutine.QUASISTATIC_BACKWARD, "Dynamic Forward",
             CharacterizationRoutine.DYNAMIC_FORWARD, "Dynamic Backward", CharacterizationRoutine.DYNAMIC_BACKWARD))),
         autoFactory::getCharacterizationRoutine);
+    
+    autoChooser.addRoutine("Wing And Midline Auto", List.of(
+        new AutoQuestion<>("Starting Note?", Map.of("Wing Left", 0, "Wing Center", 1, "Wing Right", 2)),
+        new AutoQuestion<>("Last Wing Note?", Map.of("-Wing Left", 0, "-Wing Center", 1, "-Wing Right", 2)),
+        new AutoQuestion<>("Starting Center Line Note?", Map.of("Midline Left", 0, "Midline Center Left", 1, "Midline Center", 2, "Midline Center Right", 3, "Midline Right (Source Side)", 4)),
+        new AutoQuestion<>("Starting Center Line Note?", Map.of("-Midline Left", 0, "-Midline Center Left", 1, "-Midline Center", 2, "-Midline Center Right", 3, "-Midline Right (Source Side)", 4))),
+        autoFactory::getWingAndMidlineAuto    
+    ); 
 
     new Trigger(() -> DriverStation.isTeleop() && AlertConstants.ENDGAME_ALERT_2_TIME < DriverStation.getMatchTime() && DriverStation.getMatchTime() < AlertConstants.ENDGAME_ALERT_1_TIME)
         .onTrue(new InstantCommand(() -> endgameAlert1.set(true)))
