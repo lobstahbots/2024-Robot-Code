@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.AutoFactory.CharacterizationRoutine;
 import frc.robot.Constants.AlertConstants;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IOConstants;
@@ -46,6 +47,7 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeSparkMax;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import java.util.List;
 import java.util.Map;
 
@@ -138,7 +140,7 @@ public class RobotContainer {
 
     this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, autoChooser::getResponses);
 
-    PivotKinematics.setAngles();
+    registerNamedCommands();
 
     setTeleopDefaultCommands();
     
@@ -190,6 +192,11 @@ public class RobotContainer {
             2, "Station 3", 3))),
         autoFactory::getSimpleAuto);
 
+    autoChooser.addRoutine("One-Note Auto", List.of(), autoFactory::getOneNoteAuto);
+    autoChooser.addRoutine("Two-Note Auto", List.of(), autoFactory::getTwoNoteAuto);
+    autoChooser.addRoutine("Three-Note Auto", List.of(), autoFactory::getThreeNoteAuto);
+    autoChooser.addRoutine("Four-Note Auto", List.of(), autoFactory::getFourNoteAuto);
+
     autoChooser.addRoutine("Characterize", List.of(
         new AutoQuestion<>("Which Subsystem?", Map.of("DriveBase", driveBase, "Pivot", pivot)),
         new AutoQuestion<>("Which Routine", Map.of("Quasistatic Foward", CharacterizationRoutine.QUASISTATIC_FORWARD,
@@ -212,5 +219,14 @@ public class RobotContainer {
     new Trigger(operatorJoystick::isConnected)
         .onTrue(new InstantCommand(() -> operatorControllerDisconnectedAlert.set(false)))
         .onFalse(new InstantCommand(() -> operatorControllerDisconnectedAlert.set(true)));
+  }
+
+  private void registerNamedCommands() {
+    NamedCommands.registerCommand("intake", new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
+    NamedCommands.registerCommand("shoot", autoFactory.getShootCommand());
+    NamedCommands.registerCommand("note1pivot", autoFactory.getPivotCommand(AutoConstants.NOTE_1_SHOOTING_ANGLE));
+    NamedCommands.registerCommand("note2pivot", autoFactory.getPivotCommand(AutoConstants.NOTE_2_SHOOTING_ANGLE));
+    NamedCommands.registerCommand("note3pivot", autoFactory.getPivotCommand(AutoConstants.NOTE_3_SHOOTING_ANGLE));
+    NamedCommands.registerCommand("intakePivot", autoFactory.getPivotCommand(AutoConstants.INTAKE_ANGLE));
   }
 }
