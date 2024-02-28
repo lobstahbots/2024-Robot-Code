@@ -45,9 +45,9 @@ public final class Constants {
     public static final int STRAFE_Y_AXIS = 1;
     public static final int ROTATION_AXIS = 2;
     public static final double JOYSTICK_DEADBAND = 0.1;
-    public static final int ALIGN_TO_AMP_BUTTON_ID = 5;
+    public static final int ALIGN_TO_AMP_BUTTON_ID = 1;
     public static final int ALIGN_TO_SOURCE_BUTTON_ID = 3;
-    public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 4;
+    public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 2;
     public static final int SHOOTER_BUTTON_ID = 1;
     public static final int INTAKE_BUTTON_ID = 1;
     public static final int CLIMBERUP_BUTTON_ID = 1;
