@@ -21,6 +21,7 @@ public class SpinShooterCommand extends Command {
 
   @Override
   public void execute() {
+    System.out.println("Shooting" + upperShooterSpeed + " " + lowerShooterSpeed);
     shooter.setShooterSpeed(upperShooterSpeed, lowerShooterSpeed);
   }
 

@@ -35,7 +35,7 @@ public class ShooterTalonFX implements ShooterIO {
    * @param lowerShooterSpeed the speed to set the lower shooter to
    
    */
-  public void setShooterSpeed(double upperShooterSpeed, double lowerShooterSpeed) {
+  public void setShooterMotorSpeed(double upperShooterSpeed, double lowerShooterSpeed) {
     upperShooterMotor.set(upperShooterSpeed);
     lowerShooterMotor.set(lowerShooterSpeed);
   }
@@ -43,7 +43,7 @@ public class ShooterTalonFX implements ShooterIO {
   /**
    * Stops the shooter motors.
    */
-  public void stopMotor() {
+  public void stopShooterMotor() {
     upperShooterMotor.stopMotor();
     lowerShooterMotor.stopMotor();
   }
