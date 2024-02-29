@@ -10,7 +10,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
-import stl.math.LobstahMath;
 
 public class SwerveModuleSim implements SwerveModuleIO {
   /** Creates a new SwerveModuleSim. */
