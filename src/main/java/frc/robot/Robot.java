@@ -51,7 +51,7 @@ public class Robot extends LoggedRobot {
     String logPath = log.getAbsolutePath();
 
     if (Robot.isReal()) {
-      Logger.addDataReceiver(new WPILOGWriter(logPath)); // Save outputs to a new log
+      Logger.addDataReceiver(new WPILOGWriter()); // Save outputs to a new log
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
   } else {
     if(SimConstants.REPLAY) {
