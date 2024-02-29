@@ -60,8 +60,8 @@ public final class Constants {
     public static final double JOYSTICK_DEADBAND = 0.1;
     public static final int ALIGN_TO_AMP_BUTTON_ID = 1;
     public static final int ALIGN_TO_SOURCE_BUTTON_ID = 3;
-    public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 2;
-    public static final int SHOOTER_BUTTON_ID = 1;
+    public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 4;
+    public static final int SHOOTER_BUTTON_ID = 2;
     public static final int INTAKE_BUTTON_ID = 1;
     public static final int CLIMBERUP_BUTTON_ID = 1;
     public static final int CLIMBERDOWN_BUTTON_ID = 1;
@@ -82,9 +82,8 @@ public final class Constants {
   }
   
   public static class DriveConstants {
-    public static final double MAX_VOLTS = 4.95;
-    public static final double MAX_ACCELERATION = 4;
-    public static final double MAX_DRIVE_SPEED = 5;
+    public static final double MAX_ACCELERATION = 3;
+    public static final double MAX_DRIVE_SPEED = 4;
     public static final double MAX_ANGULAR_SPEED = MAX_DRIVE_SPEED / RobotConstants.RADIUS;
     public static final double SLOWDOWN_PERCENT = 0.5;
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
@@ -157,32 +156,35 @@ public final class Constants {
     public static final double TURN_PID_MIN_INPUT = 0;
     public static final double TURN_PID_MAX_INPUT = 2*Math.PI;
 
-    public static final double DRIVE_PID_MIN_OUTPUT = -0.4;
-    public static final double DRIVE_PID_MAX_OUTPUT = 0.4;
-    public static final double DRIVE_PID_P = 0.04;
+    public static final double DRIVE_PID_MIN_OUTPUT = -1;
+    public static final double DRIVE_PID_MAX_OUTPUT = 1;
+    public static final double DRIVE_PID_P = 0.1;
     public static final double DRIVE_PID_I = 0;
     public static final double DRIVE_PID_D = 0;
     public static final double DRIVE_PID_FF = 0;
 
     public static final double TURN_PID_MIN_OUTPUT = -1;
     public static final double TURN_PID_MAX_OUTPUT = 1;
-    public static final double TURN_PID_P = 1;
+    public static final double TURN_PID_P = 1.0;
     public static final double TURN_PID_I = 0;
-    public static final double TURN_PID_D = 0;
+    public static final double TURN_PID_D = 0.1;
     public static final double TURN_PID_FF = 0;
 
     public static final double AIM_VELOCITY_COMPENSATION_DEADBAND = 0.3;
   }
   
   public static class IntakeConstants {
-    public static final double INTAKE_SPEED = 1;
+    public static final double INTAKE_SPEED = 0.5;
     public static final int INTAKE_MOTOR_ID = 33;
+    public static final int INDEXER_MOTOR_ID = 44;
+    public static final double CURRENT_LIMIT = 40;
   } 
   
   public static class ShooterConstants {
     public static final double SHOOTER_SPEED = 1;
-    public static final int UPPER_SHOOTER_ID = 24;
-    public static final int LOWER_SHOOTER_ID = 22;
+    public static final int UPPER_SHOOTER_ID = 5;
+    public static final int LOWER_SHOOTER_ID = 32;
+    public static final double CURRENT_LIMIT = 40;
     public static final double SHOOT_TIME = 2; // in seconds
   }
   
@@ -203,7 +205,7 @@ public final class Constants {
 
     public static final double MAX_VELOCITY = 0;
     public static final double MAX_ACCELERATION = 0;
-    public static final int MAX_CURRENT = 40;
+    public static final int MAX_CURRENT = 30;
 
     public static final double AMP_ANGLE = 0;
     public static final double NEAR_SPEAKER_ANGLE = 0;
@@ -221,12 +223,16 @@ public final class Constants {
     public static final double ARM_INITIAL_ROLL = Units.degreesToRadians(-10);
     public static final double ARM_YAW = Units.degreesToRadians(90);
     public static final double ARM_PITCH = Units.degreesToRadians(0);
-    public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(0);
-    public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(180);
+    public static final double PIVOT_MIN_SIM_ANGLE = Units.degreesToRadians(0);
+    public static final double PIVOT_MAX_SIM_ANGLE = Units.degreesToRadians(180);
     public static final double PIVOT_RESTING_ANGLE = Units.degreesToRadians(20);
+
+    public static final double PIVOT_MAX_ANGLE_DEGREES = 134;
+    public static final double PIVOT_OFFSET_DEGREES = 86;
 
     public static final int LEFT_MOTOR_ID = 25;
     public static final int RIGHT_MOTOR_ID = 26;
+    public static final int ENCODER_CHANNEL = 3;
 
     public static final double MAX_PIVOT_ERROR = 2;
 
@@ -253,7 +259,7 @@ public final class Constants {
   
   public static class TempConstants {
     public static final int OVERHEAT_TEMP = 80;
-    public static final int SAFE_TEMP = 65;
+    public static final int SAFE_TEMP = 80;
   }
 
   public static class FieldConstants {

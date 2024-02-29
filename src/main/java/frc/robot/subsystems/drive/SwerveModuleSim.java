@@ -33,7 +33,7 @@ public class SwerveModuleSim implements SwerveModuleIO {
     double angleDelta = simAngleMotor.getAngularVelocityRadPerSec() * 0.020;
 
     inputs.turnPosition = Rotation2d.fromRadians(inputs.turnPosition.getRadians() + angleDelta + angularOffset.getRadians());
-    inputs.turnPosition = Rotation2d.fromRadians(LobstahMath.wrapValue(inputs.turnPosition.getRadians(), 0, 2 * Math.PI));
+    inputs.turnPosition = Rotation2d.fromRadians(inputs.turnPosition.getRadians());
     inputs.drivePosition = Rotation2d.fromRadians(inputs.drivePosition.getRadians() + simDriveMotor.getAngularVelocityRadPerSec() * SimConstants.LOOP_TIME);
     inputs.driveVelocityRadPerSec = simDriveMotor.getAngularVelocityRadPerSec();
     inputs.driveAppliedVolts = driveAppliedVolts;
