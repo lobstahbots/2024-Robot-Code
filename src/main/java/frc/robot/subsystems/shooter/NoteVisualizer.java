@@ -6,9 +6,11 @@ package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,13 +25,13 @@ import org.littletonrobotics.junction.Logger;
 
 public class NoteVisualizer {
   private static final Translation3d blueSpeaker = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.getTranslation();
-  private static final Transform3d launcherTransform =
-      new Transform3d(PivotConstants.ORIGIN_TO_ARM_MOUNT_X_DIST, PivotConstants.ORIGIN_TO_ARM_MOUNT_Y_DIST, PivotConstants.ORIGIN_TO_ARM_MOUNT_Z_DIST, new Rotation3d(PivotConstants.ARM_INITIAL_ROLL, PivotConstants.ARM_PITCH, PivotConstants.ARM_YAW));
+  private static Supplier<Transform3d> launcherTransform = () -> new Transform3d();
   private static final double shotSpeed = 5.0; // Meters per sec
   private static Supplier<Pose2d> robotPoseSupplier = () -> new Pose2d();
 
-  public static void setRobotPoseSupplier(Supplier<Pose2d> supplier) {
+  public static void setRobotPoseSupplier(Supplier<Pose2d> supplier, Supplier<Rotation2d> launchAngleSupplier) {
     robotPoseSupplier = supplier;
+    launcherTransform = () -> new Transform3d(PivotConstants.ORIGIN_TO_ARM_MOUNT_X_DIST, PivotConstants.ORIGIN_TO_ARM_MOUNT_Y_DIST, PivotConstants.ORIGIN_TO_ARM_MOUNT_Z_DIST, new Rotation3d(Units.degreesToRadians(launchAngleSupplier.get().getDegrees() + 15), PivotConstants.ARM_PITCH, PivotConstants.ARM_YAW));
   }
 
   public static Command shoot() {
@@ -37,7 +39,7 @@ public class NoteVisualizer {
         Commands.defer(
                 () -> {
                   final Pose3d startPose =
-                      new Pose3d(robotPoseSupplier.get()).transformBy(launcherTransform);
+                      new Pose3d(robotPoseSupplier.get()).transformBy(launcherTransform.get());
                   final Pose3d endPose =
                       AlliancePoseMirror.mirrorPose3d(new Pose3d(blueSpeaker, startPose.getRotation()));
 

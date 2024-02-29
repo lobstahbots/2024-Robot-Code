@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
@@ -33,9 +34,21 @@ public final class Constants {
     public static final PathConstraints CONSTRAINTS = new PathConstraints(
             1, 1, 
             Units.degreesToRadians(540), Units.degreesToRadians(720));
+
     public static final Pose2d STATION_1 = new Pose2d(0.4119143784046173, 7.161474227905273, Rotation2d.fromRotations(0));
     public static final Pose2d STATION_2 = new Pose2d(0.5068893432617188, 3.710716009140014, Rotation2d.fromRotations(0));
     public static final Pose2d STATION_3 = new Pose2d(0.44357267022132874, 2.3525, Rotation2d.fromRotations(0));
+  }
+
+  public static class AutoConstants {
+    public static final Pose2d FIRST_NOTE_SHOOTING_POSITION = new Pose2d(2.5, 4, Rotation2d.fromRotations(0));
+    public static final Rotation2d FIRST_NOTE_SHOOTING_ANGLE = Rotation2d.fromDegrees(20);
+
+    public static final Rotation2d NOTE_1_SHOOTING_ANGLE = Rotation2d.fromDegrees(21);
+    public static final Rotation2d NOTE_2_SHOOTING_ANGLE = Rotation2d.fromDegrees(22);
+    public static final Rotation2d NOTE_3_SHOOTING_ANGLE = Rotation2d.fromDegrees(23);
+
+    public static final Rotation2d INTAKE_ANGLE = Rotation2d.fromDegrees(190);
   }
   
   public static class IOConstants {
@@ -45,9 +58,9 @@ public final class Constants {
     public static final int STRAFE_Y_AXIS = 1;
     public static final int ROTATION_AXIS = 2;
     public static final double JOYSTICK_DEADBAND = 0.1;
-    public static final int ALIGN_TO_AMP_BUTTON_ID = 5;
+    public static final int ALIGN_TO_AMP_BUTTON_ID = 1;
     public static final int ALIGN_TO_SOURCE_BUTTON_ID = 3;
-    public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 4;
+    public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 2;
     public static final int SHOOTER_BUTTON_ID = 1;
     public static final int INTAKE_BUTTON_ID = 1;
     public static final int CLIMBERUP_BUTTON_ID = 1;
@@ -97,7 +110,7 @@ public final class Constants {
     public static final double TURN_KI = 0;
     public static final double TURN_KD = 0;
 
-    public static final double TURN_DEADBAND = 0.1;
+    public static final double TURN_DEADBAND = 1;
 
     public static class FrontLeftModuleConstants {
       public static final int moduleID = 0;
@@ -170,10 +183,12 @@ public final class Constants {
     public static final double SHOOTER_SPEED = 1;
     public static final int UPPER_SHOOTER_ID = 24;
     public static final int LOWER_SHOOTER_ID = 22;
+    public static final double SHOOT_TIME = 2; // in seconds
   }
   
   public static class SimConstants {
     public static final double LOOP_TIME = 0.02;
+    public static final boolean REPLAY = false;
   }
 
   public static class PivotConstants {
@@ -196,21 +211,30 @@ public final class Constants {
 
     public static final double PIVOT_SIM_ROTATION_POINT_DISTANCE_INCHES = 5;
     public static final double ORIGIN_TO_TOWER_MOUNT_X_DIST = Units.inchesToMeters(16.5);
-    public static final double ORIGIN_TO_ARM_MOUNT_X_DIST = Units.inchesToMeters(7);
+    public static final double ORIGIN_TO_ARM_MOUNT_X_DIST = Units.inchesToMeters(13.5);
     public static final double ORIGIN_TO_TOWER_MOUNT_Y_DIST = Units.inchesToMeters(8.65);
-    public static final double ORIGIN_TO_ARM_MOUNT_Y_DIST = Units.inchesToMeters(0);
-    public static final double ORIGIN_TO_ARM_MOUNT_Z_DIST = Units.inchesToMeters(14);
+    public static final double ORIGIN_TO_ARM_MOUNT_Z_OFFSET_DIST = Units.inchesToMeters(-2);
+    public static final double ORIGIN_TO_ARM_MOUNT_Z_DIST = Units.inchesToMeters(12);
+    public static final double ORIGIN_TO_ARM_MOUNT_Y_DIST = Units.inchesToMeters(6);
     public static final double ORIGIN_TO_TOWER_MOUNT_Z_DIST = Units.inchesToMeters(3.375);
     public static final Rotation3d TOWER_ROTATION = new Rotation3d(Units.degreesToRadians(90), 0, Units.degreesToRadians(90));
-    public static final double ARM_INITIAL_ROLL = Units.degreesToRadians(-45);
+    public static final double ARM_INITIAL_ROLL = Units.degreesToRadians(-10);
     public static final double ARM_YAW = Units.degreesToRadians(90);
     public static final double ARM_PITCH = Units.degreesToRadians(0);
-    public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(-55);
-    public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(-33);
+    public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(0);
+    public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(180);
     public static final double PIVOT_RESTING_ANGLE = Units.degreesToRadians(20);
 
     public static final int LEFT_MOTOR_ID = 25;
     public static final int RIGHT_MOTOR_ID = 26;
+
+    public static final double MAX_PIVOT_ERROR = 2;
+
+    public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
+    static {
+      shotAngleMap.put(1.039, Units.degreesToRadians(90.0));
+      shotAngleMap.put(24.0,Units.degreesToRadians(19.0));
+    }
   }
 
   public static class ClimberConstants {
@@ -239,6 +263,14 @@ public final class Constants {
     public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(16, 0.5, Rotation2d.fromDegrees(-30));
     public static final Pose2d[] MIDLINE_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(8.258, 7.462, new Rotation2d()), new Pose2d(8.258, 5.785, new Rotation2d()), new Pose2d(8.258, 4.109, new Rotation2d()), new Pose2d(8.258, 2.432, new Rotation2d()), new Pose2d(8.258, 0.756, new Rotation2d())};
     public static final Pose2d[] BLUE_WING_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(2.884, 4.109, new Rotation2d()), new Pose2d(2.884, 5.557, new Rotation2d()), new Pose2d(2.884, 7.004, new Rotation2d())};
+    public static final Pose3d[] NOTES_SIM_POSES = new Pose3d[]{new Pose3d(2.884, 4.109, 0, new Rotation3d()), new Pose3d(2.884, 5.557, 0, new Rotation3d()), new Pose3d(2.884, 7.004, 0, new Rotation3d()), new Pose3d(8.258, 7.462, 0, new Rotation3d()), new Pose3d(8.258, 5.785, 0, new Rotation3d()), new Pose3d(8.258, 4.109, 0, new Rotation3d()), new Pose3d(8.258, 2.432, 0, new Rotation3d()), new Pose3d(8.258, 0.756, 0, new Rotation3d())};
     public static final Pose2d BLUE_ALLIANCE_LOADING_STATION_POSE = new Pose2d(15, 1, new Rotation2d());
+    public static final double PICKUP_OFFSET = 1;
+  }
+
+  public static class AlertConstants {
+    public static final double LOW_BATTERY_VOLTAGE = 11.5;
+    public static final int ENDGAME_ALERT_1_TIME = 45;
+    public static final int ENDGAME_ALERT_2_TIME = 30;
   }
 }
