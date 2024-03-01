@@ -232,16 +232,16 @@ public class AutoFactory {
     }
 
     public Command pickupAndScore(Pose2d notePoseBlue) {
-        Pose2d targetPose = AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d());
+        Pose2d targetPose = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d();
         Command pickupAndScoreCommand = getPathFindToPoseCommand(
-                AlliancePoseMirror.mirrorPose2d(notePoseBlue
-                        .plus(new Transform2d(-FieldConstants.PICKUP_OFFSET, 0, new Rotation2d()))))
+                notePoseBlue
+                        .plus(new Transform2d(-FieldConstants.PICKUP_OFFSET, 0, new Rotation2d())))
                 .andThen(new SwerveDriveStopCommand(driveBase))
-                .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, AlliancePoseMirror.mirrorPose2d(notePoseBlue), 0, 0, false))
-                .andThen(getPathFindToPoseCommand(AlliancePoseMirror
-                        .mirrorPose2d(notePoseBlue))
+                .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, notePoseBlue, 0, 0, false))
+                .andThen(getPathFindToPoseCommand(
+                     notePoseBlue)
                         .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED))
-                        .andThen(getPathFindToPoseCommand(() -> new Pose2d(AlliancePoseMirror.mirrorX(FieldConstants.WING_LINE_X_METERS), driveBase.getPose().getY(), new Rotation2d()))
+                        .andThen(getPathFindToPoseCommand(() -> new Pose2d(FieldConstants.WING_LINE_X_METERS, driveBase.getPose().getY(), new Rotation2d())).onlyIf(() -> notePoseBlue.getX() > FieldConstants.WING_LINE_X_METERS)
                         .andThen(getPivotCommand(new Rotation2d(PivotKinematics.getShotAngle(() -> targetPose, driveBase::getPose).getAsDouble()))
                                 .raceWith(new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false)))
                         .andThen(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED,

@@ -31,6 +31,7 @@ import frc.robot.commands.SpinIntakeCommand;
 import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.commands.SwerveDriveStopCommand;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.ClimberSparkMax;
 import frc.robot.subsystems.drive.DriveBase;
@@ -221,21 +222,21 @@ public class RobotContainer {
     // () -> DriveConstants.FIELD_CENTRIC));
     driveToAmpButton
         .whileTrue(autoFactory
-            .getPathFindToPoseCommand(AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D))
+            .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D)
             .andThen(new TurnToAngleCommand(driveBase,
                 FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation(),
                 0, 0, false))
             .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
     driveToSourceButton
         .whileTrue(autoFactory
-            .getPathFindToPoseCommand(AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D))
+            .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D)
             .andThen(new TurnToAngleCommand(driveBase,
                 FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(),
                 0, 0, false))
             .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
     driveToSpeakerButton
         .whileTrue(autoFactory
-            .getPathFindToPoseCommand(AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D))
+            .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d())
             .andThen(new TurnToPointCommand(driveBase, driveBase::getPose,
                 FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
                 0, 0, false))
