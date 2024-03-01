@@ -35,7 +35,6 @@ import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.SpinIntakeCommand;
 import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.SwerveDriveStopCommand;
-import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.TurnToPointCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.intake.Intake;
@@ -67,13 +66,11 @@ public class AutoFactory {
                 driveBase::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 driveBase::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
-                                                 // Constants class
                         new PIDConstants(5, 0.0, 0.1), // Translation PID constants
                         new PIDConstants(5, 0.0, 0.1), // Rotation PID constants
                         4.5, // Max module speed, in m/s
                         0.4, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig(true, false) // Default path replanning config. See the API for the options
-                                                         // here
                 ),
                 () -> {
                     return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
@@ -104,6 +101,26 @@ public class AutoFactory {
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
         Command pathfindingCommand = AutoBuilder.pathfindToPoseFlipped(
                 targetPose,
+                PathConstants.CONSTRAINTS,
+                0.0, // Goal end velocity in meters/sec
+                0.0 // Rotation delay distance in meters. This is how far the robot should travel
+                    // before attempting to rotate.
+        ).andThen(new SwerveDriveStopCommand(driveBase));
+
+        return pathfindingCommand;
+    }
+
+       /**
+     * Constructs a path following command to generate a path to a target position.
+     * 
+     * @param targetPose Supplier for the desired end pose of the generated path.
+     * @return The constructed path following command
+     */
+    public Command getPathFindToPoseCommand(Supplier<Pose2d> targetPose) {
+
+        // Since AutoBuilder is configured, we can use it to build pathfinding commands
+        Command pathfindingCommand = AutoBuilder.pathfindToPoseFlipped(
+                targetPose.get(),
                 PathConstants.CONSTRAINTS,
                 0.0, // Goal end velocity in meters/sec
                 0.0 // Rotation delay distance in meters. This is how far the robot should travel
@@ -220,14 +237,15 @@ public class AutoFactory {
                 AlliancePoseMirror.mirrorPose2d(notePoseBlue
                         .plus(new Transform2d(-FieldConstants.PICKUP_OFFSET, 0, new Rotation2d()))))
                 .andThen(new SwerveDriveStopCommand(driveBase))
-                .andThen(new TurnToAngleCommand(driveBase, new Rotation2d(0)))
+                .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, AlliancePoseMirror.mirrorPose2d(notePoseBlue), 0, 0, false))
                 .andThen(getPathFindToPoseCommand(AlliancePoseMirror
                         .mirrorPose2d(notePoseBlue))
                         .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED))
+                        .andThen(getPathFindToPoseCommand(() -> new Pose2d(AlliancePoseMirror.mirrorX(FieldConstants.WING_LINE_X_METERS), driveBase.getPose().getY(), new Rotation2d()))
                         .andThen(getPivotCommand(new Rotation2d(PivotKinematics.getShotAngle(() -> targetPose, driveBase::getPose).getAsDouble()))
-                                .raceWith(new TurnToPointCommand(driveBase::getPose, targetPose, driveBase)))
+                                .raceWith(new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false)))
                         .andThen(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED,
-                                ShooterConstants.SHOOTER_SPEED).withTimeout(1)));
+                                ShooterConstants.SHOOTER_SPEED).withTimeout(1))));
         return pickupAndScoreCommand;
     }
 

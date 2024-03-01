@@ -61,6 +61,9 @@ public final class Constants {
     public static final int ALIGN_TO_AMP_BUTTON_ID = 1;
     public static final int ALIGN_TO_SOURCE_BUTTON_ID = 3;
     public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 4;
+    public static final int DRIVE_TO_AMP_BUTTON_ID = 2;
+    public static final int DRIVE_TO_SOURCE_BUTTON_ID = 3;
+    public static final int DRIVE_TO_SPEAKER_BUTTON_ID = 4;
     public static final int SHOOTER_BUTTON_ID = 2;
     public static final int INTAKE_BUTTON_ID = 1;
     public static final int CLIMBERUP_BUTTON_ID = 1;
@@ -182,10 +185,12 @@ public final class Constants {
   
   public static class ShooterConstants {
     public static final double SHOOTER_SPEED = 1;
+    public static final double SPIN_UP_SPEED = 0.75;
     public static final int UPPER_SHOOTER_ID = 5;
     public static final int LOWER_SHOOTER_ID = 32;
     public static final double CURRENT_LIMIT = 40;
     public static final double SHOOT_TIME = 2; // in seconds
+    public static final double SPIN_UP_FLYWHEELS_RADIUS_METERS = 7.62;
   }
   
   public static class SimConstants {
@@ -235,7 +240,9 @@ public final class Constants {
     public static final int ENCODER_CHANNEL = 3;
 
     public static final double MAX_PIVOT_ERROR = 2;
-
+    public static final double AMP_PICKUP_ANGLE = 85;
+    public static final double SOURCE_PICKUP_ANGLE = 60;
+    public static final double GROUND_PICKUP_ANGLE = 0;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
     static {
       shotAngleMap.put(1.039, Units.degreesToRadians(90.0));
@@ -272,6 +279,7 @@ public final class Constants {
     public static final Pose3d[] NOTES_SIM_POSES = new Pose3d[]{new Pose3d(2.884, 4.109, 0, new Rotation3d()), new Pose3d(2.884, 5.557, 0, new Rotation3d()), new Pose3d(2.884, 7.004, 0, new Rotation3d()), new Pose3d(8.258, 7.462, 0, new Rotation3d()), new Pose3d(8.258, 5.785, 0, new Rotation3d()), new Pose3d(8.258, 4.109, 0, new Rotation3d()), new Pose3d(8.258, 2.432, 0, new Rotation3d()), new Pose3d(8.258, 0.756, 0, new Rotation3d())};
     public static final Pose2d BLUE_ALLIANCE_LOADING_STATION_POSE = new Pose2d(15, 1, new Rotation2d());
     public static final double PICKUP_OFFSET = 1;
+    public static final double WING_LINE_X_METERS = 5.8217054;
   }
 
   public static class AlertConstants {
