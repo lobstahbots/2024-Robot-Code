@@ -31,6 +31,7 @@ public class TurnToAngleCommand extends Command {
     this.driveBase = driveBase;
     this.isBlueAlliance = DriverStation.getAlliance().get() == Alliance.Blue;
     this.desiredRotation = desiredRotation;
+    addRequirements(driveBase);
   }
 
   private double getError() {
@@ -39,7 +40,8 @@ public class TurnToAngleCommand extends Command {
 
   @Override
   public void execute() {
-    driveBase.driveRobotRelative(new ChassisSpeeds(0, 0, pidController.calculate(getError(), 0)));
+    pidController.setSetpoint(desiredRotation.getRadians());
+    driveBase.driveRobotRelative(new ChassisSpeeds(0, 0, pidController.calculate(getError(), desiredRotation.getRadians())));
   }
 
   // Called once the command ends or is interrupted.

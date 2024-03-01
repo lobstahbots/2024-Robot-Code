@@ -35,15 +35,6 @@ public final class Constants {
             1, 1, 
             Units.degreesToRadians(540), Units.degreesToRadians(720));
 
-    public static final Pose2d NOTE_1_POSE = new Pose2d(2.9, 4.1, Rotation2d.fromDegrees(90));
-    public static final Pose2d NOTE_2_POSE = new Pose2d(2.9, 5.55, Rotation2d.fromDegrees(90));
-    public static final Pose2d NOTE_3_POSE = new Pose2d(2.9, 7, Rotation2d.fromDegrees(90));
-    public static final Pose2d CENTER_NOTE_1_POSE = new Pose2d(8.29, 0.76, Rotation2d.fromDegrees(90));
-    public static final Pose2d CENTER_NOTE_2_POSE = new Pose2d(8.29, 2.45, Rotation2d.fromDegrees(90));
-    public static final Pose2d CENTER_NOTE_3_POSE = new Pose2d(8.29, 4.1, Rotation2d.fromDegrees(90));
-    public static final Pose2d CENTER_NOTE_4_POSE = new Pose2d(8.29, 5.77, Rotation2d.fromDegrees(90));
-    public static final Pose2d CENTER_NOTE_5_POSE = new Pose2d(8.29, 7.44, Rotation2d.fromDegrees(90));
-
     public static final Pose2d STATION_1 = new Pose2d(0.4119143784046173, 7.161474227905273, Rotation2d.fromRotations(0));
     public static final Pose2d STATION_2 = new Pose2d(0.5068893432617188, 3.710716009140014, Rotation2d.fromRotations(0));
     public static final Pose2d STATION_3 = new Pose2d(0.44357267022132874, 2.3525, Rotation2d.fromRotations(0));
@@ -67,10 +58,10 @@ public final class Constants {
     public static final int STRAFE_Y_AXIS = 1;
     public static final int ROTATION_AXIS = 2;
     public static final double JOYSTICK_DEADBAND = 0.1;
-    public static final int ALIGN_TO_AMP_BUTTON_ID = 5;
+    public static final int ALIGN_TO_AMP_BUTTON_ID = 1;
     public static final int ALIGN_TO_SOURCE_BUTTON_ID = 3;
     public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 4;
-    public static final int SHOOTER_BUTTON_ID = 1;
+    public static final int SHOOTER_BUTTON_ID = 2;
     public static final int INTAKE_BUTTON_ID = 1;
     public static final int CLIMBERUP_BUTTON_ID = 1;
     public static final int CLIMBERDOWN_BUTTON_ID = 1;
@@ -91,9 +82,8 @@ public final class Constants {
   }
   
   public static class DriveConstants {
-    public static final double MAX_VOLTS = 4.95;
-    public static final double MAX_ACCELERATION = 4;
-    public static final double MAX_DRIVE_SPEED = 5;
+    public static final double MAX_ACCELERATION = 3;
+    public static final double MAX_DRIVE_SPEED = 4;
     public static final double MAX_ANGULAR_SPEED = MAX_DRIVE_SPEED / RobotConstants.RADIUS;
     public static final double SLOWDOWN_PERCENT = 0.5;
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
@@ -119,7 +109,7 @@ public final class Constants {
     public static final double TURN_KI = 0;
     public static final double TURN_KD = 0;
 
-    public static final double TURN_DEADBAND = 0.1;
+    public static final double TURN_DEADBAND = 1;
 
     public static class FrontLeftModuleConstants {
       public static final int moduleID = 0;
@@ -166,34 +156,36 @@ public final class Constants {
     public static final double TURN_PID_MIN_INPUT = 0;
     public static final double TURN_PID_MAX_INPUT = 2*Math.PI;
 
-    public static final double DRIVE_PID_MIN_OUTPUT = -0.4;
-    public static final double DRIVE_PID_MAX_OUTPUT = 0.4;
-    public static final double DRIVE_PID_P = 0.04;
+    public static final double DRIVE_PID_MIN_OUTPUT = -1;
+    public static final double DRIVE_PID_MAX_OUTPUT = 1;
+    public static final double DRIVE_PID_P = 0.1;
     public static final double DRIVE_PID_I = 0;
     public static final double DRIVE_PID_D = 0;
     public static final double DRIVE_PID_FF = 0;
 
     public static final double TURN_PID_MIN_OUTPUT = -1;
     public static final double TURN_PID_MAX_OUTPUT = 1;
-    public static final double TURN_PID_P = 1;
+    public static final double TURN_PID_P = 1.0;
     public static final double TURN_PID_I = 0;
-    public static final double TURN_PID_D = 0;
+    public static final double TURN_PID_D = 0.1;
     public static final double TURN_PID_FF = 0;
 
     public static final double AIM_VELOCITY_COMPENSATION_DEADBAND = 0.3;
   }
   
   public static class IntakeConstants {
-    public static final double INTAKE_SPEED = 1;
+    public static final double INTAKE_SPEED = 0.5;
     public static final int INTAKE_MOTOR_ID = 33;
+    public static final int INDEXER_MOTOR_ID = 44;
+    public static final double CURRENT_LIMIT = 40;
   } 
   
   public static class ShooterConstants {
     public static final double SHOOTER_SPEED = 1;
-    public static final int UPPER_SHOOTER_ID = 24;
-    public static final int LOWER_SHOOTER_ID = 22;
+    public static final int UPPER_SHOOTER_ID = 5;
+    public static final int LOWER_SHOOTER_ID = 32;
+    public static final double CURRENT_LIMIT = 40;
     public static final double SHOOT_TIME = 2; // in seconds
-    public static final int CURRENT_LIMIT = 40;
   }
   
   public static class SimConstants {
@@ -213,7 +205,7 @@ public final class Constants {
 
     public static final double MAX_VELOCITY = 0;
     public static final double MAX_ACCELERATION = 0;
-    public static final int MAX_CURRENT = 40;
+    public static final int MAX_CURRENT = 30;
 
     public static final double AMP_ANGLE = 0;
     public static final double NEAR_SPEAKER_ANGLE = 0;
@@ -231,12 +223,16 @@ public final class Constants {
     public static final double ARM_INITIAL_ROLL = Units.degreesToRadians(-10);
     public static final double ARM_YAW = Units.degreesToRadians(90);
     public static final double ARM_PITCH = Units.degreesToRadians(0);
-    public static final double PIVOT_MIN_ANGLE = Units.degreesToRadians(19);
-    public static final double PIVOT_MAX_ANGLE = Units.degreesToRadians(90);
+    public static final double PIVOT_MIN_SIM_ANGLE = Units.degreesToRadians(0);
+    public static final double PIVOT_MAX_SIM_ANGLE = Units.degreesToRadians(180);
     public static final double PIVOT_RESTING_ANGLE = Units.degreesToRadians(20);
+
+    public static final double PIVOT_MAX_ANGLE_DEGREES = 134;
+    public static final double PIVOT_OFFSET_DEGREES = 86;
 
     public static final int LEFT_MOTOR_ID = 25;
     public static final int RIGHT_MOTOR_ID = 26;
+    public static final int ENCODER_CHANNEL = 3;
 
     public static final double MAX_PIVOT_ERROR = 2;
 
@@ -263,7 +259,7 @@ public final class Constants {
   
   public static class TempConstants {
     public static final int OVERHEAT_TEMP = 80;
-    public static final int SAFE_TEMP = 65;
+    public static final int SAFE_TEMP = 80;
   }
 
   public static class FieldConstants {
@@ -273,7 +269,9 @@ public final class Constants {
     public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(16, 0.5, Rotation2d.fromDegrees(-30));
     public static final Pose2d[] MIDLINE_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(8.258, 7.462, new Rotation2d()), new Pose2d(8.258, 5.785, new Rotation2d()), new Pose2d(8.258, 4.109, new Rotation2d()), new Pose2d(8.258, 2.432, new Rotation2d()), new Pose2d(8.258, 0.756, new Rotation2d())};
     public static final Pose2d[] BLUE_WING_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(2.884, 4.109, new Rotation2d()), new Pose2d(2.884, 5.557, new Rotation2d()), new Pose2d(2.884, 7.004, new Rotation2d())};
+    public static final Pose3d[] NOTES_SIM_POSES = new Pose3d[]{new Pose3d(2.884, 4.109, 0, new Rotation3d()), new Pose3d(2.884, 5.557, 0, new Rotation3d()), new Pose3d(2.884, 7.004, 0, new Rotation3d()), new Pose3d(8.258, 7.462, 0, new Rotation3d()), new Pose3d(8.258, 5.785, 0, new Rotation3d()), new Pose3d(8.258, 4.109, 0, new Rotation3d()), new Pose3d(8.258, 2.432, 0, new Rotation3d()), new Pose3d(8.258, 0.756, 0, new Rotation3d())};
     public static final Pose2d BLUE_ALLIANCE_LOADING_STATION_POSE = new Pose2d(15, 1, new Rotation2d());
+    public static final double PICKUP_OFFSET = 1;
   }
 
   public static class AlertConstants {

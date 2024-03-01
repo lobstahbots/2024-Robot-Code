@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.subsystems.vision.PhotonVision;
@@ -136,11 +138,15 @@ public class DriveBase extends CharacterizableSubsystem {
 public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
   ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
   Logger.recordOutput("Unoptimized:", DriveConstants.KINEMATICS.toSwerveModuleStates(discreteSpeeds));
-  SwerveSetpoint swerveSetpoint = setpointGenerator.generateSetpoint(DriveConstants.MODULE_LIMITS, new SwerveSetpoint(chassisSpeeds, getStates()), discreteSpeeds, SimConstants.LOOP_TIME);
+  swerveSetpoint = setpointGenerator.generateSetpoint(DriveConstants.MODULE_LIMITS, new SwerveSetpoint(discreteSpeeds, DriveConstants.KINEMATICS.toSwerveModuleStates(discreteSpeeds)), discreteSpeeds, SimConstants.LOOP_TIME);
   SwerveDriveKinematics.desaturateWheelSpeeds(swerveSetpoint.moduleStates, DriveConstants.MAX_DRIVE_SPEED);
   setModuleStates(swerveSetpoint.moduleStates);
+  // ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
+  // SwerveModuleState[] newStates = DriveConstants.KINEMATICS.toSwerveModuleStates(discreteSpeeds);
+  // SwerveDriveKinematics.desaturateWheelSpeeds(newStates, DriveConstants.MAX_DRIVE_SPEED);
+  // setModuleStates(newStates);
 }
-
+  
   /**
    * Sets desired SwerveModuleStates. Optimizes states.
    * 
@@ -316,6 +322,14 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
       Logger.recordOutput("Front Left", frontLeftPose3d);
 
       Logger.recordOutput("Odometry/Robot3d", robotPose3d);
+
+      for(int i = 0; i < FieldConstants.NOTES_SIM_POSES.length; i++) {
+        if(MathUtil.applyDeadband(getPose().minus(FieldConstants.NOTES_SIM_POSES[i].toPose2d()).getTranslation().getNorm(), 0.25) == 0) {
+          FieldConstants.NOTES_SIM_POSES[i] = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D;
+        }
+      }
+
+      Logger.recordOutput("Notes", FieldConstants.NOTES_SIM_POSES);
     }
   }
 }

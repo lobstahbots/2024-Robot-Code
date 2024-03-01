@@ -73,9 +73,9 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveBase driveBase;
   private final Pivot pivot;
-  private final Climber climber = new Climber(
-      new ClimberSparkMax(ClimberConstants.LEFT_CLIMBER_ID, ClimberConstants.RIGHT_CLIMBER_ID));
-  private final Intake intake = new Intake(new IntakeSparkMax(IntakeConstants.INTAKE_MOTOR_ID));
+//   private final Climber climber = new Climber(
+//       new ClimberSparkMax(ClimberConstants.LEFT_CLIMBER_ID, ClimberConstants.RIGHT_CLIMBER_ID));
+  private final Intake intake = new Intake(new IntakeSparkMax(IntakeConstants.INTAKE_MOTOR_ID, IntakeConstants.INDEXER_MOTOR_ID));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick = new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
@@ -90,10 +90,10 @@ public class RobotContainer {
   private final Joystick operatorJoystick = new Joystick(IOConstants.OPERATOR_CONTROLLER_PORT);
   private final JoystickButton shooterButton = new JoystickButton(operatorJoystick, IOConstants.SHOOTER_BUTTON_ID);
   private final JoystickButton intakeButton = new JoystickButton(operatorJoystick, IOConstants.INTAKE_BUTTON_ID);
-  private final JoystickButton climberUpButton = new JoystickButton(operatorJoystick, IOConstants.CLIMBERUP_BUTTON_ID);
-  private final JoystickButton climberDownButton = new JoystickButton(operatorJoystick,
-      IOConstants.CLIMBERDOWN_BUTTON_ID);
-  private final JoystickButton retractPivotButton = new JoystickButton(operatorJoystick, IOConstants.RESET_PIVOT_ANGLE_BUTTON_ID);
+//   private final JoystickButton climberUpButton = new JoystickButton(operatorJoystick, IOConstants.CLIMBERUP_BUTTON_ID);
+//   private final JoystickButton climberDownButton = new JoystickButton(operatorJoystick,
+    //   IOConstants.CLIMBERDOWN_BUTTON_ID);
+//   private final JoystickButton retractPivotButton = new JoystickButton(operatorJoystick, IOConstants.RESET_PIVOT_ANGLE_BUTTON_ID);
   private final JoystickButton slowdownButton = new JoystickButton(driverJoystick, IOConstants.SLOWDOWN_BUTTON_ID);
   
   private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
@@ -126,7 +126,7 @@ public class RobotContainer {
 
       driveBase = new DriveBase(new NavXGyro(), new PhotonVision(new PhotonVisionReal()), frontLeft, frontRight,
           backRight, backLeft, false);
-      pivot = new Pivot(new PivotSparkMax(PivotConstants.LEFT_MOTOR_ID, PivotConstants.RIGHT_MOTOR_ID));
+      pivot = new Pivot(new PivotSparkMax(PivotConstants.LEFT_MOTOR_ID, PivotConstants.RIGHT_MOTOR_ID, PivotConstants.ENCODER_CHANNEL));
     } else {
       SwerveModuleSim frontLeft = new SwerveModuleSim(FrontLeftModuleConstants.angleOffset);
       SwerveModuleSim frontRight = new SwerveModuleSim(FrontRightModuleConstants.angleOffset);
@@ -143,8 +143,8 @@ public class RobotContainer {
     registerNamedCommands();
 
     setTeleopDefaultCommands();
-    
     smartDashSetup();
+    configureButtonBindings();
   }
 
   private void setTeleopDefaultCommands() {
@@ -154,10 +154,10 @@ public class RobotContainer {
             () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
             () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
             () -> DriveConstants.FIELD_CENTRIC));
-    pivot.setDefaultCommand(new RotatePivotCommand(pivot, PivotKinematics.getShotAngle(() -> FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(), driveBase::getPose)));
+    pivot.setDefaultCommand(new RotatePivotCommand(pivot, () -> pivot.getPosition().getDegrees() + operatorJoystick.getRawAxis(IOConstants.PIVOT_ANGLE_AXIS)));
   }
 
-  /**
+  /**        
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
@@ -167,30 +167,30 @@ public class RobotContainer {
   }
 
   public void configureButtonBindings() {
-    alignToAmpButton
-        .whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation()));
-    alignToSourceButton
-        .whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation()));
-    alignToSpeakerButton
-        .whileTrue(new TurnToPointCommand(driveBase::getPose, FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(), driveBase));
+    // alignToAmpButton
+    //     .whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation()));
+    // alignToSourceButton
+    //     .whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation()));
+    // alignToSpeakerButton
+    //     .whileTrue(new TurnToPointCommand(driveBase::getPose, FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(), driveBase));
     slowdownButton.whileTrue(new SwerveDriveCommand(driveBase,
         () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
         () -> -DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
         () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
         () -> DriveConstants.FIELD_CENTRIC));
-    shooterButton.whileTrue(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
-    climberUpButton.whileTrue(new MoveClimberCommand(climber, ClimberConstants.CLIMBER_SPEED));
-    climberDownButton.whileTrue(new MoveClimberCommand(climber, -ClimberConstants.CLIMBER_SPEED));
+    shooterButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
+    // climberUpButton.whileTrue(new MoveClimberCommand(climber, ClimberConstants.CLIMBER_SPEED));
+    // climberDownButton.whileTrue(new MoveClimberCommand(climber, -ClimberConstants.CLIMBER_SPEED));
     intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
-    retractPivotButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.PIVOT_RESTING_ANGLE));
+    // retractPivotButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.PIVOT_RESTING_ANGLE));
     driveToggleButton.onTrue(new InstantCommand(() -> DriveConstants.FIELD_CENTRIC = !DriveConstants.FIELD_CENTRIC));
   }
 
   public void smartDashSetup() {
-    autoChooser.addRoutine("Simple Auto", List.of(
-        new AutoQuestion<>("Starting Position?", Map.of("Station 1", 1, "Station 2",
-            2, "Station 3", 3))),
-        autoFactory::getSimpleAuto);
+//     autoChooser.addRoutine("Simple Auto", List.of(
+//         new AutoQuestion<>("Starting Position?", Map.of("Station 1", 1, "Station 2",
+//             2, "Station 3", 3))),
+//         autoFactory::getSimpleAuto);
 
     autoChooser.addRoutine("One-Note Auto", List.of(), autoFactory::getOneNoteAuto);
     autoChooser.addRoutine("Two-Note Auto", List.of(), autoFactory::getTwoNoteAuto);
@@ -203,6 +203,14 @@ public class RobotContainer {
             "Quasistatic Backward", CharacterizationRoutine.QUASISTATIC_BACKWARD, "Dynamic Forward",
             CharacterizationRoutine.DYNAMIC_FORWARD, "Dynamic Backward", CharacterizationRoutine.DYNAMIC_BACKWARD))),
         autoFactory::getCharacterizationRoutine);
+    
+    autoChooser.addRoutine("Wing And Midline Auto", List.of(
+        new AutoQuestion<>("Starting Note?", Map.of("Wing Left", 0, "Wing Center", 1, "Wing Right", 2)),
+        new AutoQuestion<>("Last Wing Note?", Map.of("-Wing Left", 0, "-Wing Center", 1, "-Wing Right", 2)),
+        new AutoQuestion<>("Starting Center Line Note?", Map.of("Midline Left", 0, "Midline Center Left", 1, "Midline Center", 2, "Midline Center Right", 3, "Midline Right (Source Side)", 4)),
+        new AutoQuestion<>("Starting Center Line Note?", Map.of("-Midline Left", 0, "-Midline Center Left", 1, "-Midline Center", 2, "-Midline Center Right", 3, "-Midline Right (Source Side)", 4))),
+        autoFactory::getWingAndMidlineAuto    
+    ); 
 
     new Trigger(() -> DriverStation.isTeleop() && AlertConstants.ENDGAME_ALERT_2_TIME < DriverStation.getMatchTime() && DriverStation.getMatchTime() < AlertConstants.ENDGAME_ALERT_1_TIME)
         .onTrue(new InstantCommand(() -> endgameAlert1.set(true)))

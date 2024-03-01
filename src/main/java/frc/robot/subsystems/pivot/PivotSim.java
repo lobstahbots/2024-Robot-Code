@@ -34,8 +34,8 @@ public class PivotSim implements PivotIO {
       80,
       SingleJointedArmSim.estimateMOI(Units.inchesToMeters(17.18), Units.lbsToKilograms(16)),
       16,
-      PivotConstants.PIVOT_MIN_ANGLE,
-      PivotConstants.PIVOT_MAX_ANGLE,
+      PivotConstants.PIVOT_MIN_SIM_ANGLE,
+      PivotConstants.PIVOT_MAX_SIM_ANGLE,
       true,
       0,
       VecBuilder.fill(2.0 * Math.PI / 2048) // Add noise with a std-dev of 1 tick
@@ -54,7 +54,6 @@ public class PivotSim implements PivotIO {
     inputs.motorLeftCurrentAmps = pivotSim.getCurrentDrawAmps();
     inputs.motorRightCurrentAmps = pivotSim.getCurrentDrawAmps();
     inputs.position = Rotation2d.fromRadians(pivotSim.getAngleRads());
-    inputs.velocity = Rotation2d.fromRadians(pivotSim.getVelocityRadPerSec());
   }
 
   /**

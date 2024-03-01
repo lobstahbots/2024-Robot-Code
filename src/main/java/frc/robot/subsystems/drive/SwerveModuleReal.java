@@ -19,7 +19,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.SwerveConstants;
-import stl.math.LobstahMath;
 import stl.tempControl.MonitoredSparkMax;
 import stl.tempControl.TemperatureMonitor;
 
@@ -155,7 +154,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
     inputs.driveAppliedVolts = driveMotor.getAppliedOutput() * driveMotor.getBusVoltage();
     inputs.driveCurrentAmps = new double[] {driveMotor.getOutputCurrent()};
 
-    inputs.turnPosition = Rotation2d.fromRadians(LobstahMath.wrapValue(angleAbsoluteEncoder.getPosition() + angularOffset.getRadians(), 0, 2*Math.PI));
+    inputs.turnPosition = Rotation2d.fromRadians(angleAbsoluteEncoder.getPosition() + angularOffset.getRadians());
     inputs.turnAppliedVolts = angleMotor.getAppliedOutput() * angleMotor.getBusVoltage();
     inputs.turnCurrentAmps = new double[] {angleMotor.getOutputCurrent()};
     inputs.angularOffset = angularOffset;

@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Twist3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.PivotConstants;
 import stl.sysId.CharacterizableSubsystem;
 
@@ -32,6 +33,8 @@ public class Pivot extends CharacterizableSubsystem {
   /** Creates a new Pivot. */
   public Pivot(PivotIO io) {
     this.io = io;
+    controller.setGoal(0);
+    controller.setTolerance(1);
   }
 
   /**
@@ -42,13 +45,13 @@ public class Pivot extends CharacterizableSubsystem {
   }
 
   /**
-   * Set the desired angle (in radians).
+   * Set the desired angle (in degrees).
    * @param angle The desired angle
    */
   public void setDesiredAngle(double angle) {
-    double pidOutput = controller.calculate(inputs.position.getRadians(), angle);
-    controller.setGoal(inputs.position.getRadians());
-    State setpoint = controller.getSetpoint();
+    double pidOutput = controller.calculate(inputs.position.getDegrees(), angle);
+    controller.setGoal(inputs.position.getDegrees());
+    State setpoint = controller.getGoal();
     double feedforwardOutput = feedforward.calculate(setpoint.position, setpoint.velocity);
     io.setVoltage(pidOutput + feedforwardOutput);
   }
@@ -57,7 +60,7 @@ public class Pivot extends CharacterizableSubsystem {
    * Reset the PID controller error.
    */
   public void resetControllerError() {
-    controller.reset(inputs.position.getRadians());
+    controller.reset(inputs.position.getDegrees());
   }
 
   /** Gets pivot rotation. */
@@ -88,5 +91,6 @@ public class Pivot extends CharacterizableSubsystem {
         .exp(new Twist3d(0.0, PivotConstants.ORIGIN_TO_ARM_MOUNT_Y_DIST, PivotConstants.ORIGIN_TO_ARM_MOUNT_Z_OFFSET_DIST, 0.0, 0.0, 0.0));
       pivotPose3d = new Pose3d(pivotPose3d.getX() + PivotConstants.ORIGIN_TO_ARM_MOUNT_X_DIST, pivotPose3d.getY(), pivotPose3d.getZ() + PivotConstants.ORIGIN_TO_ARM_MOUNT_Z_DIST, pivotPose3d.getRotation());
         Logger.recordOutput("ArmPose", pivotPose3d);
+    SmartDashboard.putNumber("Arm encoder value", inputs.position.getDegrees());
   }
 }
