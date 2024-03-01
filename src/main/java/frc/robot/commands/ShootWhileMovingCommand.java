@@ -23,7 +23,7 @@ import frc.robot.subsystems.drive.DriveBase;
 public class ShootWhileMovingCommand extends Command {
   private final DriveBase driveBase;
   private final Supplier<Pose2d> robotPoseSupplier;
-  private final ChassisSpeeds chassisSpeeds;
+  private final Supplier<ChassisSpeeds> chassisSpeeds;
   private final Translation2d target;
   private final boolean reversed;
   private final boolean velocityCorrection;
@@ -37,7 +37,7 @@ public class ShootWhileMovingCommand extends Command {
    * @param velocityCorrection Turns velocity correction on/off
    * @param point Target point, pass in origin to signify invalid point
    */
-  public ShootWhileMovingCommand(DriveBase driveBase, Supplier<Pose2d> robotPoseSupplier, ChassisSpeeds robotSpeeds, Translation2d point, boolean reversed, boolean velocityCorrection) {
+  public ShootWhileMovingCommand(DriveBase driveBase, Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> robotSpeeds, Translation2d point, boolean reversed, boolean velocityCorrection) {
     this.driveBase = driveBase;
     this.robotPoseSupplier = robotPoseSupplier;
     this.chassisSpeeds = robotSpeeds;
@@ -54,7 +54,7 @@ public class ShootWhileMovingCommand extends Command {
     Pose2d robotPose = robotPoseSupplier.get();
     Rotation2d targetAngle = new Rotation2d(target.getX() - robotPose.getX(), target.getY() - robotPose.getY());
     // Movement vector of robot
-    double velocityOutput = Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+    double velocityOutput = Math.hypot(chassisSpeeds.get().vxMetersPerSecond, chassisSpeeds.get().vyMetersPerSecond);
     Translation2d robotVector = new Translation2d(velocityOutput * robotPose.getRotation().getCos(), velocityOutput * robotPose.getRotation().getSin());
     // Aim point
     Translation2d aimPoint = target.minus(new Translation2d(robotVector.getX(), robotVector.getY()));
@@ -77,7 +77,7 @@ public class ShootWhileMovingCommand extends Command {
     Logger.recordOutput("AimPoint", new Pose2d(aimPoint, new Rotation2d()));
 
     // Drive robot accordingly
-    double moveDirection = Math.atan2(chassisSpeeds.vyMetersPerSecond, chassisSpeeds.vxMetersPerSecond);
+    double moveDirection = Math.atan2(chassisSpeeds.get().vyMetersPerSecond, chassisSpeeds.get().vxMetersPerSecond);
 
     driveBase.driveRobotRelative(
       new ChassisSpeeds(Units.MetersPerSecond.of(-velocityOutput * Math.cos(moveDirection)),
@@ -93,7 +93,7 @@ public class ShootWhileMovingCommand extends Command {
    */
   public Measure<Velocity<Distance>> getInertialVelocity() {
     return Units.MetersPerSecond.of(
-      Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
+      Math.hypot(chassisSpeeds.get().vxMetersPerSecond, chassisSpeeds.get().vyMetersPerSecond)
     );
   }
 
