@@ -18,9 +18,7 @@ public class NavXGyro implements GyroIO {
     }
 
     public Rotation2d getYaw() {
-        return (SwerveConstants.invertGyro)
-            ? Rotation2d.fromDegrees(360 - (gyro.getYaw() % 360))
-            : Rotation2d.fromDegrees(gyro.getYaw() % 360);
+        return Rotation2d.fromDegrees(gyro.getYaw());
       }
 
     public Rotation2d getPitch() {

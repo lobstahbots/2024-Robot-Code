@@ -53,6 +53,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
     driveMotor.enableVoltageCompensation(12.0);
     angleMotor.enableVoltageCompensation(12.0);
     angleMotor.setInverted(inverted);
+    driveMotor.setInverted(false);
 
     drivingEncoder = driveMotor.getEncoder();
     angleAbsoluteEncoder = angleMotor.getAbsoluteEncoder(Type.kDutyCycle);
@@ -149,8 +150,8 @@ public class SwerveModuleReal implements SwerveModuleIO {
   }
 
   public void updateInputs(ModuleIOInputs inputs) {
-    inputs.drivePosition = Rotation2d.fromRotations(drivingEncoder.getPosition());
-    inputs.driveVelocityRadPerSec = Units.rotationsToRadians(angleAbsoluteEncoder.getVelocity() / 60);
+    inputs.drivePosition = Rotation2d.fromRotations(-drivingEncoder.getPosition());
+    inputs.driveVelocityRadPerSec = Units.rotationsToRadians(drivingEncoder.getVelocity() / 60);
     inputs.driveAppliedVolts = driveMotor.getAppliedOutput() * driveMotor.getBusVoltage();
     inputs.driveCurrentAmps = new double[] {driveMotor.getOutputCurrent()};
 

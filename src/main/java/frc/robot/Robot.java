@@ -64,13 +64,12 @@ public class Robot extends LoggedRobot {
       setUseTiming(false); // Run as fast as possible
       Logger.addDataReceiver(new WPILOGWriter(logPath, 0.02)); // Save outputs to a new log
     }
-
-     DataLogManager.start();
-     URCL.start();
   }
   
   // Logger.getInstance().disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
-   Logger.start();
+  DataLogManager.start();
+  Logger.registerURCL(URCL.startExternal());
+  Logger.start();
 
     m_robotContainer = new RobotContainer();
   }

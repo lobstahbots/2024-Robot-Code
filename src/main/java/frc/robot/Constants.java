@@ -92,10 +92,10 @@ public final class Constants {
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
     public static final int ANGLE_MOTOR_CURRENT_LIMIT = 40;
     public static final Translation2d[] MODULE_LOCATIONS = new Translation2d[]{
-      new Translation2d(RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(-RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
-      new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0)
+      new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0),
+      new Translation2d(RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0),
     };
     public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
       MODULE_LOCATIONS[0], MODULE_LOCATIONS[1], MODULE_LOCATIONS[2], MODULE_LOCATIONS[3]
@@ -122,21 +122,21 @@ public final class Constants {
       public static final boolean inverted = true;
     }
     public static class BackLeftModuleConstants {
-      public static final int moduleID = 1;
+      public static final int moduleID = 3;
       public static final int driveID = 16;
       public static final int angleID = 17;
       public static final double angleOffset = 180;
       public static final boolean inverted = true;
     }
     public static class FrontRightModuleConstants {
-      public static final int moduleID = 2;
+      public static final int moduleID = 1;
       public static final int driveID = 14;
       public static final int angleID = 15;
       public static final double angleOffset = 0;
       public static final boolean inverted = true;
     }
     public static class BackRightModuleConstants {
-      public static final int moduleID = 3;
+      public static final int moduleID = 2;
       public static final int driveID = 10;
       public static final int angleID = 11;
       public static final double angleOffset = 90;
@@ -151,7 +151,7 @@ public final class Constants {
     public static final double KA = 0.1;
     public static final double KV = 0.1;
 
-    public static final double DRIVING_ENCODER_POSITION_CONVERSION_FACTOR = ((RobotConstants.WHEEL_DIAMETER * Math.PI) * (RobotConstants.DRIVE_GEAR_RATIO)) / 42;
+    public static final double DRIVING_ENCODER_POSITION_CONVERSION_FACTOR = RobotConstants.WHEEL_DIAMETER * Math.PI;
     public static final double DRIVING_ENCODER_VELOCITY_CONVERSION_FACTOR = DRIVING_ENCODER_POSITION_CONVERSION_FACTOR / 60.0;
     public static final double TURNING_ENCODER_POSITION_CONVERSION_FACTOR = (2 * Math.PI);
     public static final double TURNING_ENCODER_VELOCITY_CONVERSION_FACTOR = TURNING_ENCODER_POSITION_CONVERSION_FACTOR / 60.0;

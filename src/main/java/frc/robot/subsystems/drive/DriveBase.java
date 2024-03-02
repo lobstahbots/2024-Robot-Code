@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.subsystems.vision.PhotonVision;
@@ -73,6 +74,7 @@ public class DriveBase extends CharacterizableSubsystem {
     SmartDashboard.putData("Field", field);
 
     this.isOpenLoop = isOpenLoop;
+    this.resetPose(PathConstants.STATION_3);
   }
 
   /**
