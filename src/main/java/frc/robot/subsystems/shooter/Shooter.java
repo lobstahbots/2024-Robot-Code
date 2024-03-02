@@ -6,6 +6,7 @@ package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -15,6 +16,7 @@ public class Shooter extends SubsystemBase {
    */
     private ShooterIO io;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
+    private final TrapezoidProfile shootTrapezoidProfile = new TrapezoidProfile(null);    
 
   public Shooter(ShooterIO io) {
     this.io = io;
