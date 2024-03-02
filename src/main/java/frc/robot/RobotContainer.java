@@ -143,6 +143,7 @@ public class RobotContainer {
 
   public void setIdleMode(IdleMode idleMode) {
     driveBase.setIdleMode(idleMode);
+    pivot.setIdleMode(idleMode);
   }
 
 }

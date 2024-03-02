@@ -6,6 +6,8 @@ package frc.robot.subsystems.pivot;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -59,6 +61,10 @@ public class Pivot extends SubsystemBase {
 
   public Rotation2d getPosition() {
     return inputs.position;
+  }
+
+  public void setIdleMode(IdleMode idleMode) {
+    io.setIdleMode();
   }
 
   @Override

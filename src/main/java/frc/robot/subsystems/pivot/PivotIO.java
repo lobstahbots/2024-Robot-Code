@@ -33,6 +33,8 @@ public interface PivotIO {
    * Stop both motors.
    */
   public default void stopPivot() {}
+  
+  public default void setIdleMode() {}
 
   public default void periodic() {}
 }
