@@ -27,11 +27,11 @@ public class Shooter extends SubsystemBase {
   public void setShooterSpeed(double upperShooterMotorSpeed, double lowerShooterMotorSpeed) {
     io.setShooterMotorSpeed(upperShooterMotorSpeed, lowerShooterMotorSpeed);
   }
-  
-  /** Stops the intake motor. */
-  public void stopMotor() {
+
+  public void stopShooterMotor() {
     io.stopShooterMotor();
   }
+  
   @Override
   public void periodic() {
     io.updateInputs(inputs);

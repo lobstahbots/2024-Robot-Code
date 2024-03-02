@@ -8,9 +8,6 @@ public interface IntakeIO {
         public double intakeMotorVoltage = 0.0;
         public double intakeMotorTemperature = 0.0;
         public double intakeMotorCurrent = 0.0;
-        public double indexerMotorVoltage = 0.0;
-        public double indexerMotorTemperature = 0.0;
-        public double indexerMotorCurrent = 0.0;
     }
     /** Sets the intake motor speed.  
      * 

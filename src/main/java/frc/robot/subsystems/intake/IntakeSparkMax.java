@@ -59,9 +59,6 @@ public class IntakeSparkMax implements IntakeIO {
         inputs.intakeMotorVoltage = intakeMotor.getBusVoltage() * intakeMotor.getAppliedOutput();
         inputs.intakeMotorTemperature = intakeMotor.getMotorTemperature();
         inputs.intakeMotorCurrent = intakeMotor.getOutputCurrent();
-        inputs.indexerMotorVoltage = indexerMotor.getBusVoltage() * indexerMotor.getAppliedOutput();
-        inputs.indexerMotorTemperature = indexerMotor.getMotorTemperature();
-        inputs.indexerMotorCurrent = indexerMotor.getOutputCurrent();
     }
 
     public void periodic() {

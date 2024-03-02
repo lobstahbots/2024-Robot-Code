@@ -263,6 +263,11 @@ public final class Constants {
     public static final double POSE_CONFIDENCE_FILTER_THRESHOLD = 0.2;
     public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 0.5;
   }
+
+  public static class IndexerConstants {
+    public static final int INDEXER_CURRENT_LIMIT = 40;
+    public static final int INDEXER_MOTOR_ID = 0; //update this
+  }
   
   public static class TempConstants {
     public static final int OVERHEAT_TEMP = 80;
