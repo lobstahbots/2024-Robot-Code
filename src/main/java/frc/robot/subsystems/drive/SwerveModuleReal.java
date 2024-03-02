@@ -52,8 +52,8 @@ public class SwerveModuleReal implements SwerveModuleIO {
     angleMotor.setSmartCurrentLimit(DriveConstants.ANGLE_MOTOR_CURRENT_LIMIT);
     driveMotor.enableVoltageCompensation(12.0);
     angleMotor.enableVoltageCompensation(12.0);
-    angleMotor.setInverted(inverted);
-    driveMotor.setInverted(false);
+    angleMotor.setInverted(true);
+    driveMotor.setInverted(inverted);
 
     drivingEncoder = driveMotor.getEncoder();
     angleAbsoluteEncoder = angleMotor.getAbsoluteEncoder(Type.kDutyCycle);
@@ -88,7 +88,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
    * @return The current encoder velocities of the module as a {@link SwerveModuleState}.
    */
   public SwerveModuleState getState() {
-    return new SwerveModuleState(drivingEncoder.getVelocity(), new Rotation2d(angleAbsoluteEncoder.getPosition() + angularOffset.getRadians()));
+    return new SwerveModuleState(drivingEncoder.getVelocity(), new Rotation2d(angleAbsoluteEncoder.getPosition() - angularOffset.getRadians()));
   }
   
 
@@ -107,7 +107,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
    * @return The current encoder positions position of the module as a {@link SwerveModulePosition}.
    */
   public SwerveModulePosition getPosition() {
-    return new SwerveModulePosition(drivingEncoder.getPosition(), new Rotation2d(angleAbsoluteEncoder.getPosition() + angularOffset.getRadians()));
+    return new SwerveModulePosition(drivingEncoder.getPosition(), new Rotation2d(angleAbsoluteEncoder.getPosition() - angularOffset.getRadians()));
   }
 
   /**
@@ -155,7 +155,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
     inputs.driveAppliedVolts = driveMotor.getAppliedOutput() * driveMotor.getBusVoltage();
     inputs.driveCurrentAmps = new double[] {driveMotor.getOutputCurrent()};
 
-    inputs.turnPosition = Rotation2d.fromRadians(angleAbsoluteEncoder.getPosition() + angularOffset.getRadians());
+    inputs.turnPosition = Rotation2d.fromRadians(angleAbsoluteEncoder.getPosition() - angularOffset.getRadians());
     inputs.turnAppliedVolts = angleMotor.getAppliedOutput() * angleMotor.getBusVoltage();
     inputs.turnCurrentAmps = new double[] {angleMotor.getOutputCurrent()};
     inputs.angularOffset = angularOffset;
