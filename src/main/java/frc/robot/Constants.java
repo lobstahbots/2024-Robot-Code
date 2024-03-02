@@ -66,6 +66,7 @@ public final class Constants {
     public static final int DRIVE_TO_SPEAKER_BUTTON_ID = 4;
     public static final int SHOOTER_BUTTON_ID = 2;
     public static final int INTAKE_BUTTON_ID = 1;
+    public static final int OUTTAKE_BUTTON_ID = 1;
     public static final int CLIMBERUP_BUTTON_ID = 1;
     public static final int CLIMBERDOWN_BUTTON_ID = 1;
     public static final int SLOWDOWN_BUTTON_ID = 1;
@@ -178,6 +179,7 @@ public final class Constants {
   
   public static class IntakeConstants {
     public static final double INTAKE_SPEED = 0.5;
+    public static final double OUTTAKE_SPEED = -0.5;
     public static final int INTAKE_MOTOR_ID = 33;
     public static final int INDEXER_MOTOR_ID = 44;
     public static final double CURRENT_LIMIT = 40;
