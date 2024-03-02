@@ -109,6 +109,8 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    m_robotContainer.setIdleMode(IdleMode.kBrake, NeutralModeValue.Brake);
   }
 
   /** This function is called periodically during autonomous. */
@@ -124,6 +126,8 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    m_robotContainer.setIdleMode(IdleMode.kBrake, NeutralModeValue.Brake);
   }
 
   /** This function is called periodically during operator control. */
