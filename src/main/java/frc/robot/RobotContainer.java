@@ -53,6 +53,7 @@ import frc.robot.subsystems.shooter.ShooterSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeSparkMax;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.revrobotics.CANSparkMax.IdleMode;
 
@@ -321,9 +322,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("intakePivot", autoFactory.getPivotCommand(AutoConstants.INTAKE_ANGLE));
   }
 
-  public void setIdleMode(IdleMode idleMode) {
+  public void setIdleMode(IdleMode idleMode, NeutralModeValue shooterIdleMode) {
     driveBase.setIdleMode(idleMode);
     pivot.setIdleMode(idleMode);
+    intake.setIdleMode(idleMode);
+    shooter.setIdleMode(shooterIdleMode);
   }
 
 }

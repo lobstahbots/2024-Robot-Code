@@ -15,6 +15,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.littletonrobotics.urcl.URCL;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.revrobotics.CANSparkMax.IdleMode;
 
@@ -133,7 +134,7 @@ public class Robot extends LoggedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    m_robotContainer.setIdleMode(IdleMode.kCoast);
+    m_robotContainer.setIdleMode(IdleMode.kCoast, NeutralModeValue.Coast);
   }
 
   /** This function is called periodically during test mode. */

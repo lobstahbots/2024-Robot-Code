@@ -8,6 +8,8 @@ import java.util.Arrays;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import frc.robot.Constants.ShooterConstants;
 import stl.tempControl.MonitoredTalonFX;
 import stl.tempControl.TemperatureMonitor;
@@ -51,6 +53,11 @@ public class ShooterTalonFX implements ShooterIO {
   public void stopMotor() {
     upperShooterMotor.stopMotor();
     lowerShooterMotor.stopMotor();
+  }
+
+  public void setIdleMode(NeutralModeValue idleMode) {
+    upperShooterMotor.setNeutralMode(idleMode);
+    lowerShooterMotor.setNeutralMode(idleMode);
   }
 
   public void updateInputs(ShooterIOInputs inputs) {
