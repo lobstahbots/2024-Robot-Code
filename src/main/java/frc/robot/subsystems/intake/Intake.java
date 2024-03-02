@@ -42,6 +42,10 @@ public class Intake extends SubsystemBase {
     io.stopIntakeMotor();
   }
 
+  public void stopIndexerMotor() {
+    io.stopIndexerMotor();
+  }
+
   public void setIdleMode(IdleMode idleMode) {
     io.setIdleMode();
   }
