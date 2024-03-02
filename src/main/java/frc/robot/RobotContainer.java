@@ -203,8 +203,6 @@ public class RobotContainer {
     return autoChooser.getCommand();
   }
 
-
-
   public void configureButtonBindings() {
     // alignToAmpButton
     // .whileTrue(new TurnToAngleCommand(driveBase,

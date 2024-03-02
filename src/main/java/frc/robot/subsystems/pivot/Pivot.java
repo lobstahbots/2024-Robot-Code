@@ -80,7 +80,6 @@ public class Pivot extends CharacterizableSubsystem {
     io.setVoltage(volts);
   }
 
-
   @Override
   public void periodic() {
     io.updateInputs(inputs);
