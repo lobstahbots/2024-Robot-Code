@@ -5,18 +5,21 @@
 package frc.robot.subsystems.climber;
 
 
-import com.revrobotics.CANSparkMax;
+import java.util.Arrays;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import frc.robot.Constants.ClimberConstants;
+import stl.tempControl.MonitoredSparkMax;
+import stl.tempControl.TemperatureMonitor;
 
 public class ClimberSparkMax implements ClimberIO {
-  public final CANSparkMax leftClimberMotor;
-  public final CANSparkMax rightClimberMotor;
-  public final RelativeEncoder leftClimberEncoder;
-  public final RelativeEncoder rightClimberEncoder;
+  private final MonitoredSparkMax leftClimberMotor;
+  private final MonitoredSparkMax rightClimberMotor;
+  private final RelativeEncoder leftClimberEncoder;
+  private final RelativeEncoder rightClimberEncoder;
+  private final TemperatureMonitor monitor;
 
   /*
    * Initializes a new ClimberSparkMax with a left and right climber
@@ -24,24 +27,25 @@ public class ClimberSparkMax implements ClimberIO {
    * @param rightClimberID The CAN ID of the right climber.
    */
   public ClimberSparkMax(int leftClimberID, int rightClimberID) {
-    this.leftClimberMotor = new CANSparkMax(leftClimberID, MotorType.kBrushless);
-    this.rightClimberMotor = new CANSparkMax(rightClimberID, MotorType.kBrushless);
-    this.leftClimberMotor.setSmartCurrentLimit(40);
-    this.rightClimberMotor.setSmartCurrentLimit(40);
-    this.leftClimberMotor.setIdleMode(IdleMode.kBrake);
-    this.leftClimberMotor.setIdleMode(IdleMode.kBrake);
-    this.leftClimberEncoder = leftClimberMotor.getEncoder();
-    this.rightClimberEncoder = rightClimberMotor.getEncoder();
+    leftClimberMotor = new MonitoredSparkMax(leftClimberID, MotorType.kBrushless, "Left climber motor");
+    rightClimberMotor = new MonitoredSparkMax(rightClimberID, MotorType.kBrushless, "Right climber motor");
+    leftClimberMotor.setSmartCurrentLimit(40);
+    rightClimberMotor.setSmartCurrentLimit(40);
+    leftClimberMotor.setIdleMode(IdleMode.kBrake);
+    leftClimberMotor.setIdleMode(IdleMode.kBrake);
+    leftClimberEncoder = leftClimberMotor.getEncoder();
+    rightClimberEncoder = rightClimberMotor.getEncoder();
+    monitor = new TemperatureMonitor(Arrays.asList(leftClimberMotor, rightClimberMotor));
   }
 
-  /* Moves the leftside climber. */
-  public void moveLeftClimber() {
-    leftClimberMotor.set(ClimberConstants.CLIMBER_SPEED);
+  /* Moves the left-side climber. */
+  public void moveLeftClimber(double speed) {
+    leftClimberMotor.set(speed);
   }
 
-   /* Moves the rightside climber. */
-  public void moveRightClimber() {
-    rightClimberMotor.set(ClimberConstants.CLIMBER_SPEED);
+   /* Moves the right-side climber. */
+  public void moveRightClimber(double speed) {
+    rightClimberMotor.set(speed);
   }
   
   /* Stops the climber motors. */
@@ -61,5 +65,9 @@ public class ClimberSparkMax implements ClimberIO {
     inputs.rightClimberTemperature = rightClimberMotor.getMotorTemperature();
     inputs.rightClimberVoltage = rightClimberMotor.getBusVoltage() * rightClimberMotor.getAppliedOutput(); 
     inputs.rightClimberCurrent = rightClimberMotor.getOutputCurrent();
+  }
+
+  public void periodic() {
+    monitor.monitor();
   }
 }

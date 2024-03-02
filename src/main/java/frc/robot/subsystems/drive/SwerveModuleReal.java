@@ -19,9 +19,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.SwerveConstants;
-import stl.math.LobstahMath;
-import stl.motorcontrol.MonitoredSparkMax;
-import stl.motorcontrol.TemperatureMonitor;
+import stl.tempControl.MonitoredSparkMax;
+import stl.tempControl.TemperatureMonitor;
 
 public class SwerveModuleReal implements SwerveModuleIO {
   private final MonitoredSparkMax angleMotor;
@@ -42,8 +41,8 @@ public class SwerveModuleReal implements SwerveModuleIO {
   public SwerveModuleReal (int moduleID, int angleMotorID, int driveMotorID, double angularOffsetDegrees, boolean inverted) {
     this.moduleID = moduleID;
 
-    this.angleMotor = new MonitoredSparkMax(angleMotorID, MotorType.kBrushless);
-    this.driveMotor = new MonitoredSparkMax(driveMotorID, MotorType.kBrushless);
+    this.angleMotor = new MonitoredSparkMax(angleMotorID, MotorType.kBrushless, String.format("Swerve module %d angle motor", moduleID));
+    this.driveMotor = new MonitoredSparkMax(driveMotorID, MotorType.kBrushless, String.format("Swerve module %d drive motor", moduleID));
 
     angleMotor.restoreFactoryDefaults();
     driveMotor.restoreFactoryDefaults();
@@ -155,7 +154,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
     inputs.driveAppliedVolts = driveMotor.getAppliedOutput() * driveMotor.getBusVoltage();
     inputs.driveCurrentAmps = new double[] {driveMotor.getOutputCurrent()};
 
-    inputs.turnPosition = Rotation2d.fromRadians(LobstahMath.wrapValue(angleAbsoluteEncoder.getPosition() + angularOffset.getRadians(), 0, 2*Math.PI));
+    inputs.turnPosition = Rotation2d.fromRadians(angleAbsoluteEncoder.getPosition() + angularOffset.getRadians());
     inputs.turnAppliedVolts = angleMotor.getAppliedOutput() * angleMotor.getBusVoltage();
     inputs.turnCurrentAmps = new double[] {angleMotor.getOutputCurrent()};
     inputs.angularOffset = angularOffset;
