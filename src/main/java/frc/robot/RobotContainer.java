@@ -89,23 +89,24 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick = new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
-  private final JoystickButton alignToAmpButton = new JoystickButton(driverJoystick,
-      IOConstants.ALIGN_TO_AMP_BUTTON_ID);
-  private final JoystickButton alignToSourceButton = new JoystickButton(driverJoystick,
-      IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
-  private final JoystickButton alignToSpeakerButton = new JoystickButton(driverJoystick,
-      IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
-  private final JoystickButton driveToAmpButton = new JoystickButton(driverJoystick,
-      IOConstants.ALIGN_TO_AMP_BUTTON_ID);
-  private final JoystickButton driveToSourceButton = new JoystickButton(driverJoystick,
-      IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
-  private final JoystickButton driveToSpeakerButton = new JoystickButton(driverJoystick,
-      IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
+//   private final JoystickButton alignToAmpButton = new JoystickButton(driverJoystick,
+//       IOConstants.ALIGN_TO_AMP_BUTTON_ID);
+//   private final JoystickButton alignToSourceButton = new JoystickButton(driverJoystick,
+//       IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
+//   private final JoystickButton alignToSpeakerButton = new JoystickButton(driverJoystick,
+//       IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
+//   private final JoystickButton driveToAmpButton = new JoystickButton(driverJoystick,
+    //   IOConstants.ALIGN_TO_AMP_BUTTON_ID);
+//   private final JoystickButton driveToSourceButton = new JoystickButton(driverJoystick,
+//       IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
+//   private final JoystickButton driveToSpeakerButton = new JoystickButton(driverJoystick,
+//       IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
   private final JoystickButton driveToggleButton = new JoystickButton(driverJoystick,
       IOConstants.TOGGLE_DRIVE_CENTRICITY_BUTTON_ID);
   private final Joystick operatorJoystick = new Joystick(IOConstants.OPERATOR_CONTROLLER_PORT);
   private final JoystickButton shooterButton = new JoystickButton(operatorJoystick, IOConstants.SHOOTER_BUTTON_ID);
   private final JoystickButton intakeButton = new JoystickButton(operatorJoystick, IOConstants.INTAKE_BUTTON_ID);
+  private final JoystickButton ampButton = new JoystickButton(operatorJoystick, IOConstants.ALIGN_TO_AMP_BUTTON_ID);
   // private final JoystickButton climberUpButton = new
   // JoystickButton(operatorJoystick, IOConstants.CLIMBERUP_BUTTON_ID);
   // private final JoystickButton climberDownButton = new
@@ -220,28 +221,28 @@ public class RobotContainer {
     // () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
     // () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
     // () -> DriveConstants.FIELD_CENTRIC));
-    driveToAmpButton
-        .whileTrue(autoFactory
-            .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D)
-            .andThen(new TurnToAngleCommand(driveBase,
-                FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation(),
-                0, 0, false))
-            .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
-    driveToSourceButton
-        .whileTrue(autoFactory
-            .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D)
-            .andThen(new TurnToAngleCommand(driveBase,
-                FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(),
-                0, 0, false))
-            .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
-    driveToSpeakerButton
-        .whileTrue(autoFactory
-            .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d())
-            .andThen(new TurnToPointCommand(driveBase, driveBase::getPose,
-                FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
-                0, 0, false))
-            .alongWith(new RotatePivotCommand(pivot, PivotKinematics.getShotAngle(driveBase::getPose,
-                () -> FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()))));
+    // driveToAmpButton
+    //     .whileTrue(autoFactory
+    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D)
+    //         .andThen(new TurnToAngleCommand(driveBase,
+    //             FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation(),
+    //             0, 0, false))
+    //         .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
+    // driveToSourceButton
+    //     .whileTrue(autoFactory
+    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D)
+    //         .andThen(new TurnToAngleCommand(driveBase,
+    //             FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(),
+    //             0, 0, false))
+    //         .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
+    // driveToSpeakerButton
+    //     .whileTrue(autoFactory
+    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d())
+    //         .andThen(new TurnToPointCommand(driveBase, driveBase::getPose,
+    //             FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
+    //             0, 0, false))
+    //         .alongWith(new RotatePivotCommand(pivot, PivotKinematics.getShotAngle(driveBase::getPose,
+    //             () -> FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()))));
 
     slowdownButton.whileTrue(new SwerveDriveCommand(driveBase,
         () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
@@ -252,6 +253,7 @@ public class RobotContainer {
         .whileTrue(new ShootWhileMovingCommand(driveBase, driveBase::getPose, driveBase::getRobotRelativeSpeeds,
             AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()).getTranslation(),
             false, false).withTimeout(10).andThen(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
+    ampButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, -ShooterConstants.SHOOTER_SPEED));
     // climberUpButton.whileTrue(new MoveClimberCommand(climber,
     // ClimberConstants.CLIMBER_SPEED));
     // climberDownButton.whileTrue(new MoveClimberCommand(climber,
