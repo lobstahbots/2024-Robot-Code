@@ -95,6 +95,11 @@ public class SwerveModule {
     io.setTurnBrakeMode(mode);
   }
 
+  public void setIdleMode(IdleMode mode) {
+    io.setDriveIdleMode(mode);
+    io.setTurnIdleMode(mode);
+  }
+
   /** Returns the current turn angle of the module. */
   public Rotation2d getAngle() {
     return new Rotation2d(MathUtil.angleModulus(inputs.turnPosition.getRadians()));

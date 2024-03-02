@@ -33,7 +33,7 @@ import frc.robot.subsystems.vision.PhotonVision;
 
 public class DriveBase extends SubsystemBase {
   /** Creates a new SwerveDriveBase. */
-  private final SwerveModule[] modules; 
+  public final SwerveModule[] modules; 
 
   private SwerveDrivePoseEstimator swerveOdometry;
   private final GyroIO gyro;
@@ -199,6 +199,12 @@ public ChassisSpeeds getFieldRelativeChassisSpeeds(ChassisSpeeds robotRelativeSp
 public void setBrakingMode(IdleMode mode) {
   for(SwerveModule module: modules) {
     module.setBrakingMode(mode);
+  }
+}
+
+public void setIdleMode(IdleMode mode) {
+  for(SwerveModule module: modules) {
+    module.setIdleMode(mode);
   }
 }
 

@@ -112,6 +112,8 @@ public class RobotContainer {
     driveBase.setBrakingMode(IdleMode.kBrake);
   }
 
+
+
   public void configureButtonBindings() {
     alignToAmpButton.whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation()));
     alignToSourceButton.whileTrue(new TurnToAngleCommand(driveBase, FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation()));
@@ -138,4 +140,9 @@ public class RobotContainer {
     startingPositionChooser.addOption("Station 2", PathConstants.STATION_2);
     startingPositionChooser.addOption("Station 3", PathConstants.STATION_3);
   }
+
+  public void setIdleMode(IdleMode idleMode) {
+    driveBase.setIdleMode(idleMode);
+  }
+
 }
