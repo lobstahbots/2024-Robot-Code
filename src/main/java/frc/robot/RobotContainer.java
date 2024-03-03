@@ -220,28 +220,28 @@ public class RobotContainer {
     // () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
     // () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
     // () -> DriveConstants.FIELD_CENTRIC));
-    driveToAmpButton
-        .whileTrue(autoFactory
-            .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D)
-            .andThen(new TurnToAngleCommand(driveBase,
-                FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation(),
-                0, 0, false))
-            .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
-    driveToSourceButton
-        .whileTrue(autoFactory
-            .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D)
-            .andThen(new TurnToAngleCommand(driveBase,
-                FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(),
-                0, 0, false))
-            .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
-    driveToSpeakerButton
-        .whileTrue(autoFactory
-            .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d())
-            .andThen(new TurnToPointCommand(driveBase, driveBase::getPose,
-                FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
-                0, 0, false))
-            .alongWith(new RotatePivotCommand(pivot, PivotKinematics.getShotAngle(driveBase::getPose,
-                () -> FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()))));
+    // driveToAmpButton
+    //     .whileTrue(autoFactory
+    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D)
+    //         .andThen(new TurnToAngleCommand(driveBase,
+    //             FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation(),
+    //             0, 0, false))
+    //         .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
+    // driveToSourceButton
+    //     .whileTrue(autoFactory
+    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D)
+    //         .andThen(new TurnToAngleCommand(driveBase,
+    //             FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(),
+    //             0, 0, false))
+    //         .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
+    // driveToSpeakerButton
+    //     .whileTrue(autoFactory
+    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d())
+    //         .andThen(new TurnToPointCommand(driveBase, driveBase::getPose,
+    //             FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
+    //             0, 0, false))
+    //         .alongWith(new RotatePivotCommand(pivot, PivotKinematics.getShotAngle(driveBase::getPose,
+    //             () -> FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()))));
 
     slowdownButton.whileTrue(new SwerveDriveCommand(driveBase,
         () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
