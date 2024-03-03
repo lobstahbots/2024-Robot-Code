@@ -197,9 +197,15 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     }
   }
 
-  /** Stops all of the modules' motors. */
+  public void setIdleMode(IdleMode mode) {
+    for(SwerveModule module: modules) {
+      module.setIdleMode(mode);
+    }
+  }
+
+  /**Stops all of the modules' motors. */
   public void stopMotors() {
-    for (SwerveModule module : modules) {
+    for(SwerveModule module: modules) {
       module.stop();
     }
   }

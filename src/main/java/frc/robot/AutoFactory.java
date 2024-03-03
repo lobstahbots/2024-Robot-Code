@@ -43,7 +43,6 @@ import frc.robot.subsystems.pivot.PivotKinematics;
 import frc.robot.subsystems.shooter.NoteVisualizer;
 import frc.robot.subsystems.shooter.Shooter;
 import stl.sysId.CharacterizableSubsystem;
-import stl.trajectory.AlliancePoseMirror;
 
 public class AutoFactory {
     private final Supplier<List<Object>> responses;

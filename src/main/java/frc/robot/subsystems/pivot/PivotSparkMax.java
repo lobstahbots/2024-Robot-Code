@@ -78,6 +78,11 @@ public class PivotSparkMax implements PivotIO {
     inputs.motorRightCurrentAmps = rightMotor.getOutputCurrent();
   }
 
+  public void setIdleMode(IdleMode idleMode) {
+    leftMotor.setIdleMode(idleMode);
+    rightMotor.setIdleMode(idleMode);
+  }
+
   public void periodic() {
     monitor.monitor();
   }
