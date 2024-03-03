@@ -109,6 +109,7 @@ public class RobotContainer {
   private final Joystick operatorJoystick = new Joystick(IOConstants.OPERATOR_CONTROLLER_PORT);
   private final JoystickButton shooterButton = new JoystickButton(operatorJoystick, IOConstants.SHOOTER_BUTTON_ID);
   private final JoystickButton intakeButton = new JoystickButton(operatorJoystick, IOConstants.INTAKE_BUTTON_ID);
+  private final JoystickButton ampButton = new JoystickButton(operatorJoystick, IOConstants.AMP_BUTTON_ID);
   // private final JoystickButton climberUpButton = new
   // JoystickButton(operatorJoystick, IOConstants.CLIMBERUP_BUTTON_ID);
   // private final JoystickButton climberDownButton = new
@@ -187,12 +188,12 @@ public class RobotContainer {
             () -> DriveConstants.FIELD_CENTRIC));
     pivot.setDefaultCommand(new RotatePivotCommand(pivot,
         () -> pivot.getPosition().getDegrees() + operatorJoystick.getRawAxis(IOConstants.PIVOT_ANGLE_AXIS)));
-    shooter.setDefaultCommand(new PeriodicConditionalCommand(
-        new SpinShooterCommand(shooter, -ShooterConstants.SPIN_UP_SPEED, ShooterConstants.SPIN_UP_SPEED),
-        new StopShooterCommand(shooter),
-        () -> MathUtil.applyDeadband(driveBase.getPose()
-            .minus(AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()))
-            .getTranslation().getNorm(), ShooterConstants.SPIN_UP_FLYWHEELS_RADIUS_METERS) == 0));
+    // shooter.setDefaultCommand(new PeriodicConditionalCommand(
+    //     new SpinShooterCommand(shooter, -ShooterConstants.SPIN_UP_SPEED, ShooterConstants.SPIN_UP_SPEED),
+    //     new StopShooterCommand(shooter),
+    //     () -> MathUtil.applyDeadband(driveBase.getPose()
+    //         .minus(AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()))
+    //         .getTranslation().getNorm(), ShooterConstants.SPIN_UP_FLYWHEELS_RADIUS_METERS) == 0));
   }
 
   /**
@@ -223,43 +224,45 @@ public class RobotContainer {
     // () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
     // () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
     // () -> DriveConstants.FIELD_CENTRIC));
-    driveToAmpButton
-        .whileTrue(autoFactory
-            .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D)
-            .andThen(new TurnToAngleCommand(driveBase,
-                FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation(),
-                0, 0, false))
-            .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
-    driveToSourceButton
-        .whileTrue(autoFactory
-            .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D)
-            .andThen(new TurnToAngleCommand(driveBase,
-                FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(),
-                0, 0, false))
-            .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
-    driveToSpeakerButton
-        .whileTrue(autoFactory
-            .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d())
-            .andThen(new TurnToPointCommand(driveBase, driveBase::getPose,
-                FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
-                0, 0, false))
-            .alongWith(new RotatePivotCommand(pivot, PivotKinematics.getShotAngle(driveBase::getPose,
-                () -> FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()))));
+    // driveToAmpButton
+    //     .whileTrue(autoFactory
+    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D)
+    //         .andThen(new TurnToAngleCommand(driveBase,
+    //             FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation(),
+    //             0, 0, false))
+    //         .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
+    // driveToSourceButton
+    //     .whileTrue(autoFactory
+    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D)
+    //         .andThen(new TurnToAngleCommand(driveBase,
+    //             FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(),
+    //             0, 0, false))
+    //         .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
+    // driveToSpeakerButton
+    //     .whileTrue(autoFactory
+    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d())
+    //         .andThen(new TurnToPointCommand(driveBase, driveBase::getPose,
+    //             FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
+    //             0, 0, false))
+    //         .alongWith(new RotatePivotCommand(pivot, PivotKinematics.getShotAngle(driveBase::getPose,
+    //             () -> FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()))));
 
     slowdownButton.whileTrue(new SwerveDriveCommand(driveBase,
         () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
         () -> -DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
         () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
         () -> DriveConstants.FIELD_CENTRIC));
-    shooterButton
-        .whileTrue(new ShootWhileMovingCommand(driveBase, driveBase::getPose, driveBase::getRobotRelativeSpeeds,
-            AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()).getTranslation(),
-            false, false).withTimeout(10).andThen(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
+    // shooterButton
+    //     .whileTrue(new ShootWhileMovingCommand(driveBase, driveBase::getPose, driveBase::getRobotRelativeSpeeds,
+    //         AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()).getTranslation(),
+    //         false, false).withTimeout(10).andThen(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
     // climberUpButton.whileTrue(new MoveClimberCommand(climber,
     // ClimberConstants.CLIMBER_SPEED));
     // climberDownButton.whileTrue(new MoveClimberCommand(climber,
     // -ClimberConstants.CLIMBER_SPEED));
     intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
+    shooterButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
+    ampButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, -ShooterConstants.SHOOTER_SPEED));
     // retractPivotButton.whileTrue(new RotatePivotCommand(pivot,
     // PivotConstants.PIVOT_RESTING_ANGLE));
     driveToggleButton.onTrue(new InstantCommand(() -> DriveConstants.FIELD_CENTRIC = !DriveConstants.FIELD_CENTRIC));

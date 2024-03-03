@@ -7,7 +7,6 @@ package frc.robot.subsystems.shooter;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -28,12 +27,12 @@ public class Shooter extends SubsystemBase {
    * @param shooterMotorSpeed
    */
   public void setShooterSpeed(double upperShooterMotorSpeed, double lowerShooterMotorSpeed) {
-    io.setShooterMotorSpeed(upperShooterMotorSpeed, lowerShooterMotorSpeed);
+    io.setShooterSpeed(upperShooterMotorSpeed, lowerShooterMotorSpeed);
   }
   
   /** Stops the intake motor. */
   public void stopMotor() {
-    io.stopShooterMotor();
+    io.stopMotor();
   }
 
   public void setIdleMode(NeutralModeValue shooterIdleMode) {
