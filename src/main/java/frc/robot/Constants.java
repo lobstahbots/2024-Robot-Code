@@ -69,6 +69,7 @@ public final class Constants {
     public static final int CLIMBERUP_BUTTON_ID = 1;
     public static final int CLIMBERDOWN_BUTTON_ID = 1;
     public static final int SLOWDOWN_BUTTON_ID = 1;
+    public static final int AMP_BUTTON_ID = 3;
     public static final int RESET_PIVOT_ANGLE_BUTTON_ID = 1;
     public static final int PIVOT_ANGLE_AXIS = 0;
     public static final int TOGGLE_DRIVE_CENTRICITY_BUTTON_ID = 2;
