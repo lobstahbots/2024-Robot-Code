@@ -6,6 +6,8 @@ package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -32,6 +34,11 @@ public class Shooter extends SubsystemBase {
   public void stopMotor() {
     io.stopMotor();
   }
+
+  public void setIdleMode(NeutralModeValue shooterIdleMode) {
+    io.setIdleMode();
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);

@@ -31,6 +31,8 @@ public interface IntakeIO {
     public default void stopIndexerMotor() {}
     
     public default void updateInputs(IntakeIOInputs inputs) {}
+    
+    public default void setIdleMode() {}
 
     public default void periodic() {}
 }

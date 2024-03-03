@@ -22,6 +22,8 @@ public interface ShooterIO {
     public default void setShooterSpeed(double upperShooterSpeed, double lowerShooterSpeed) {}
     
     public default void stopMotor() {}
+
+    public default void setIdleMode() {}
     
     public default void updateInputs(ShooterIOInputs inputs) {}
 
