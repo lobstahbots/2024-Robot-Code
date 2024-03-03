@@ -267,6 +267,8 @@ public final class Constants {
   public static class IndexerConstants {
     public static final int INDEXER_CURRENT_LIMIT = 40;
     public static final int INDEXER_MOTOR_ID = 0; //update this
+    public static final double FAST_INDEXER_MOTOR_SPEED = 0.9;
+    public static final double SLOW_INDEXER_MOTOR_SPEED = 0.5;
   }
   
   public static class TempConstants {

@@ -11,6 +11,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -24,6 +25,7 @@ import frc.robot.networkalerts.Alert;
 import frc.robot.networkalerts.Alert.AlertType;
 import frc.robot.auto.AutonSelector;
 import frc.robot.auto.AutonSelector.AutoQuestion;
+import frc.robot.commands.IntakeNoteCommand;
 import frc.robot.commands.MoveClimberCommand;
 import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.ShootWhileMovingCommand;
@@ -39,6 +41,8 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.NavXGyro;
 import frc.robot.subsystems.drive.SwerveModuleReal;
 import frc.robot.subsystems.drive.SwerveModuleSim;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerSparkMax;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotKinematics;
 import frc.robot.subsystems.pivot.PivotSim;
@@ -81,6 +85,7 @@ public class RobotContainer {
   private final DriveBase driveBase;
   private final Pivot pivot;
   private final Shooter shooter;
+  private final Indexer indexer = new Indexer(new IndexerSparkMax(IndexerConstants.INDEXER_MOTOR_ID));;
   // private final Climber climber = new Climber(
   // new ClimberSparkMax(ClimberConstants.LEFT_CLIMBER_ID,
   // ClimberConstants.RIGHT_CLIMBER_ID));
@@ -134,25 +139,25 @@ public class RobotContainer {
    */
   public RobotContainer() {
     if (Robot.isReal()) {
-      SwerveModuleReal frontLeft = new SwerveModuleReal(FrontLeftModuleConstants.moduleID,
-          FrontLeftModuleConstants.angleID, FrontLeftModuleConstants.driveID, FrontLeftModuleConstants.angleOffset,
-          FrontLeftModuleConstants.inverted);
-      SwerveModuleReal frontRight = new SwerveModuleReal(FrontRightModuleConstants.moduleID,
-          FrontRightModuleConstants.angleID, FrontRightModuleConstants.driveID, FrontRightModuleConstants.angleOffset,
-          FrontRightModuleConstants.inverted);
-      SwerveModuleReal backLeft = new SwerveModuleReal(BackLeftModuleConstants.moduleID,
-          BackLeftModuleConstants.angleID, BackLeftModuleConstants.driveID, BackLeftModuleConstants.angleOffset,
-          BackLeftModuleConstants.inverted);
-      SwerveModuleReal backRight = new SwerveModuleReal(BackRightModuleConstants.moduleID,
-          BackRightModuleConstants.angleID, BackRightModuleConstants.driveID, BackRightModuleConstants.angleOffset,
-          BackRightModuleConstants.inverted);
+        SwerveModuleReal frontLeft = new SwerveModuleReal(FrontLeftModuleConstants.moduleID,
+            FrontLeftModuleConstants.angleID, FrontLeftModuleConstants.driveID, FrontLeftModuleConstants.angleOffset,
+            FrontLeftModuleConstants.inverted);
+        SwerveModuleReal frontRight = new SwerveModuleReal(FrontRightModuleConstants.moduleID,
+            FrontRightModuleConstants.angleID, FrontRightModuleConstants.driveID, FrontRightModuleConstants.angleOffset,
+            FrontRightModuleConstants.inverted);
+        SwerveModuleReal backLeft = new SwerveModuleReal(BackLeftModuleConstants.moduleID,
+            BackLeftModuleConstants.angleID, BackLeftModuleConstants.driveID, BackLeftModuleConstants.angleOffset,
+            BackLeftModuleConstants.inverted);
+        SwerveModuleReal backRight = new SwerveModuleReal(BackRightModuleConstants.moduleID,
+            BackRightModuleConstants.angleID, BackRightModuleConstants.driveID, BackRightModuleConstants.angleOffset,
+            BackRightModuleConstants.inverted);
 
-      driveBase = new DriveBase(new NavXGyro(), new PhotonVision(new PhotonVisionReal()), frontLeft, frontRight,
-          backRight, backLeft, false);
-      pivot = new Pivot(new PivotSparkMax(PivotConstants.LEFT_MOTOR_ID, PivotConstants.RIGHT_MOTOR_ID,
-          PivotConstants.ENCODER_CHANNEL));
-      shooter = new Shooter(
-          new ShooterTalonFX(ShooterConstants.UPPER_SHOOTER_ID, ShooterConstants.LOWER_SHOOTER_ID));
+        driveBase = new DriveBase(new NavXGyro(), new PhotonVision(new PhotonVisionReal()), frontLeft, frontRight,
+            backRight, backLeft, false);
+        pivot = new Pivot(new PivotSparkMax(PivotConstants.LEFT_MOTOR_ID, PivotConstants.RIGHT_MOTOR_ID,
+            PivotConstants.ENCODER_CHANNEL));
+        shooter = new Shooter(
+            new ShooterTalonFX(ShooterConstants.UPPER_SHOOTER_ID, ShooterConstants.LOWER_SHOOTER_ID));
     } else {
       SwerveModuleSim frontLeft = new SwerveModuleSim(FrontLeftModuleConstants.angleOffset);
       SwerveModuleSim frontRight = new SwerveModuleSim(FrontRightModuleConstants.angleOffset);
@@ -256,7 +261,7 @@ public class RobotContainer {
     // ClimberConstants.CLIMBER_SPEED));
     // climberDownButton.whileTrue(new MoveClimberCommand(climber,
     // -ClimberConstants.CLIMBER_SPEED));
-    intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
+    intakeButton.whileTrue(new IntakeNoteCommand(indexer, intake));
     // retractPivotButton.whileTrue(new RotatePivotCommand(pivot,
     // PivotConstants.PIVOT_RESTING_ANGLE));
     driveToggleButton.onTrue(new InstantCommand(() -> DriveConstants.FIELD_CENTRIC = !DriveConstants.FIELD_CENTRIC));

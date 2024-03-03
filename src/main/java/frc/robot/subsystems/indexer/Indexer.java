@@ -35,7 +35,7 @@ public class Indexer extends SubsystemBase {
   * returns status of the beam break sensor
   * @return true if beam is broken, false if beam is not broken
   */
-  public boolean getBeamStatus() {
+  public boolean beamBroken() {
     return inputs.beamBroken;
   }  
   @Override
