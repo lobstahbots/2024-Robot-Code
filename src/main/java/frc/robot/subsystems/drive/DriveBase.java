@@ -31,6 +31,10 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
+import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
+import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
+import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
+import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.subsystems.vision.PhotonVision;
 import stl.sysId.CharacterizableSubsystem;
 
@@ -59,8 +63,8 @@ public class DriveBase extends CharacterizableSubsystem {
   public DriveBase(GyroIO gyroIO, PhotonVision photonVision, SwerveModuleIO frontLeft, SwerveModuleIO frontRight,
       SwerveModuleIO backLeft, SwerveModuleIO backRight, boolean isOpenLoop) {
 
-    this.modules = new SwerveModule[] { new SwerveModule(frontLeft, 0), new SwerveModule(frontRight, 1),
-        new SwerveModule(backLeft, 2), new SwerveModule(backRight, 3)};
+    this.modules = new SwerveModule[] { new SwerveModule(frontLeft, FrontLeftModuleConstants.moduleID), new SwerveModule(frontRight, FrontRightModuleConstants.moduleID),
+        new SwerveModule(backLeft, BackLeftModuleConstants.moduleID), new SwerveModule(backRight, BackRightModuleConstants.moduleID)};
 
     this.gyro = gyroIO;
 
