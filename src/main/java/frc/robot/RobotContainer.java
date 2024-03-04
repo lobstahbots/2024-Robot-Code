@@ -289,8 +289,8 @@ public class RobotContainer {
         autoFactory::getCharacterizationRoutine);
 
     autoChooser.addRoutine("Wing And Midline Auto", List.of(
-        new AutoQuestion<>("Starting Note?", Map.of("Wing Left", 0, "Wing Center", 1, "Wing Right", 2)),
-        new AutoQuestion<>("Last Wing Note?", Map.of("-Wing Left", 0, "-Wing Center", 1, "-Wing Right", 2)),
+        new AutoQuestion<>("Starting Note?", Map.of("Wing Right", 0, "Wing Center", 1, "Wing Left", 2)),
+        new AutoQuestion<>("Last Wing Note?", Map.of("-Wing Right", 0, "-Wing Center", 1, "-Wing Left", 2)),
         new AutoQuestion<>("Starting Center Line Note?",
             Map.of("Midline Left", 0, "Midline Center Left", 1, "Midline Center", 2, "Midline Center Right", 3,
                 "Midline Right (Source Side)", 4)),

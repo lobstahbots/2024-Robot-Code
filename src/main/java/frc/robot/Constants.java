@@ -281,6 +281,7 @@ public final class Constants {
     public static final Pose2d BLUE_ALLIANCE_LOADING_STATION_POSE = new Pose2d(15, 1, new Rotation2d());
     public static final double PICKUP_OFFSET = 1;
     public static final double WING_LINE_X_METERS = 5.8217054;
+    public static final Pose2d[] SHOOTING_POSES = new Pose2d[]{new Pose2d(WING_LINE_X_METERS, 7.004, new Rotation2d()), new Pose2d(WING_LINE_X_METERS, 0.756, new Rotation2d())};
   }
 
   public static class AlertConstants {
