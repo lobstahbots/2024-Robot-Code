@@ -47,7 +47,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setIdleMode(IdleMode idleMode) {
-    io.setIdleMode();
+    io.setIdleMode(idleMode);
   }
 
   @Override

@@ -65,14 +65,14 @@ public final class Constants {
     public static final int DRIVE_TO_SOURCE_BUTTON_ID = 3;
     public static final int DRIVE_TO_SPEAKER_BUTTON_ID = 4;
     public static final int SHOOTER_BUTTON_ID = 2;
-    public static final int INTAKE_BUTTON_ID = 1;
+    public static final int INTAKE_BUTTON_ID = 3;
     public static final int OUTTAKE_BUTTON_ID = 1;
     public static final int CLIMBERUP_BUTTON_ID = 1;
     public static final int CLIMBERDOWN_BUTTON_ID = 1;
     public static final int SLOWDOWN_BUTTON_ID = 1;
-    public static final int AMP_BUTTON_ID = 3;
+    public static final int AMP_BUTTON_ID = 4;
     public static final int RESET_PIVOT_ANGLE_BUTTON_ID = 1;
-    public static final int PIVOT_ANGLE_AXIS = 0;
+    public static final int PIVOT_ANGLE_AXIS = 1;
     public static final int TOGGLE_DRIVE_CENTRICITY_BUTTON_ID = 2;
   }
   
@@ -189,6 +189,7 @@ public final class Constants {
   public static class ShooterConstants {
     public static final double SHOOTER_SPEED = 1;
     public static final double SPIN_UP_SPEED = 0.75;
+    public static final double AMP_SPEED = 0.175;
     public static final int UPPER_SHOOTER_ID = 5;
     public static final int LOWER_SHOOTER_ID = 32;
     public static final double CURRENT_LIMIT = 40;
@@ -198,26 +199,23 @@ public final class Constants {
   
   public static class SimConstants {
     public static final double LOOP_TIME = 0.02;
-    public static final boolean REPLAY = false;
+    public static final boolean REPLAY = true;
   }
 
   public static class PivotConstants {
-    public static final double PID_P = 1;
+    public static final double PID_P = 0.5;
     public static final double PID_I = 0;
     public static final double PID_D = 0;
     public static final double PID_FF = 0;
 
     public static final double KS = 0.1;
-    public static final double KV = 0.2;
-    public static final double KA = 0.01;
+    public static final double KG = 0.35;
+    public static final double KV = 0.01;
+    public static final double KA = 0.0;
 
-    public static final double MAX_VELOCITY = 0;
-    public static final double MAX_ACCELERATION = 0;
+    public static final double MAX_VELOCITY = 30;
+    public static final double MAX_ACCELERATION = 10;
     public static final int MAX_CURRENT = 30;
-
-    public static final double AMP_ANGLE = 0;
-    public static final double NEAR_SPEAKER_ANGLE = 0;
-    public static final double FAR_SPEAKER_ANGLE = 0;
 
     public static final double PIVOT_SIM_ROTATION_POINT_DISTANCE_INCHES = 5;
     public static final double ORIGIN_TO_TOWER_MOUNT_X_DIST = Units.inchesToMeters(16.5);
@@ -243,7 +241,7 @@ public final class Constants {
     public static final int ENCODER_CHANNEL = 3;
 
     public static final double MAX_PIVOT_ERROR = 2;
-    public static final double AMP_PICKUP_ANGLE = 85;
+    public static final double AMP_ANGLE_SETPOINT = 104;
     public static final double SOURCE_PICKUP_ANGLE = 60;
     public static final double GROUND_PICKUP_ANGLE = 0;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();

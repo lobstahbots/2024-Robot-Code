@@ -2,6 +2,8 @@ package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 public interface IntakeIO {
     @AutoLog
     public static class IntakeIOInputs {
@@ -32,7 +34,7 @@ public interface IntakeIO {
     
     public default void updateInputs(IntakeIOInputs inputs) {}
     
-    public default void setIdleMode() {}
+    public default void setIdleMode(IdleMode idleMode) {}
 
     public default void periodic() {}
 }

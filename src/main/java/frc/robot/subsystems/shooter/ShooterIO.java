@@ -2,6 +2,8 @@ package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 public interface ShooterIO {
     @AutoLog
     public static class ShooterIOInputs {
@@ -23,7 +25,7 @@ public interface ShooterIO {
     
     public default void stopMotor() {}
 
-    public default void setIdleMode() {}
+    public default void setIdleMode(NeutralModeValue shooterIdleMode) {}
     
     public default void updateInputs(ShooterIOInputs inputs) {}
 

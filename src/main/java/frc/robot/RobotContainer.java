@@ -188,7 +188,7 @@ public class RobotContainer {
             () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
             () -> DriveConstants.FIELD_CENTRIC));
     pivot.setDefaultCommand(new RotatePivotCommand(pivot,
-        () -> pivot.getPosition().getDegrees() + operatorJoystick.getRawAxis(IOConstants.PIVOT_ANGLE_AXIS)));
+        () -> pivot.getPosition().getDegrees() + 5 * operatorJoystick.getRawAxis(IOConstants.PIVOT_ANGLE_AXIS)));
     // shooter.setDefaultCommand(new PeriodicConditionalCommand(
     //     new SpinShooterCommand(shooter, -ShooterConstants.SPIN_UP_SPEED, ShooterConstants.SPIN_UP_SPEED),
     //     new StopShooterCommand(shooter),
@@ -263,7 +263,7 @@ public class RobotContainer {
     // -ClimberConstants.CLIMBER_SPEED));
     intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
     shooterButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
-    ampButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, -ShooterConstants.SHOOTER_SPEED));
+    ampButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED).alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT)));
     // retractPivotButton.whileTrue(new RotatePivotCommand(pivot,
     // PivotConstants.PIVOT_RESTING_ANGLE));
     outtakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.OUTTAKE_SPEED));
@@ -332,6 +332,9 @@ public class RobotContainer {
     pivot.setIdleMode(idleMode);
     intake.setIdleMode(idleMode);
     shooter.setIdleMode(shooterIdleMode);
+    System.out.println("Setting idle mode:");
+    System.out.println(idleMode);
+    System.out.println(shooterIdleMode);
   }
 
 }
