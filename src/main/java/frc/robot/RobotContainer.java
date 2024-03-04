@@ -188,7 +188,7 @@ public class RobotContainer {
             () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
             () -> DriveConstants.FIELD_CENTRIC));
     pivot.setDefaultCommand(new RotatePivotCommand(pivot,
-        () -> pivot.getPosition().getDegrees() + 5 * operatorJoystick.getRawAxis(IOConstants.PIVOT_ANGLE_AXIS)));
+        () -> pivot.getPosition().getDegrees() + -5 * MathUtil.applyDeadband(operatorJoystick.getRawAxis(IOConstants.PIVOT_ANGLE_AXIS), PivotConstants.INPUT_DEADBAND)));
     // shooter.setDefaultCommand(new PeriodicConditionalCommand(
     //     new SpinShooterCommand(shooter, -ShooterConstants.SPIN_UP_SPEED, ShooterConstants.SPIN_UP_SPEED),
     //     new StopShooterCommand(shooter),
@@ -332,9 +332,6 @@ public class RobotContainer {
     pivot.setIdleMode(idleMode);
     intake.setIdleMode(idleMode);
     shooter.setIdleMode(shooterIdleMode);
-    System.out.println("Setting idle mode:");
-    System.out.println(idleMode);
-    System.out.println(shooterIdleMode);
   }
 
 }

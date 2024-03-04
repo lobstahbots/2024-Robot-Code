@@ -203,18 +203,18 @@ public final class Constants {
   }
 
   public static class PivotConstants {
-    public static final double PID_P = 0.5;
+    public static final double PID_P = 1;
     public static final double PID_I = 0;
     public static final double PID_D = 0;
     public static final double PID_FF = 0;
 
-    public static final double KS = 0.1;
-    public static final double KG = 0.35;
-    public static final double KV = 0.01;
-    public static final double KA = 0.0;
+    public static final double KS = 0.56453;
+    public static final double KG = 0.38989;
+    public static final double KV = 0.0015868;
+    public static final double KA = 0.0027206;
 
-    public static final double MAX_VELOCITY = 30;
-    public static final double MAX_ACCELERATION = 10;
+    public static final double MAX_VELOCITY = 0;
+    public static final double MAX_ACCELERATION = 0;
     public static final int MAX_CURRENT = 30;
 
     public static final double PIVOT_SIM_ROTATION_POINT_DISTANCE_INCHES = 5;
@@ -244,6 +244,7 @@ public final class Constants {
     public static final double AMP_ANGLE_SETPOINT = 104;
     public static final double SOURCE_PICKUP_ANGLE = 60;
     public static final double GROUND_PICKUP_ANGLE = 0;
+    public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
     static {
       shotAngleMap.put(1.039, Units.degreesToRadians(90.0));

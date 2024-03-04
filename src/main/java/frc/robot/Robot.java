@@ -7,6 +7,7 @@ package frc.robot;
 
 import java.io.File;
 
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -66,13 +67,12 @@ public class Robot extends LoggedRobot {
       setUseTiming(false); // Run as fast as possible
       Logger.addDataReceiver(new WPILOGWriter(logPath, 0.02)); // Save outputs to a new log
     }
-
+  }
      DataLogManager.start();
      URCL.start();
-  }
+     Logger.start();
   
   // Logger.getInstance().disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
-   Logger.start();
 
     m_robotContainer = new RobotContainer();
   }
