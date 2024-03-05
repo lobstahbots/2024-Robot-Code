@@ -54,6 +54,11 @@ public class IntakeSparkMax implements IntakeIO {
     public void stopIndexerMotor(){
         indexerMotor.stopMotor();
     }
+
+    public void setIdleMode(IdleMode idleMode) {
+         intakeMotor.setIdleMode(idleMode);
+         indexerMotor.setIdleMode(idleMode);
+    }
   
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.intakeMotorVoltage = intakeMotor.getBusVoltage() * intakeMotor.getAppliedOutput();

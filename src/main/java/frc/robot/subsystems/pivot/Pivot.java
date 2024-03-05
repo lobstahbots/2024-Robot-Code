@@ -6,6 +6,8 @@ package frc.robot.subsystems.pivot;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -68,12 +70,15 @@ public class Pivot extends CharacterizableSubsystem {
     return inputs.position;
   }
 
+  public void setIdleMode(IdleMode idleMode) {
+    io.setIdleMode();
+  }
+
   @Override
   /**Runs pivot motors during characterization voltage ramp routines.*/
   public void runVolts(double volts) {
     io.setVoltage(volts);
   }
-
 
   @Override
   public void periodic() {

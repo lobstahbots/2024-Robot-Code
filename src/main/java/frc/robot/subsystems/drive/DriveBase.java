@@ -64,7 +64,7 @@ public class DriveBase extends CharacterizableSubsystem {
       SwerveModuleIO backLeft, SwerveModuleIO backRight, boolean isOpenLoop) {
 
     this.modules = new SwerveModule[] { new SwerveModule(frontLeft, FrontLeftModuleConstants.moduleID), new SwerveModule(frontRight, FrontRightModuleConstants.moduleID),
-        new SwerveModule(backLeft, BackLeftModuleConstants.moduleID), new SwerveModule(backRight, BackRightModuleConstants.moduleID)};
+        new SwerveModule(backLeft, BackLeftModuleConstants.moduleID), new SwerveModule(backRight, BackRightModuleConstants.moduleID) };
 
     this.gyro = gyroIO;
 
@@ -167,7 +167,9 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
       optimizedStates[module.getModuleID()] = module.setDesiredState(desiredStates[module.getModuleID()], isOpenLoop);
     }
     swerveSetpoint.moduleStates = optimizedStates;
-    Logger.recordOutput("states", swerveSetpoint.moduleStates);
+    Logger.recordOutput("SwerveStates/Desired", desiredStates);
+    Logger.recordOutput("SwerveStates/Optimized", swerveSetpoint.moduleStates);
+    Logger.recordOutput("SwerveStates/SetpointSpeeds", swerveSetpoint.chassisSpeeds);
     return optimizedStates;
   }
 
@@ -203,9 +205,15 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     }
   }
 
-  /** Stops all of the modules' motors. */
+  public void setIdleMode(IdleMode mode) {
+    for(SwerveModule module: modules) {
+      module.setIdleMode(mode);
+    }
+  }
+
+  /**Stops all of the modules' motors. */
   public void stopMotors() {
-    for (SwerveModule module : modules) {
+    for(SwerveModule module: modules) {
       module.stop();
     }
   }
@@ -266,8 +274,6 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     for (var module : modules) {
       module.periodic();
     }
-    // Clear setpoint logs
-    Logger.recordOutput("SwerveStates/Desired", new double[] {});
     if (DriverStation.isDisabled()) {
       // Stop moving while disabled
       for (var module : modules) {
@@ -277,8 +283,6 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
 
     else {
       Logger.recordOutput("SwerveStates/Measured", getStates());
-      Logger.recordOutput("SwerveStates/Desired", swerveSetpoint.moduleStates);
-      Logger.recordOutput("SwerveStates/SetpointSpeeds", swerveSetpoint.chassisSpeeds);
       Logger.recordOutput("Odometry/Robot", getPose());
 
       // Log 3D odometry pose

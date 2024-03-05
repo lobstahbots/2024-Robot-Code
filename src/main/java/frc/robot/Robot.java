@@ -15,7 +15,9 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.littletonrobotics.urcl.URCL;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -57,7 +59,7 @@ public class Robot extends LoggedRobot {
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
   } else {
     if(SimConstants.REPLAY) {
-      String replayPath = logPath + "\\Log_24-02-22_02-19-32.wpilog";
+      String replayPath = logPath + "\\Log_24-03-04_04-50-36.wpilog";
       Logger.setReplaySource(new WPILOGReader(replayPath));
       Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(replayPath, "_replay")));
     } else {
@@ -92,7 +94,7 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {} 
 
   @Override
   public void disabledPeriodic() {}
@@ -106,6 +108,8 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    m_robotContainer.setIdleMode(IdleMode.kBrake, NeutralModeValue.Brake);
   }
 
   /** This function is called periodically during autonomous. */
@@ -121,6 +125,8 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    m_robotContainer.setIdleMode(IdleMode.kBrake, NeutralModeValue.Brake);
   }
 
   /** This function is called periodically during operator control. */
@@ -131,6 +137,7 @@ public class Robot extends LoggedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.setIdleMode(IdleMode.kCoast, NeutralModeValue.Coast);
   }
 
   /** This function is called periodically during test mode. */

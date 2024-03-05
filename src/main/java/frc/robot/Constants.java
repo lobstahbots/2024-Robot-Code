@@ -66,9 +66,11 @@ public final class Constants {
     public static final int DRIVE_TO_SPEAKER_BUTTON_ID = 4;
     public static final int SHOOTER_BUTTON_ID = 2;
     public static final int INTAKE_BUTTON_ID = 1;
+    public static final int OUTTAKE_BUTTON_ID = 1;
     public static final int CLIMBERUP_BUTTON_ID = 1;
     public static final int CLIMBERDOWN_BUTTON_ID = 1;
     public static final int SLOWDOWN_BUTTON_ID = 1;
+    public static final int AMP_BUTTON_ID = 3;
     public static final int RESET_PIVOT_ANGLE_BUTTON_ID = 1;
     public static final int PIVOT_ANGLE_AXIS = 0;
     public static final int TOGGLE_DRIVE_CENTRICITY_BUTTON_ID = 2;
@@ -94,8 +96,8 @@ public final class Constants {
     public static final Translation2d[] MODULE_LOCATIONS = new Translation2d[]{
       new Translation2d(RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0),
+      new Translation2d(-RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0),
-      new Translation2d(-RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0)
     };
     public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
       MODULE_LOCATIONS[0], MODULE_LOCATIONS[1], MODULE_LOCATIONS[2], MODULE_LOCATIONS[3]
@@ -178,6 +180,7 @@ public final class Constants {
   
   public static class IntakeConstants {
     public static final double INTAKE_SPEED = 0.5;
+    public static final double OUTTAKE_SPEED = -0.5;
     public static final int INTAKE_MOTOR_ID = 33;
     public static final int INDEXER_MOTOR_ID = 44;
     public static final double CURRENT_LIMIT = 40;
@@ -281,6 +284,7 @@ public final class Constants {
     public static final Pose2d BLUE_ALLIANCE_LOADING_STATION_POSE = new Pose2d(15, 1, new Rotation2d());
     public static final double PICKUP_OFFSET = 1;
     public static final double WING_LINE_X_METERS = 5.8217054;
+    public static final Pose2d[] SHOOTING_POSES = new Pose2d[]{new Pose2d(WING_LINE_X_METERS, 7.004, new Rotation2d()), new Pose2d(WING_LINE_X_METERS, 0.756, new Rotation2d())};
   }
 
   public static class AlertConstants {
