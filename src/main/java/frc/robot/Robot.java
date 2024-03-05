@@ -70,6 +70,7 @@ public class Robot extends LoggedRobot {
   
   // Logger.getInstance().disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
   DataLogManager.start();
+  setUseTiming(false);
   Logger.registerURCL(URCL.startExternal());
   Logger.start();
 

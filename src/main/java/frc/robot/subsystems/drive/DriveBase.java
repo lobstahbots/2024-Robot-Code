@@ -31,6 +31,7 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
@@ -312,24 +313,18 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
           .exp(new Twist3d(0.0, 0.0, 0.0,
               0.0, 0.0, getPose().getRotation().getRadians()))
        .exp(new Twist3d(Units.inchesToMeters(14.5), Units.inchesToMeters(9), 0.0, 0.0, 0.0, 0.0));
-      Pose3d BackPose3d = new Pose3d(getPose().getX(), getPose().getY(), Units.inchesToMeters(8),
+      Pose3d backRightPose3d = new Pose3d(getPose().getX(), getPose().getY(), Units.inchesToMeters(8),
           new Rotation3d(Units.degreesToRadians(180), -Units.degreesToRadians(180), Units.degreesToRadians(0)));
-      BackPose3d = BackPose3d
+      backRightPose3d = backRightPose3d
           .exp(new Twist3d(0.0, 0.0, 0.0,
               0.0, 0.0, getPose().getRotation().getRadians()))
           .exp(new Twist3d(Units.inchesToMeters(8),
               0.0, 0.0, 0.0, 0.0, 0.0));
-      Pose3d frontRightPose3d = new Pose3d(getPose().getX(),
-          getPose().getY(), Units.inchesToMeters(7),
-          new Rotation3d(Units.degreesToRadians(180), -Units.degreesToRadians(180), Units.degreesToRadians(90)));
-      frontRightPose3d = frontRightPose3d
-          .exp(new Twist3d(0.0, 0.0, 0.0,
-              0.0, 0.0, getPose().getRotation().getRadians()))
-          .exp(new Twist3d(Units.inchesToMeters(12), Units.inchesToMeters(0), 0.0, 0.0, 0.0, 0.0));
 
-      Logger.recordOutput("Back", BackPose3d);
-      Logger.recordOutput("Front Right", frontRightPose3d);
+      Logger.recordOutput("Back Right", backRightPose3d);
       Logger.recordOutput("Front Left", frontLeftPose3d);
+      Logger.recordOutput("Front Left Pose", robotPose3d.plus(VisionConstants.ROBOT_TO_FRONT_CAMERA));
+      Logger.recordOutput("Back Right Pose", robotPose3d.plus(VisionConstants.ROBOT_TO_REAR_CAMERA));
 
       Logger.recordOutput("Odometry/Robot3d", robotPose3d);
 

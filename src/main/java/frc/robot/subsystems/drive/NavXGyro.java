@@ -7,7 +7,6 @@ package frc.robot.subsystems.drive;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.Constants.SwerveConstants;
 
 /** Add your docs here. */
 public class NavXGyro implements GyroIO {

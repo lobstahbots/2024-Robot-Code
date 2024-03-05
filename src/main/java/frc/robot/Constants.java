@@ -198,7 +198,7 @@ public final class Constants {
   
   public static class SimConstants {
     public static final double LOOP_TIME = 0.02;
-    public static final boolean REPLAY = true;
+    public static final boolean REPLAY = false;
     public static final String REPLAY_LOG_PATH = "Log_24-03-02_19-32-28.wpilog";
   }
 
@@ -262,8 +262,8 @@ public final class Constants {
   
   public static class VisionConstants {
     public static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
-    public static final Transform3d ROBOT_TO_FRONT_CAMERA = new Transform3d(0, 0, 0, new Rotation3d());
-    public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(0, 0, 0, new Rotation3d());
+    public static final Transform3d ROBOT_TO_FRONT_CAMERA = new Transform3d(Units.inchesToMeters(13.916), Units.inchesToMeters(3.102475), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(25), 0));
+    public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(Units.inchesToMeters(-13.193037), Units.inchesToMeters(-9.543), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(-25), 0));
     public static final double POSE_CONFIDENCE_FILTER_THRESHOLD = 0.2;
     public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 0.5;
   }
