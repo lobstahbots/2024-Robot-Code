@@ -36,7 +36,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setIdleMode(NeutralModeValue shooterIdleMode) {
-    io.setIdleMode();
+    io.setIdleMode(shooterIdleMode);
   }
 
   @Override

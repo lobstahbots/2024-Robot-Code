@@ -7,6 +7,7 @@ package frc.robot;
 
 import java.io.File;
 
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -59,7 +60,7 @@ public class Robot extends LoggedRobot {
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
   } else {
     if(SimConstants.REPLAY) {
-      String replayPath = logPath + "\\Log_24-03-04_04-50-36.wpilog";
+      String replayPath = logPath + SimConstants.REPLAY_LOG_PATH;
       Logger.setReplaySource(new WPILOGReader(replayPath));
       Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(replayPath, "_replay")));
     } else {
@@ -67,12 +68,11 @@ public class Robot extends LoggedRobot {
       Logger.addDataReceiver(new WPILOGWriter(logPath, 0.02)); // Save outputs to a new log
     }
   }
+     DataLogManager.start();
+     URCL.start();
+     Logger.start();
   
   // Logger.getInstance().disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
-  DataLogManager.start();
-  setUseTiming(false);
-  Logger.registerURCL(URCL.startExternal());
-  Logger.start();
 
     m_robotContainer = new RobotContainer();
   }
