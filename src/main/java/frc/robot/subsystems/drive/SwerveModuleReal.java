@@ -38,11 +38,11 @@ public class SwerveModuleReal implements SwerveModuleIO {
    * @param driveMotorID The CAN ID of the motor controlling drive speed.
    * @param angularOffsetDegrees The offset angle in degrees.
   */
-  public SwerveModuleReal (int moduleID, int angleMotorID, int driveMotorID, double angularOffsetDegrees, boolean inverted) {
+  public SwerveModuleReal (int moduleID, String name, int angleMotorID, int driveMotorID, double angularOffsetDegrees, boolean inverted) {
     this.moduleID = moduleID;
 
-    this.angleMotor = new MonitoredSparkMax(angleMotorID, MotorType.kBrushless, String.format("Swerve module %d angle motor", moduleID));
-    this.driveMotor = new MonitoredSparkMax(driveMotorID, MotorType.kBrushless, String.format("Swerve module %d drive motor", moduleID));
+    this.angleMotor = new MonitoredSparkMax(angleMotorID, MotorType.kBrushless, name + " angle motor");
+    this.driveMotor = new MonitoredSparkMax(driveMotorID, MotorType.kBrushless, name + " drive motor");
 
     angleMotor.restoreFactoryDefaults();
     driveMotor.restoreFactoryDefaults();
@@ -52,7 +52,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
     angleMotor.setSmartCurrentLimit(DriveConstants.ANGLE_MOTOR_CURRENT_LIMIT);
     driveMotor.enableVoltageCompensation(12.0);
     angleMotor.enableVoltageCompensation(12.0);
-    angleMotor.setInverted(true);
+    angleMotor.setInverted(false);
     driveMotor.setInverted(true);
 
     drivingEncoder = driveMotor.getEncoder();
@@ -74,6 +74,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
 
     this.angularOffset = Rotation2d.fromDegrees(angularOffsetDegrees);
     drivingEncoder.setPosition(0);
+    resetEncoders();
   }
 
   /**Stops the module motors. */
@@ -155,7 +156,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
     inputs.driveAppliedVolts = driveMotor.getAppliedOutput() * driveMotor.getBusVoltage();
     inputs.driveCurrentAmps = new double[] {driveMotor.getOutputCurrent()};
 
-    inputs.turnPosition = Rotation2d.fromRadians(angleAbsoluteEncoder.getPosition() + angularOffset.getRadians());
+    inputs.turnPosition = Rotation2d.fromRadians(-angleAbsoluteEncoder.getPosition() - angularOffset.getRadians());
     inputs.turnAppliedVolts = angleMotor.getAppliedOutput() * angleMotor.getBusVoltage();
     inputs.turnCurrentAmps = new double[] {angleMotor.getOutputCurrent()};
     inputs.angularOffset = angularOffset;

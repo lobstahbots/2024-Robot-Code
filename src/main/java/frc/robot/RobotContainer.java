@@ -139,16 +139,16 @@ public class RobotContainer {
    */
   public RobotContainer() {
     if (Robot.isReal()) {
-      SwerveModuleReal frontLeft = new SwerveModuleReal(FrontLeftModuleConstants.moduleID,
+      SwerveModuleReal frontLeft = new SwerveModuleReal(FrontLeftModuleConstants.moduleID, "Front left ",
           FrontLeftModuleConstants.angleID, FrontLeftModuleConstants.driveID, FrontLeftModuleConstants.angleOffset,
           FrontLeftModuleConstants.inverted);
-      SwerveModuleReal frontRight = new SwerveModuleReal(FrontRightModuleConstants.moduleID,
+      SwerveModuleReal frontRight = new SwerveModuleReal(FrontRightModuleConstants.moduleID, " Front right",
           FrontRightModuleConstants.angleID, FrontRightModuleConstants.driveID, FrontRightModuleConstants.angleOffset,
           FrontRightModuleConstants.inverted);
-      SwerveModuleReal backLeft = new SwerveModuleReal(BackLeftModuleConstants.moduleID,
+      SwerveModuleReal backLeft = new SwerveModuleReal(BackLeftModuleConstants.moduleID, " Back left",
           BackLeftModuleConstants.angleID, BackLeftModuleConstants.driveID, BackLeftModuleConstants.angleOffset,
           BackLeftModuleConstants.inverted);
-      SwerveModuleReal backRight = new SwerveModuleReal(BackRightModuleConstants.moduleID,
+      SwerveModuleReal backRight = new SwerveModuleReal(BackRightModuleConstants.moduleID, "Back right",
           BackRightModuleConstants.angleID, BackRightModuleConstants.driveID, BackRightModuleConstants.angleOffset,
           BackRightModuleConstants.inverted);
 

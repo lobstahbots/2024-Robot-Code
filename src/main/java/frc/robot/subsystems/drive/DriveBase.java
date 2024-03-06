@@ -65,7 +65,7 @@ public class DriveBase extends CharacterizableSubsystem {
       SwerveModuleIO backLeft, SwerveModuleIO backRight, boolean isOpenLoop) {
 
     this.modules = new SwerveModule[] { new SwerveModule(frontLeft, FrontLeftModuleConstants.moduleID), new SwerveModule(frontRight, FrontRightModuleConstants.moduleID),
-        new SwerveModule(backLeft, BackLeftModuleConstants.moduleID), new SwerveModule(backRight, BackRightModuleConstants.moduleID) };
+         new SwerveModule(backLeft, BackRightModuleConstants.moduleID), new SwerveModule(backRight, BackLeftModuleConstants.moduleID) };
 
     this.gyro = gyroIO;
 
@@ -153,7 +153,7 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
   // SwerveDriveKinematics.desaturateWheelSpeeds(newStates, DriveConstants.MAX_DRIVE_SPEED);
   // setModuleStates(newStates);
 }
-  
+
   /**
    * Sets desired SwerveModuleStates. Optimizes states.
    * 

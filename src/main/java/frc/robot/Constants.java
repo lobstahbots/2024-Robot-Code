@@ -96,8 +96,8 @@ public final class Constants {
     public static final Translation2d[] MODULE_LOCATIONS = new Translation2d[]{
       new Translation2d(RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0),
-      new Translation2d(-RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0),
+      new Translation2d(-RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0)
     };
     public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
       MODULE_LOCATIONS[0], MODULE_LOCATIONS[1], MODULE_LOCATIONS[2], MODULE_LOCATIONS[3]
@@ -124,7 +124,7 @@ public final class Constants {
       public static final boolean inverted = true;
     }
     public static class BackLeftModuleConstants {
-      public static final int moduleID = 3;
+      public static final int moduleID = 2;
       public static final int driveID = 16;
       public static final int angleID = 17;
       public static final double angleOffset = 180;
@@ -138,7 +138,7 @@ public final class Constants {
       public static final boolean inverted = true;
     }
     public static class BackRightModuleConstants {
-      public static final int moduleID = 2;
+      public static final int moduleID = 3;
       public static final int driveID = 10;
       public static final int angleID = 11;
       public static final double angleOffset = 90;
@@ -158,8 +158,8 @@ public final class Constants {
     public static final double TURNING_ENCODER_POSITION_CONVERSION_FACTOR = (2 * Math.PI);
     public static final double TURNING_ENCODER_VELOCITY_CONVERSION_FACTOR = TURNING_ENCODER_POSITION_CONVERSION_FACTOR / 60.0;
 
-    public static final double TURN_PID_MIN_INPUT = 0;
-    public static final double TURN_PID_MAX_INPUT = 2*Math.PI;
+    public static final double TURN_PID_MIN_INPUT = - Math.PI;
+    public static final double TURN_PID_MAX_INPUT = Math.PI;
 
     public static final double DRIVE_PID_MIN_OUTPUT = -1;
     public static final double DRIVE_PID_MAX_OUTPUT = 1;
@@ -168,11 +168,11 @@ public final class Constants {
     public static final double DRIVE_PID_D = 0;
     public static final double DRIVE_PID_FF = 0;
 
-    public static final double TURN_PID_MIN_OUTPUT = -1;
-    public static final double TURN_PID_MAX_OUTPUT = 1;
-    public static final double TURN_PID_P = 1.0;
+    public static final double TURN_PID_MIN_OUTPUT = -2 * Math.PI;
+    public static final double TURN_PID_MAX_OUTPUT = 2* Math.PI;
+    public static final double TURN_PID_P = 1;
     public static final double TURN_PID_I = 0;
-    public static final double TURN_PID_D = 0.1;
+    public static final double TURN_PID_D = 0;
     public static final double TURN_PID_FF = 0;
 
     public static final double AIM_VELOCITY_COMPENSATION_DEADBAND = 0.3;
