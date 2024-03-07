@@ -92,18 +92,18 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick = new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
-  private final JoystickButton alignToAmpButton = new JoystickButton(driverJoystick,
-      IOConstants.ALIGN_TO_AMP_BUTTON_ID);
-  private final JoystickButton alignToSourceButton = new JoystickButton(driverJoystick,
-      IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
-  private final JoystickButton alignToSpeakerButton = new JoystickButton(driverJoystick,
-      IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
-  private final JoystickButton driveToAmpButton = new JoystickButton(driverJoystick,
-      IOConstants.ALIGN_TO_AMP_BUTTON_ID);
-  private final JoystickButton driveToSourceButton = new JoystickButton(driverJoystick,
-      IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
-  private final JoystickButton driveToSpeakerButton = new JoystickButton(driverJoystick,
-      IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
+//   private final JoystickButton alignToAmpButton = new JoystickButton(driverJoystick,
+//       IOConstants.ALIGN_TO_AMP_BUTTON_ID);
+//   private final JoystickButton alignToSourceButton = new JoystickButton(driverJoystick,
+//       IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
+//   private final JoystickButton alignToSpeakerButton = new JoystickButton(driverJoystick,
+//       IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
+//   private final JoystickButton driveToAmpButton = new JoystickButton(driverJoystick,
+    //   IOConstants.ALIGN_TO_AMP_BUTTON_ID);
+//   private final JoystickButton driveToSourceButton = new JoystickButton(driverJoystick,
+//       IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
+//   private final JoystickButton driveToSpeakerButton = new JoystickButton(driverJoystick,
+//       IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
   private final JoystickButton driveToggleButton = new JoystickButton(driverJoystick,
       IOConstants.TOGGLE_DRIVE_CENTRICITY_BUTTON_ID);
   private final Joystick operatorJoystick = new Joystick(IOConstants.OPERATOR_CONTROLLER_PORT);
@@ -139,21 +139,21 @@ public class RobotContainer {
    */
   public RobotContainer() {
     if (Robot.isReal()) {
-      SwerveModuleReal frontLeft = new SwerveModuleReal(FrontLeftModuleConstants.moduleID,
+      SwerveModuleReal frontLeft = new SwerveModuleReal(FrontLeftModuleConstants.moduleID, "Front left ",
           FrontLeftModuleConstants.angleID, FrontLeftModuleConstants.driveID, FrontLeftModuleConstants.angleOffset,
           FrontLeftModuleConstants.inverted);
-      SwerveModuleReal frontRight = new SwerveModuleReal(FrontRightModuleConstants.moduleID,
+      SwerveModuleReal frontRight = new SwerveModuleReal(FrontRightModuleConstants.moduleID, " Front right",
           FrontRightModuleConstants.angleID, FrontRightModuleConstants.driveID, FrontRightModuleConstants.angleOffset,
           FrontRightModuleConstants.inverted);
-      SwerveModuleReal backLeft = new SwerveModuleReal(BackLeftModuleConstants.moduleID,
+      SwerveModuleReal backLeft = new SwerveModuleReal(BackLeftModuleConstants.moduleID, " Back left",
           BackLeftModuleConstants.angleID, BackLeftModuleConstants.driveID, BackLeftModuleConstants.angleOffset,
           BackLeftModuleConstants.inverted);
-      SwerveModuleReal backRight = new SwerveModuleReal(BackRightModuleConstants.moduleID,
+      SwerveModuleReal backRight = new SwerveModuleReal(BackRightModuleConstants.moduleID, "Back right",
           BackRightModuleConstants.angleID, BackRightModuleConstants.driveID, BackRightModuleConstants.angleOffset,
           BackRightModuleConstants.inverted);
 
       driveBase = new DriveBase(new NavXGyro(), new PhotonVision(new PhotonVisionReal()), frontLeft, frontRight,
-          backRight, backLeft, false);
+          backLeft, backRight, false);
       pivot = new Pivot(new PivotSparkMax(PivotConstants.LEFT_MOTOR_ID, PivotConstants.RIGHT_MOTOR_ID,
           PivotConstants.ENCODER_CHANNEL));
       shooter = new Shooter(
@@ -183,8 +183,8 @@ public class RobotContainer {
   private void setDefaultCommands() {
     driveBase.setDefaultCommand(
         new SwerveDriveCommand(driveBase,
+            () -> driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
             () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
-            () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
             () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
             () -> DriveConstants.FIELD_CENTRIC));
     pivot.setDefaultCommand(new RotatePivotCommand(pivot,
