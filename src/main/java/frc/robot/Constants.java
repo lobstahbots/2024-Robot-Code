@@ -58,21 +58,21 @@ public final class Constants {
     public static final int STRAFE_Y_AXIS = 1;
     public static final int ROTATION_AXIS = 2;
     public static final double JOYSTICK_DEADBAND = 0.1;
-    public static final int ALIGN_TO_AMP_BUTTON_ID = 1;
+    public static final int ALIGN_TO_AMP_BUTTON_ID = 3;
     public static final int ALIGN_TO_SOURCE_BUTTON_ID = 3;
     public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 4;
     public static final int DRIVE_TO_AMP_BUTTON_ID = 2;
     public static final int DRIVE_TO_SOURCE_BUTTON_ID = 3;
     public static final int DRIVE_TO_SPEAKER_BUTTON_ID = 4;
     public static final int SHOOTER_BUTTON_ID = 2;
-    public static final int INTAKE_BUTTON_ID = 1;
+    public static final int INTAKE_BUTTON_ID = 3;
     public static final int OUTTAKE_BUTTON_ID = 1;
     public static final int CLIMBERUP_BUTTON_ID = 1;
     public static final int CLIMBERDOWN_BUTTON_ID = 1;
     public static final int SLOWDOWN_BUTTON_ID = 1;
-    public static final int AMP_BUTTON_ID = 3;
+    public static final int AMP_BUTTON_ID = 4;
     public static final int RESET_PIVOT_ANGLE_BUTTON_ID = 1;
-    public static final int PIVOT_ANGLE_AXIS = 0;
+    public static final int PIVOT_ANGLE_AXIS = 1;
     public static final int TOGGLE_DRIVE_CENTRICITY_BUTTON_ID = 2;
   }
   
@@ -94,10 +94,10 @@ public final class Constants {
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
     public static final int ANGLE_MOTOR_CURRENT_LIMIT = 40;
     public static final Translation2d[] MODULE_LOCATIONS = new Translation2d[]{
-      new Translation2d(RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0),
       new Translation2d(RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
-      new Translation2d(-RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0),
-      new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0)
+      new Translation2d(RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0),
+      new Translation2d(-RobotConstants.WHEELBASE / 2.0, -RobotConstants.TRACK_WIDTH / 2.0),
+      new Translation2d(-RobotConstants.WHEELBASE / 2.0, RobotConstants.TRACK_WIDTH / 2.0)
     };
     public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
       MODULE_LOCATIONS[0], MODULE_LOCATIONS[1], MODULE_LOCATIONS[2], MODULE_LOCATIONS[3]
@@ -124,14 +124,14 @@ public final class Constants {
       public static final boolean inverted = true;
     }
     public static class BackLeftModuleConstants {
-      public static final int moduleID = 1;
+      public static final int moduleID = 2;
       public static final int driveID = 16;
       public static final int angleID = 17;
       public static final double angleOffset = 180;
       public static final boolean inverted = true;
     }
     public static class FrontRightModuleConstants {
-      public static final int moduleID = 2;
+      public static final int moduleID = 1;
       public static final int driveID = 14;
       public static final int angleID = 15;
       public static final double angleOffset = 0;
@@ -153,13 +153,13 @@ public final class Constants {
     public static final double KA = 0.1;
     public static final double KV = 0.1;
 
-    public static final double DRIVING_ENCODER_POSITION_CONVERSION_FACTOR = ((RobotConstants.WHEEL_DIAMETER * Math.PI) * (RobotConstants.DRIVE_GEAR_RATIO)) / 42;
+    public static final double DRIVING_ENCODER_POSITION_CONVERSION_FACTOR = RobotConstants.WHEEL_DIAMETER * Math.PI;
     public static final double DRIVING_ENCODER_VELOCITY_CONVERSION_FACTOR = DRIVING_ENCODER_POSITION_CONVERSION_FACTOR / 60.0;
     public static final double TURNING_ENCODER_POSITION_CONVERSION_FACTOR = (2 * Math.PI);
     public static final double TURNING_ENCODER_VELOCITY_CONVERSION_FACTOR = TURNING_ENCODER_POSITION_CONVERSION_FACTOR / 60.0;
 
-    public static final double TURN_PID_MIN_INPUT = 0;
-    public static final double TURN_PID_MAX_INPUT = 2*Math.PI;
+    public static final double TURN_PID_MIN_INPUT = - Math.PI;
+    public static final double TURN_PID_MAX_INPUT = Math.PI;
 
     public static final double DRIVE_PID_MIN_OUTPUT = -1;
     public static final double DRIVE_PID_MAX_OUTPUT = 1;
@@ -168,11 +168,11 @@ public final class Constants {
     public static final double DRIVE_PID_D = 0;
     public static final double DRIVE_PID_FF = 0;
 
-    public static final double TURN_PID_MIN_OUTPUT = -1;
-    public static final double TURN_PID_MAX_OUTPUT = 1;
-    public static final double TURN_PID_P = 1.0;
+    public static final double TURN_PID_MIN_OUTPUT = -2 * Math.PI;
+    public static final double TURN_PID_MAX_OUTPUT = 2* Math.PI;
+    public static final double TURN_PID_P = 1;
     public static final double TURN_PID_I = 0;
-    public static final double TURN_PID_D = 0.1;
+    public static final double TURN_PID_D = 0;
     public static final double TURN_PID_FF = 0;
 
     public static final double AIM_VELOCITY_COMPENSATION_DEADBAND = 0.3;
@@ -189,6 +189,7 @@ public final class Constants {
   public static class ShooterConstants {
     public static final double SHOOTER_SPEED = 1;
     public static final double SPIN_UP_SPEED = 0.75;
+    public static final double AMP_SPEED = 0.175;
     public static final int UPPER_SHOOTER_ID = 5;
     public static final int LOWER_SHOOTER_ID = 32;
     public static final double CURRENT_LIMIT = 40;
@@ -199,6 +200,7 @@ public final class Constants {
   public static class SimConstants {
     public static final double LOOP_TIME = 0.02;
     public static final boolean REPLAY = false;
+    public static final String REPLAY_LOG_PATH = "Log_24-03-02_19-32-28.wpilog";
   }
 
   public static class PivotConstants {
@@ -207,17 +209,14 @@ public final class Constants {
     public static final double PID_D = 0;
     public static final double PID_FF = 0;
 
-    public static final double KS = 0.1;
-    public static final double KV = 0.2;
-    public static final double KA = 0.01;
+    public static final double KS = 0.56453;
+    public static final double KG = 0.38989;
+    public static final double KV = 0.0015868;
+    public static final double KA = 0.0027206;
 
     public static final double MAX_VELOCITY = 0;
     public static final double MAX_ACCELERATION = 0;
     public static final int MAX_CURRENT = 30;
-
-    public static final double AMP_ANGLE = 0;
-    public static final double NEAR_SPEAKER_ANGLE = 0;
-    public static final double FAR_SPEAKER_ANGLE = 0;
 
     public static final double PIVOT_SIM_ROTATION_POINT_DISTANCE_INCHES = 5;
     public static final double ORIGIN_TO_TOWER_MOUNT_X_DIST = Units.inchesToMeters(16.5);
@@ -243,9 +242,10 @@ public final class Constants {
     public static final int ENCODER_CHANNEL = 3;
 
     public static final double MAX_PIVOT_ERROR = 2;
-    public static final double AMP_PICKUP_ANGLE = 85;
+    public static final double AMP_ANGLE_SETPOINT = 104;
     public static final double SOURCE_PICKUP_ANGLE = 60;
     public static final double GROUND_PICKUP_ANGLE = 0;
+    public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
     static {
       shotAngleMap.put(1.039, Units.degreesToRadians(90.0));
@@ -261,8 +261,8 @@ public final class Constants {
   
   public static class VisionConstants {
     public static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
-    public static final Transform3d ROBOT_TO_FRONT_CAMERA = new Transform3d(0, 0, 0, new Rotation3d());
-    public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(0, 0, 0, new Rotation3d());
+    public static final Transform3d ROBOT_TO_FRONT_CAMERA = new Transform3d(Units.inchesToMeters(13.916), Units.inchesToMeters(3.102475), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(25), 0));
+    public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(Units.inchesToMeters(-13.193037), Units.inchesToMeters(-9.543), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(-25), 0));
     public static final double POSE_CONFIDENCE_FILTER_THRESHOLD = 0.2;
     public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 0.5;
   }
