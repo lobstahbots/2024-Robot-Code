@@ -26,23 +26,10 @@ public class Intake extends SubsystemBase {
   public void setIntakeMotorSpeed(double intakeMotorSpeed) {
     io.setIntakeMotorSpeed(intakeMotorSpeed);
   }
-
-  /**
-   * Sets the indexer motor speed to the given speed
-   * @param indexerMotorSpeed The speed to set motor to
-   */
-  public void setIndexerMotorSpeed(double indexerMotorSpeed) {
-    io.setIndexerMotorSpeed(indexerMotorSpeed);
-  }
   
   /** Stops the intake motor. */
   public void stopIntakeMotor() {
     io.stopIntakeMotor();
-  }
-
-  /** Stops the indexer motor. */
-  public void stopIndexerMotor() {
-    io.stopIndexerMotor();
   }
 
   @Override

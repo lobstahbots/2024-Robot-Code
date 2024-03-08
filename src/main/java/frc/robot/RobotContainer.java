@@ -90,7 +90,7 @@ public class RobotContainer {
   // new ClimberSparkMax(ClimberConstants.LEFT_CLIMBER_ID,
   // ClimberConstants.RIGHT_CLIMBER_ID));
   private final Intake intake = new Intake(
-      new IntakeSparkMax(IntakeConstants.INTAKE_MOTOR_ID, IntakeConstants.INDEXER_MOTOR_ID));
+      new IntakeSparkMax(IntakeConstants.INTAKE_MOTOR_ID));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick = new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);

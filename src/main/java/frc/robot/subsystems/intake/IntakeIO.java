@@ -14,18 +14,9 @@ public interface IntakeIO {
      * @param intakeMotorSpeed The speed to set the intake to.
      */
     public default void setIntakeMotorSpeed(double intakeMotorSpeed) {}
-
-    /** Sets the intake motor speed.  
-     * 
-     * @param indexerMotorSpeed The speed to set the intake to.
-     */
-    public default void setIndexerMotorSpeed(double indexerMotorSpeed) {}
     
     /** Stops the intake motor. */
     public default void stopIntakeMotor() {}
-
-    /** Stops the indexer motor. */
-    public default void stopIndexerMotor() {}
     
     public default void updateInputs(IntakeIOInputs inputs) {}
 
