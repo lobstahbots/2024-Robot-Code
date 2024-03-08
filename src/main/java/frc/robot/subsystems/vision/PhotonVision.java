@@ -22,9 +22,10 @@ public class PhotonVision extends SubsystemBase {
     /**
      * Get the estimated pose from both cameras.
      * @param odometryPose The current pose returned by the robot odometry to filter the vision estimate in comparison to.
+     * @param gyroRotation The rotation from the gyro; used if there is only one detected tag
      * @return The estimated pose.
      */
-    public Optional<Pose2d> getEstimatedPose(Pose2d odometryPose) {
+    public Optional<Pose2d> getEstimatedPose(Pose2d odometryPose, Rotation2d gyroRotation) {
         Pose2d averagePose = null;
         double sumX = 0;
         double sumY = 0;
@@ -45,7 +46,11 @@ public class PhotonVision extends SubsystemBase {
             sumConfidence += inputs.rearConfidence;
         }
 
-        if (sumConfidence != 0) averagePose = new Pose2d(sumX, sumY, sumRotation).div(sumConfidence);
+        if (sumConfidence != 0) {
+            if (io.getFrontTrackedTargets().size() + io.getRearTrackedTargets().size() > 1) averagePose = new Pose2d(sumX, sumY, sumRotation).div(sumConfidence);
+            else averagePose = new Pose2d(sumX, sumY, new Rotation2d(0)).div(sumConfidence).rotateBy(gyroRotation);
+            // If we only have one tracked target, take just the x and y values, divide by sumConfidence, and then rotate to the gyroRotation
+        }
         return Optional.ofNullable(averagePose);
     }
 

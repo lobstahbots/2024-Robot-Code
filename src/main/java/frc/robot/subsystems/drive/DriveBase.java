@@ -263,7 +263,7 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     } else {
       swerveOdometry.update(gyroInputs.yawPosition, getPositions());
     }
-    Optional<Pose2d> estimatedPose = photonVision.getEstimatedPose(getPose());
+    Optional<Pose2d> estimatedPose = photonVision.getEstimatedPose(getPose(), gyroInputs.yawPosition);
     if (estimatedPose.isPresent())
       swerveOdometry.addVisionMeasurement(estimatedPose.get(), photonVision.getTimestamp());
     field.setRobotPose(getPose());
