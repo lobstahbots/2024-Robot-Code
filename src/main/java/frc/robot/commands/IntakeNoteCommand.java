@@ -10,6 +10,14 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 
+/**
+ * Command to intake a note. It goes through the following steps: <ol>
+ *  <li>Spin the intake until the beam break sensor is broken</li>
+ *  <li>Spin the indexer until the beam is no longer broken</li>
+ *  <li>Spin the indexer backwards until the beam is broken again</li>
+ * </ol>
+ * After this, the command is done.
+ */
 public class IntakeNoteCommand extends Command {
   /** Creates a new IntakeNoteCommand. */
   public Intake intake;
@@ -34,13 +42,16 @@ public class IntakeNoteCommand extends Command {
   @Override
   public void execute() {
     updateIndexerState();
-    if(indexerState == IndexerState.NoNote) intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
-    if(indexerState == IndexerState.MovingInIndexer) indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);
-    if (indexerState == IndexerState.InShooter) indexer.setIndexerMotorSpeed(-IndexerConstants.SLOW_INDEXER_MOTOR_SPEED);
+    if (indexerState == IndexerState.NoNote) intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
+    if (indexerState == IndexerState.MovingInIndexer) indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);
+    if (indexerState == IndexerState.InShooter) {
+      intake.stopIntakeMotor(); // We keep the intake moving until the note is past the beam break sensor, so that we don't try and tear away the note from the intake while it's still in the intake
+      indexer.setIndexerMotorSpeed(-IndexerConstants.SLOW_INDEXER_MOTOR_SPEED);
+    }
   }
 
   private void updateIndexerState() {
-    switch(indexerState) {
+    switch (indexerState) {
       case NoNote:
         if(indexer.beamBroken()) indexerState = IndexerState.MovingInIndexer;
           break;
@@ -57,15 +68,18 @@ public class IntakeNoteCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    indexer.stopIndexerMotor();
+    intake.stopIntakeMotor();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return indexerState == IndexerState.InIndexer;
   }
-}
 
-enum IndexerState {
-  NoNote, MovingInIndexer, InShooter, InIndexer
+  enum IndexerState {
+    NoNote, MovingInIndexer, InShooter, InIndexer
+  }
 }
