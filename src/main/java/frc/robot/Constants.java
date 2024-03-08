@@ -64,6 +64,7 @@ public final class Constants {
     public static final int DRIVE_TO_AMP_BUTTON_ID = 2;
     public static final int DRIVE_TO_SOURCE_BUTTON_ID = 3;
     public static final int DRIVE_TO_SPEAKER_BUTTON_ID = 4;
+    public static final int INDEXER_BUTTON_ID = 2;
     public static final int SHOOTER_BUTTON_ID = 2;
     public static final int INTAKE_BUTTON_ID = 3;
     public static final int OUTTAKE_BUTTON_ID = 1;

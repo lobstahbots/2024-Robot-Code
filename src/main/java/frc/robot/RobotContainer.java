@@ -29,6 +29,7 @@ import frc.robot.commands.IntakeNoteCommand;
 import frc.robot.commands.MoveClimberCommand;
 import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.ShootWhileMovingCommand;
+import frc.robot.commands.SpinIndexerCommand;
 import frc.robot.commands.SpinIntakeCommand;
 import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.StopShooterCommand;
@@ -116,6 +117,7 @@ public class RobotContainer {
   private final JoystickButton intakeButton = new JoystickButton(operatorJoystick, IOConstants.INTAKE_BUTTON_ID);
   private final JoystickButton ampButton = new JoystickButton(operatorJoystick, IOConstants.AMP_BUTTON_ID);
   private final JoystickButton outtakeButton = new JoystickButton(operatorJoystick, IOConstants.OUTTAKE_BUTTON_ID);
+  private final JoystickButton indexButton = new JoystickButton(driverJoystick, IOConstants.INDEXER_BUTTON_ID);
   // private final JoystickButton climberUpButton = new
   // JoystickButton(operatorJoystick, IOConstants.CLIMBERUP_BUTTON_ID);
   // private final JoystickButton climberDownButton = new
@@ -266,7 +268,8 @@ public class RobotContainer {
     // ClimberConstants.CLIMBER_SPEED));
     // climberDownButton.whileTrue(new MoveClimberCommand(climber,
     // -ClimberConstants.CLIMBER_SPEED));
-    intakeButton.whileTrue(new IntakeNoteCommand(indexer, intake));
+    intakeButton.onTrue(new IntakeNoteCommand(indexer, intake));
+    indexButton.whileTrue(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED));
     shooterButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
     ampButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED).alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT)));
     // retractPivotButton.whileTrue(new RotatePivotCommand(pivot,
@@ -281,10 +284,10 @@ public class RobotContainer {
     // 2, "Station 3", 3))),
     // autoFactory::getSimpleAuto);
 
-    autoChooser.addRoutine("One-Note Auto", List.of(), autoFactory::getOneNoteAuto);
-    autoChooser.addRoutine("Two-Note Auto", List.of(), autoFactory::getTwoNoteAuto);
-    autoChooser.addRoutine("Three-Note Auto", List.of(), autoFactory::getThreeNoteAuto);
-    autoChooser.addRoutine("Four-Note Auto", List.of(), autoFactory::getFourNoteAuto);
+    // autoChooser.addRoutine("One-Note Auto", List.of(), autoFactory::getOneNoteAuto);
+    // autoChooser.addRoutine("Two-Note Auto", List.of(), autoFactory::getTwoNoteAuto);
+    // autoChooser.addRoutine("Three-Note Auto", List.of(), autoFactory::getThreeNoteAuto);
+    // autoChooser.addRoutine("Four-Note Auto", List.of(), autoFactory::getFourNoteAuto);
 
     autoChooser.addRoutine("Characterize", List.of(
         new AutoQuestion<>("Which Subsystem?", Map.of("DriveBase", driveBase, "Pivot", pivot)),
