@@ -16,4 +16,6 @@ public interface IndexerIO {
     public default void stopIndexerMotor() {}
     
     public default void updateInputs(IndexerIOInputs inputs) {}
+
+    public default void periodic() {}
 }

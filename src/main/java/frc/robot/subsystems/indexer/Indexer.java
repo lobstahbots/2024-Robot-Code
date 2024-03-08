@@ -43,5 +43,6 @@ public class Indexer extends SubsystemBase {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
     Logger.processInputs("Indexer", inputs);
+    io.periodic();
   }
 }

@@ -4,23 +4,28 @@
 
 package frc.robot.subsystems.indexer;
 
-import com.revrobotics.CANSparkMax;
+import java.util.Arrays;
+
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.IndexerConstants;
+import stl.tempControl.MonitoredSparkMax;
+import stl.tempControl.TemperatureMonitor;
 
 public class IndexerSparkMax implements IndexerIO {
-  private final CANSparkMax indexerMotor;
+  private final MonitoredSparkMax indexerMotor;
   private DigitalInput beamBreak = new DigitalInput(0);
+  private final TemperatureMonitor monitor;
 
   /** Creates a new IndexerSparkMax. */
   public IndexerSparkMax(int indexerMotorID) {
-    this.indexerMotor = new CANSparkMax(indexerMotorID, MotorType.kBrushless);
-    this.indexerMotor.setInverted(false);
-    this.indexerMotor.setIdleMode(IdleMode.kBrake);
-    this.indexerMotor.setSmartCurrentLimit(IndexerConstants.INDEXER_CURRENT_LIMIT);
+    this.indexerMotor = new MonitoredSparkMax(indexerMotorID, MotorType.kBrushless, "Indexer motor");
+    indexerMotor.setInverted(false);
+    indexerMotor.setIdleMode(IdleMode.kBrake);
+    indexerMotor.setSmartCurrentLimit(IndexerConstants.INDEXER_CURRENT_LIMIT);
+    monitor = new TemperatureMonitor(Arrays.asList(indexerMotor));
   }
 
   public void setIndexerMotorSpeed(double indexerMotorSpeed) {
@@ -36,5 +41,9 @@ public class IndexerSparkMax implements IndexerIO {
     inputs.indexerMotorTemperature = indexerMotor.getMotorTemperature();
     inputs.indexerMotorVoltage = indexerMotor.getBusVoltage() * indexerMotor.getAppliedOutput();
     inputs.beamBroken = !beamBreak.get();
-  } 
+  }
+
+  public void periodic() {
+    monitor.monitor();
+  }
 }
