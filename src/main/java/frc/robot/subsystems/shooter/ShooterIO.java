@@ -2,6 +2,8 @@ package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 public interface ShooterIO {
     @AutoLog
     public static class ShooterIOInputs {
@@ -16,12 +18,14 @@ public interface ShooterIO {
     }
     /** Sets the shooter motor speed.  
      * 
-     * @param upperShooterMotorSpeed The speed to set the upper shooter to.
-     * @param lowerShooterMotorSpeed The speed to set the lower shooter to.
+     * @param upperShooterSpeed The speed to set the upper shooter to.
+     * @param lowerShooterSpeed The speed to set the lower shooter to.
      */
-    public default void setShooterMotorSpeed(double upperShooterMotorSpeed, double lowerShooterMotorSpeed) {}
+    public default void setShooterSpeed(double upperShooterSpeed, double lowerShooterSpeed) {}
     
-    public default void stopShooterMotor() {}
+    public default void stopMotor() {}
+
+    public default void setIdleMode(NeutralModeValue shooterIdleMode) {}
     
     public default void updateInputs(ShooterIOInputs inputs) {}
 

@@ -33,7 +33,7 @@ public class SpinShooterCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    shooter.stopShooterMotor();
+    shooter.stopMotor();
   }
 
   @Override

@@ -8,7 +8,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -78,7 +77,6 @@ public class SwerveModule {
    * @param desiredState A {@link SwerveModuleState} with desired speed and angle.
    */
   public SwerveModuleState setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
-
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState,
       inputs.turnPosition);
       io.setTurnVoltage(
@@ -102,9 +100,14 @@ public class SwerveModule {
     io.setTurnBrakeMode(mode);
   }
 
+  public void setIdleMode(IdleMode mode) {
+    io.setDriveIdleMode(mode);
+    io.setTurnIdleMode(mode);
+  }
+
   /** Returns the current turn angle of the module. */
   public Rotation2d getAngle() {
-    return new Rotation2d(MathUtil.angleModulus(inputs.turnPosition.getRadians()));
+    return new Rotation2d(inputs.turnPosition.getRadians());
   }
 
   /** Returns the current drive position of the module in meters. */

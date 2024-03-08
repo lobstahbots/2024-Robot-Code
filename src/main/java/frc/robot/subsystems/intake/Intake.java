@@ -6,6 +6,8 @@ package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
@@ -30,6 +32,10 @@ public class Intake extends SubsystemBase {
   /** Stops the intake motor. */
   public void stopIntakeMotor() {
     io.stopIntakeMotor();
+  }
+
+  public void setIdleMode(IdleMode idleMode) {
+    io.setIdleMode(idleMode);
   }
 
   @Override

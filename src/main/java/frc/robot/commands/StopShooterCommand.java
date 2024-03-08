@@ -17,7 +17,7 @@ public class StopShooterCommand extends Command {
 
   @Override
   public void execute() {
-    shooter.stopShooterMotor();
+    shooter.stopMotor();
   }
 
   @Override

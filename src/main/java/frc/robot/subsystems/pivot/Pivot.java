@@ -6,6 +6,8 @@ package frc.robot.subsystems.pivot;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -14,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Twist3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.PivotConstants;
 import stl.sysId.CharacterizableSubsystem;
@@ -22,7 +25,7 @@ public class Pivot extends CharacterizableSubsystem {
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
   private PivotIO io;
   private final ArmFeedforward feedforward = new ArmFeedforward(
-    PivotConstants.KS, PivotConstants.KV, PivotConstants.KA
+    PivotConstants.KS, PivotConstants.KG, PivotConstants.KV, PivotConstants.KA
   );
   private final ProfiledPIDController controller = new ProfiledPIDController(
     PivotConstants.PID_P,
@@ -68,17 +71,21 @@ public class Pivot extends CharacterizableSubsystem {
     return inputs.position;
   }
 
+  public void setIdleMode(IdleMode idleMode) {
+    io.setIdleMode(idleMode);
+  }
+
   @Override
   /**Runs pivot motors during characterization voltage ramp routines.*/
   public void runVolts(double volts) {
     io.setVoltage(volts);
   }
 
-
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Pivot", inputs);
+    Logger.recordOutput("Goal", Units.degreesToRadians(controller.getSetpoint().position));
     io.periodic();
     Logger.recordOutput("TowerPose",
         new Pose3d(PivotConstants.ORIGIN_TO_TOWER_MOUNT_X_DIST, PivotConstants.ORIGIN_TO_TOWER_MOUNT_Y_DIST,

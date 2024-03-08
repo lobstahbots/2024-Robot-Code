@@ -43,7 +43,6 @@ import frc.robot.subsystems.pivot.PivotKinematics;
 import frc.robot.subsystems.shooter.NoteVisualizer;
 import frc.robot.subsystems.shooter.Shooter;
 import stl.sysId.CharacterizableSubsystem;
-import stl.trajectory.AlliancePoseMirror;
 
 public class AutoFactory {
     private final Supplier<List<Object>> responses;
@@ -66,8 +65,8 @@ public class AutoFactory {
                 driveBase::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 driveBase::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
-                        new PIDConstants(5, 0.0, 0.1), // Translation PID constants
-                        new PIDConstants(5, 0.0, 0.1), // Rotation PID constants
+                        new PIDConstants(0.1, 0.0, 0), // Translation PID constants
+                        new PIDConstants(0.1, 0.0, 0), // Rotation PID constants
                         4.5, // Max module speed, in m/s
                         0.4, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig(true, false) // Default path replanning config. See the API for the options
@@ -110,7 +109,7 @@ public class AutoFactory {
         return pathfindingCommand;
     }
 
-       /**
+    /**
      * Constructs a path following command to generate a path to a target position.
      * 
      * @param targetPose Supplier for the desired end pose of the generated path.
@@ -209,8 +208,8 @@ public class AutoFactory {
     }
 
     public Command getShootCommand() {
-        return new WaitCommand(ShooterConstants.SHOOT_TIME).deadlineWith(
-                new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
+        return new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED,
+                ShooterConstants.SHOOTER_SPEED).withTimeout(1);
     }
 
     public Command getOneNoteAuto() {
@@ -231,21 +230,22 @@ public class AutoFactory {
         return getOneNoteAuto().andThen(new PathPlannerAuto("4 Note Auto"));
     }
 
-    public Command pickupAndScore(Pose2d notePoseBlue) {
+    public Command pickupAndScore(Pose2d notePoseBlue, Pose2d scoringPose) {
         Pose2d targetPose = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d();
         Command pickupAndScoreCommand = getPathFindToPoseCommand(
                 notePoseBlue
                         .plus(new Transform2d(-FieldConstants.PICKUP_OFFSET, 0, new Rotation2d())))
                 .andThen(new SwerveDriveStopCommand(driveBase))
-                .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, notePoseBlue, 0, 0, false))
+                // .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, notePoseBlue, 0, 0, false))
                 .andThen(getPathFindToPoseCommand(
-                     notePoseBlue)
-                        .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED))
-                        .andThen(getPathFindToPoseCommand(() -> new Pose2d(FieldConstants.WING_LINE_X_METERS, driveBase.getPose().getY(), new Rotation2d())).onlyIf(() -> notePoseBlue.getX() > FieldConstants.WING_LINE_X_METERS)
-                        .andThen(getPivotCommand(new Rotation2d(PivotKinematics.getShotAngle(() -> targetPose, driveBase::getPose).getAsDouble()))
-                                .raceWith(new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false)))
-                        .andThen(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED,
-                                ShooterConstants.SHOOTER_SPEED).withTimeout(1))));
+                        notePoseBlue)
+                        .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)))
+                .andThen(getPathFindToPoseCommand(() -> scoringPose).onlyWhile(() -> notePoseBlue.getX() > scoringPose.getX()))
+                        .andThen(getPivotCommand(new Rotation2d(
+                                PivotKinematics.getShotAngle(() -> targetPose, driveBase::getPose).getAsDouble()))
+                                .raceWith(
+                                        new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false)))
+                        .andThen(getShootCommand());
         return pickupAndScoreCommand;
     }
 
@@ -255,27 +255,27 @@ public class AutoFactory {
         int startingCenterNoteIndex = (int) responses.get().get(2);
         int endingCenterNoteIndex = (int) responses.get().get(3);
 
-        Command autoCommand = new WaitCommand(0);
+        Command autoCommand = getShootCommand();
 
         if (startingWingNoteIndex < endingWingNoteIndex) {
             for (int i = startingWingNoteIndex; i <= endingWingNoteIndex; i++) {
                 autoCommand = autoCommand
-                        .andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i]));
+                        .andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i], new Pose2d()));
             }
         } else {
             for (int i = startingWingNoteIndex; i >= endingWingNoteIndex; i--) {
                 autoCommand = autoCommand
-                        .andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i]));
+                        .andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i], new Pose2d()));
             }
         }
 
         if (startingCenterNoteIndex < endingCenterNoteIndex) {
             for (int i = startingCenterNoteIndex; i <= endingCenterNoteIndex; i++) {
-                autoCommand = autoCommand.andThen(pickupAndScore(FieldConstants.MIDLINE_NOTES_STARTING_POSES[i]));
+                autoCommand = autoCommand.andThen(pickupAndScore(FieldConstants.MIDLINE_NOTES_STARTING_POSES[i], FieldConstants.SHOOTING_POSES[i/3]));
             }
         } else {
             for (int i = startingCenterNoteIndex; i >= endingCenterNoteIndex; i--) {
-                autoCommand = autoCommand.andThen(pickupAndScore(FieldConstants.MIDLINE_NOTES_STARTING_POSES[i]));
+                autoCommand = autoCommand.andThen(pickupAndScore(FieldConstants.MIDLINE_NOTES_STARTING_POSES[i], FieldConstants.SHOOTING_POSES[i/3]));
             }
         }
 
