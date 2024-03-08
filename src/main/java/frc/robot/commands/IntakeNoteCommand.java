@@ -42,11 +42,24 @@ public class IntakeNoteCommand extends Command {
   @Override
   public void execute() {
     updateIndexerState();
-    if (indexerState == IndexerState.NoNote) intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
-    if (indexerState == IndexerState.MovingInIndexer) indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);
-    if (indexerState == IndexerState.InShooter) {
-      intake.stopIntakeMotor(); // We keep the intake moving until the note is past the beam break sensor, so that we don't try and tear away the note from the intake while it's still in the intake
-      indexer.setIndexerMotorSpeed(-IndexerConstants.SLOW_INDEXER_MOTOR_SPEED);
+    switch(indexerState) {
+      case NoNote:
+        intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
+        break;
+      
+      case MovingInIndexer: 
+        indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);
+        break;
+      
+      case InShooter:
+        intake.stopIntakeMotor();
+        indexer.setIndexerMotorSpeed(-IndexerConstants.SLOW_INDEXER_MOTOR_SPEED);
+        break;
+      
+      default:
+        intake.stopIntakeMotor();
+        indexer.stopIndexerMotor();
+        break;
     }
   }
 
@@ -62,6 +75,10 @@ public class IntakeNoteCommand extends Command {
         
       case InShooter:
         if(indexer.beamBroken()) indexerState = IndexerState.InIndexer;
+        break;
+      
+      default: 
+        indexerState = IndexerState.NoNote;
         break;
     }
   }
