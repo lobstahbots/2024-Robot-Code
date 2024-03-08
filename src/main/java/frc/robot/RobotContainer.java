@@ -11,6 +11,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -24,9 +25,11 @@ import frc.robot.networkalerts.Alert;
 import frc.robot.networkalerts.Alert.AlertType;
 import frc.robot.auto.AutonSelector;
 import frc.robot.auto.AutonSelector.AutoQuestion;
+import frc.robot.commands.IntakeNoteCommand;
 import frc.robot.commands.MoveClimberCommand;
 import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.ShootWhileMovingCommand;
+import frc.robot.commands.SpinIndexerCommand;
 import frc.robot.commands.SpinIntakeCommand;
 import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.StopShooterCommand;
@@ -39,6 +42,8 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.NavXGyro;
 import frc.robot.subsystems.drive.SwerveModuleReal;
 import frc.robot.subsystems.drive.SwerveModuleSim;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerSparkMax;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotKinematics;
 import frc.robot.subsystems.pivot.PivotSim;
@@ -84,11 +89,12 @@ public class RobotContainer {
   private final DriveBase driveBase;
   private final Pivot pivot;
   private final Shooter shooter;
+  private final Indexer indexer = new Indexer(new IndexerSparkMax(IndexerConstants.INDEXER_MOTOR_ID));;
   // private final Climber climber = new Climber(
   // new ClimberSparkMax(ClimberConstants.LEFT_CLIMBER_ID,
   // ClimberConstants.RIGHT_CLIMBER_ID));
   private final Intake intake = new Intake(
-      new IntakeSparkMax(IntakeConstants.INTAKE_MOTOR_ID, IntakeConstants.INDEXER_MOTOR_ID));
+      new IntakeSparkMax(IntakeConstants.INTAKE_MOTOR_ID));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick = new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
@@ -111,6 +117,7 @@ public class RobotContainer {
   private final JoystickButton intakeButton = new JoystickButton(operatorJoystick, IOConstants.INTAKE_BUTTON_ID);
   private final JoystickButton ampButton = new JoystickButton(operatorJoystick, IOConstants.AMP_BUTTON_ID);
   private final JoystickButton outtakeButton = new JoystickButton(operatorJoystick, IOConstants.OUTTAKE_BUTTON_ID);
+  private final JoystickButton indexButton = new JoystickButton(driverJoystick, IOConstants.INDEXER_BUTTON_ID);
   // private final JoystickButton climberUpButton = new
   // JoystickButton(operatorJoystick, IOConstants.CLIMBERUP_BUTTON_ID);
   // private final JoystickButton climberDownButton = new
@@ -261,7 +268,8 @@ public class RobotContainer {
     // ClimberConstants.CLIMBER_SPEED));
     // climberDownButton.whileTrue(new MoveClimberCommand(climber,
     // -ClimberConstants.CLIMBER_SPEED));
-    intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
+    intakeButton.onTrue(new IntakeNoteCommand(indexer, intake));
+    indexButton.whileTrue(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED));
     shooterButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
     ampButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED).alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT)));
     // retractPivotButton.whileTrue(new RotatePivotCommand(pivot,
@@ -276,10 +284,10 @@ public class RobotContainer {
     // 2, "Station 3", 3))),
     // autoFactory::getSimpleAuto);
 
-    autoChooser.addRoutine("One-Note Auto", List.of(), autoFactory::getOneNoteAuto);
-    autoChooser.addRoutine("Two-Note Auto", List.of(), autoFactory::getTwoNoteAuto);
-    autoChooser.addRoutine("Three-Note Auto", List.of(), autoFactory::getThreeNoteAuto);
-    autoChooser.addRoutine("Four-Note Auto", List.of(), autoFactory::getFourNoteAuto);
+    // autoChooser.addRoutine("One-Note Auto", List.of(), autoFactory::getOneNoteAuto);
+    // autoChooser.addRoutine("Two-Note Auto", List.of(), autoFactory::getTwoNoteAuto);
+    // autoChooser.addRoutine("Three-Note Auto", List.of(), autoFactory::getThreeNoteAuto);
+    // autoChooser.addRoutine("Four-Note Auto", List.of(), autoFactory::getFourNoteAuto);
 
     autoChooser.addRoutine("Characterize", List.of(
         new AutoQuestion<>("Which Subsystem?", Map.of("DriveBase", driveBase, "Pivot", pivot)),

@@ -64,6 +64,7 @@ public final class Constants {
     public static final int DRIVE_TO_AMP_BUTTON_ID = 2;
     public static final int DRIVE_TO_SOURCE_BUTTON_ID = 3;
     public static final int DRIVE_TO_SPEAKER_BUTTON_ID = 4;
+    public static final int INDEXER_BUTTON_ID = 2;
     public static final int SHOOTER_BUTTON_ID = 2;
     public static final int INTAKE_BUTTON_ID = 3;
     public static final int OUTTAKE_BUTTON_ID = 1;
@@ -265,6 +266,13 @@ public final class Constants {
     public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(Units.inchesToMeters(-13.193037), Units.inchesToMeters(-9.543), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(-25), 0));
     public static final double POSE_CONFIDENCE_FILTER_THRESHOLD = 0.2;
     public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 0.5;
+  }
+
+  public static class IndexerConstants {
+    public static final int INDEXER_CURRENT_LIMIT = 40;
+    public static final int INDEXER_MOTOR_ID = 0; //update this
+    public static final double FAST_INDEXER_MOTOR_SPEED = 0.9;
+    public static final double SLOW_INDEXER_MOTOR_SPEED = 0.5;
   }
   
   public static class TempConstants {
