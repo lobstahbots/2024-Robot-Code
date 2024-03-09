@@ -15,6 +15,7 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -29,14 +30,18 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PathConstants;
 import frc.robot.commands.RotatePivotCommand;
+import frc.robot.commands.SpinIndexerCommand;
 import frc.robot.commands.SpinIntakeCommand;
 import frc.robot.commands.SpinShooterCommand;
+import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveDriveStopCommand;
 import frc.robot.commands.TurnToPointCommand;
 import frc.robot.subsystems.drive.DriveBase;
+import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotKinematics;
@@ -49,15 +54,17 @@ public class AutoFactory {
     private final DriveBase driveBase;
     private final Intake intake;
     private final Shooter shooter;
+    private final Indexer indexer;
     private final Pivot pivot;
 
-    public AutoFactory(DriveBase driveBase, Shooter shooter, Intake intake, Pivot pivot,
+    public AutoFactory(DriveBase driveBase, Shooter shooter, Intake intake, Pivot pivot, Indexer indexer,
             Supplier<List<Object>> responsesSupplier) {
         this.responses = responsesSupplier;
         this.driveBase = driveBase;
         this.intake = intake;
         this.shooter = shooter;
         this.pivot = pivot;
+        this.indexer = indexer;
 
         AutoBuilder.configureHolonomic(
                 driveBase::getPose, // Robot pose supplier
@@ -203,8 +210,8 @@ public class AutoFactory {
     }
 
     public Command getPivotCommand(Rotation2d value) {
-        return new RotatePivotCommand(pivot, value.getRadians())
-                .until(() -> pivot.getPosition().minus(value).getDegrees() < PivotConstants.MAX_PIVOT_ERROR);
+        return new RotatePivotCommand(pivot, value.getDegrees())
+                .until(() -> Math.abs(pivot.getPosition().minus(value).getDegrees()) < PivotConstants.MAX_PIVOT_ERROR);
     }
 
     public Command getShootCommand() {
@@ -228,6 +235,18 @@ public class AutoFactory {
 
     public Command getFourNoteAuto() {
         return getOneNoteAuto().andThen(new PathPlannerAuto("4 Note Auto"));
+    }
+
+    public Command getDriveAuto() {
+        return new SwerveDriveCommand(driveBase, -1, 0, 0, false).withTimeout(1.5);
+    }
+
+    public Command getScoreAuto() {
+        return getPivotCommand(Rotation2d.fromDegrees(40)).andThen(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED).alongWith(new WaitCommand(2).andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))).alongWith(new RotatePivotCommand(pivot, 40))).withTimeout(5);
+    }
+
+    public Command getScoreAndDriveAuto() {
+        return getPivotCommand(Rotation2d.fromDegrees(40)).andThen(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED).alongWith(new WaitCommand(2).andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))).alongWith(new RotatePivotCommand(pivot, 40))).withTimeout(5).andThen(new SwerveDriveCommand(driveBase, -1, 0, 0, false).withTimeout(1));
     }
 
     public Command pickupAndScore(Pose2d notePoseBlue, Pose2d scoringPose) {

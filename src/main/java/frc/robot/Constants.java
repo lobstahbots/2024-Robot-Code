@@ -64,10 +64,10 @@ public final class Constants {
     public static final int DRIVE_TO_AMP_BUTTON_ID = 2;
     public static final int DRIVE_TO_SOURCE_BUTTON_ID = 3;
     public static final int DRIVE_TO_SPEAKER_BUTTON_ID = 4;
-    public static final int INDEXER_BUTTON_ID = 2;
-    public static final int SHOOTER_BUTTON_ID = 2;
-    public static final int INTAKE_BUTTON_ID = 3;
-    public static final int OUTTAKE_BUTTON_ID = 1;
+    public static final int INDEXER_BUTTON_ID = 1;
+    public static final int SHOOTER_BUTTON_ID = 6;
+    public static final int INTAKE_BUTTON_ID = 5;
+    public static final int OUTTAKE_BUTTON_ID = 3;
     public static final int CLIMBERUP_BUTTON_ID = 1;
     public static final int CLIMBERDOWN_BUTTON_ID = 1;
     public static final int SLOWDOWN_BUTTON_ID = 1;
@@ -205,7 +205,7 @@ public final class Constants {
   }
 
   public static class PivotConstants {
-    public static final double PID_P = 1;
+    public static final double PID_P = 0.5;
     public static final double PID_I = 0;
     public static final double PID_D = 0;
     public static final double PID_FF = 0;
@@ -270,8 +270,8 @@ public final class Constants {
 
   public static class IndexerConstants {
     public static final int INDEXER_CURRENT_LIMIT = 40;
-    public static final int INDEXER_MOTOR_ID = 0; //update this
-    public static final double FAST_INDEXER_MOTOR_SPEED = 0.9;
+    public static final int INDEXER_MOTOR_ID = 44;
+    public static final double FAST_INDEXER_MOTOR_SPEED = -0.9;
     public static final double SLOW_INDEXER_MOTOR_SPEED = 0.5;
   }
   

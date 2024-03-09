@@ -35,10 +35,13 @@ public class RotatePivotCommand extends Command {
     this(pivot, () -> angle);
   }
 
+  public void initialize() {
+    pivot.resetControllerError();
+  }
+
   @Override
   public void execute() {
     pivot.setDesiredAngle(MathUtil.clamp(angleSupplier.getAsDouble(), 0, PivotConstants.PIVOT_MAX_ANGLE_DEGREES));
-    // pivot.runVolts(10);
   }
 
   @Override
