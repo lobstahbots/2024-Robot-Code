@@ -132,7 +132,7 @@ public class RobotContainer {
   private final JoystickButton slowdownButton = new JoystickButton(driverJoystick, IOConstants.SLOWDOWN_BUTTON_ID);
 
   private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
-      () -> Commands.none());
+() -> Commands.none());
   private final AutoFactory autoFactory;
 
   /**
@@ -304,6 +304,7 @@ public class RobotContainer {
     autoChooser.addRoutine("Drive", List.of(), autoFactory::getDriveAuto);  
     autoChooser.addRoutine("Score Preload", List.of(), autoFactory::getScoreAuto);  
     autoChooser.addRoutine("Score Preload And Drive", List.of(), autoFactory::getScoreAndDriveAuto);  
+    autoChooser.addRoutine("Suspicious 1.5-2 Note", List.of(), autoFactory::getTwoNote);
 
     autoChooser.addRoutine("Wing And Midline Auto", List.of(
         new AutoQuestion<>("Starting Note?", Map.of("Wing Right", 0, "Wing Center", 1, "Wing Left", 2)),

@@ -225,8 +225,24 @@ public class AutoFactory {
                 .andThen(getShootCommand());
     }
 
-    public Command getTwoNoteAuto() {
-        return getOneNoteAuto().andThen(new PathPlannerAuto("2 Note Auto"));
+    public Command getTwoNote() {
+        return getPivotCommand(Rotation2d.fromDegrees(40))
+                .andThen(
+                        new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                                .alongWith(new WaitCommand(2).andThen(
+                                        new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
+                                .alongWith(new RotatePivotCommand(pivot, 40)))
+                .withTimeout(5).andThen(new RotatePivotCommand(pivot, 0).withTimeout(1))
+                .andThen(new SwerveDriveCommand(driveBase, -1, 0, 0, false).withTimeout(1)
+                        .alongWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
+                                .raceWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)
+                                        .withTimeout(1))))
+                .andThen(getPivotCommand(Rotation2d.fromDegrees(40)).andThen(
+                        new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                                .alongWith(new WaitCommand(2).andThen(
+                                        new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
+                                .alongWith(new RotatePivotCommand(pivot, 40)))
+                        .withTimeout(5));
     }
 
     public Command getThreeNoteAuto() {
@@ -242,11 +258,22 @@ public class AutoFactory {
     }
 
     public Command getScoreAuto() {
-        return getPivotCommand(Rotation2d.fromDegrees(40)).andThen(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED).alongWith(new WaitCommand(2).andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))).alongWith(new RotatePivotCommand(pivot, 40))).withTimeout(5);
+        return getPivotCommand(Rotation2d.fromDegrees(40)).andThen(
+                new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                        .alongWith(new WaitCommand(2)
+                                .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
+                        .alongWith(new RotatePivotCommand(pivot, 40)))
+                .withTimeout(5);
     }
 
     public Command getScoreAndDriveAuto() {
-        return getPivotCommand(Rotation2d.fromDegrees(40)).andThen(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED).alongWith(new WaitCommand(2).andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))).alongWith(new RotatePivotCommand(pivot, 40))).withTimeout(5).andThen(new SwerveDriveCommand(driveBase, -1, 0, 0, false).withTimeout(1));
+        return getPivotCommand(Rotation2d.fromDegrees(40))
+                .andThen(
+                        new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                                .alongWith(new WaitCommand(2).andThen(
+                                        new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
+                                .alongWith(new RotatePivotCommand(pivot, 40)))
+                .withTimeout(5).andThen(new SwerveDriveCommand(driveBase, -1, 0, 0, false).withTimeout(1));
     }
 
     public Command pickupAndScore(Pose2d notePoseBlue, Pose2d scoringPose) {
@@ -255,16 +282,18 @@ public class AutoFactory {
                 notePoseBlue
                         .plus(new Transform2d(-FieldConstants.PICKUP_OFFSET, 0, new Rotation2d())))
                 .andThen(new SwerveDriveStopCommand(driveBase))
-                // .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, notePoseBlue, 0, 0, false))
+                // .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, notePoseBlue,
+                // 0, 0, false))
                 .andThen(getPathFindToPoseCommand(
                         notePoseBlue)
                         .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)))
-                .andThen(getPathFindToPoseCommand(() -> scoringPose).onlyWhile(() -> notePoseBlue.getX() > scoringPose.getX()))
-                        .andThen(getPivotCommand(new Rotation2d(
-                                PivotKinematics.getShotAngle(() -> targetPose, driveBase::getPose).getAsDouble()))
-                                .raceWith(
-                                        new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false)))
-                        .andThen(getShootCommand());
+                .andThen(getPathFindToPoseCommand(() -> scoringPose)
+                        .onlyWhile(() -> notePoseBlue.getX() > scoringPose.getX()))
+                .andThen(getPivotCommand(new Rotation2d(
+                        PivotKinematics.getShotAngle(() -> targetPose, driveBase::getPose).getAsDouble()))
+                        .raceWith(
+                                new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false)))
+                .andThen(getShootCommand());
         return pickupAndScoreCommand;
     }
 
@@ -290,11 +319,13 @@ public class AutoFactory {
 
         if (startingCenterNoteIndex < endingCenterNoteIndex) {
             for (int i = startingCenterNoteIndex; i <= endingCenterNoteIndex; i++) {
-                autoCommand = autoCommand.andThen(pickupAndScore(FieldConstants.MIDLINE_NOTES_STARTING_POSES[i], FieldConstants.SHOOTING_POSES[i/3]));
+                autoCommand = autoCommand.andThen(pickupAndScore(FieldConstants.MIDLINE_NOTES_STARTING_POSES[i],
+                        FieldConstants.SHOOTING_POSES[i / 3]));
             }
         } else {
             for (int i = startingCenterNoteIndex; i >= endingCenterNoteIndex; i--) {
-                autoCommand = autoCommand.andThen(pickupAndScore(FieldConstants.MIDLINE_NOTES_STARTING_POSES[i], FieldConstants.SHOOTING_POSES[i/3]));
+                autoCommand = autoCommand.andThen(pickupAndScore(FieldConstants.MIDLINE_NOTES_STARTING_POSES[i],
+                        FieldConstants.SHOOTING_POSES[i / 3]));
             }
         }
 
