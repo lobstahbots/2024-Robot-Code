@@ -113,6 +113,7 @@ public class RobotContainer {
 //       IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
   private final Joystick operatorJoystick = new Joystick(IOConstants.OPERATOR_CONTROLLER_PORT);
   private final JoystickButton shooterButton = new JoystickButton(operatorJoystick, IOConstants.SHOOTER_BUTTON_ID);
+  private final JoystickButton unshooterButton = new JoystickButton(operatorJoystick, IOConstants.UNSHOOTER_BUTTON_ID);
   private final JoystickButton intakeButton = new JoystickButton(driverJoystick, IOConstants.INTAKE_BUTTON_ID);
   private final JoystickButton ampButton = new JoystickButton(operatorJoystick, IOConstants.AMP_BUTTON_ID);
   private final JoystickButton outtakeButton = new JoystickButton(operatorJoystick, IOConstants.OUTTAKE_BUTTON_ID);
@@ -264,6 +265,7 @@ public class RobotContainer {
     intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED).alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)));
     indexButton.whileTrue(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED));
     shooterButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
+    unshooterButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED));
     ampButton.whileTrue(new RotatePivotCommand(pivot, 115).alongWith(new SpinShooterCommand(shooter, -ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED)));
     // retractPivotButton.whileTrue(new RotatePivotCommand(pivot,
     // PivotConstants.PIVOT_RESTING_ANGLE));
