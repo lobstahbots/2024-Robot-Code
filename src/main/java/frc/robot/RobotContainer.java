@@ -117,7 +117,10 @@ public class RobotContainer {
   private final JoystickButton ampButton = new JoystickButton(operatorJoystick, IOConstants.AMP_BUTTON_ID);
   private final JoystickButton outtakeButton = new JoystickButton(operatorJoystick, IOConstants.OUTTAKE_BUTTON_ID);
   private final JoystickButton indexButton = new JoystickButton(operatorJoystick, IOConstants.INDEXER_BUTTON_ID);
-  private final POVButton subwooferButton = new POVButton(operatorJoystick, 0);
+  private final POVButton subwooferButton = new POVButton(operatorJoystick, 0); //UP
+  private final POVButton wingButton = new POVButton(operatorJoystick, 90); // RIGHT
+  private final POVButton podiumButton = new POVButton(operatorJoystick, 270); // LEFT
+  
   // private final JoystickButton climberUpButton = new
   // JoystickButton(operatorJoystick, IOConstants.CLIMBERUP_BUTTON_ID);
   // private final JoystickButton climberDownButton = new
@@ -266,6 +269,8 @@ public class RobotContainer {
     // PivotConstants.PIVOT_RESTING_ANGLE));
     outtakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.OUTTAKE_SPEED).alongWith(new SpinIndexerCommand(indexer, IndexerConstants.SLOW_INDEXER_MOTOR_SPEED)));
     subwooferButton.whileTrue(new RotatePivotCommand(pivot, 40).alongWith(new  SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
+    wingButton.whileTrue(new RotatePivotCommand(pivot, 15).alongWith(new  SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
+    podiumButton.whileTrue(new RotatePivotCommand(pivot, 30).alongWith(new  SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
   }
 
   public boolean getOperatorConnected() {
