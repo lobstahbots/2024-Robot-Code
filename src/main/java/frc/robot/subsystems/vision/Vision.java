@@ -11,11 +11,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 
-public class PhotonVision extends SubsystemBase {
-    private final PhotonVisionIO io;
-    private final PhotonVisionIOInputsAutoLogged inputs = new PhotonVisionIOInputsAutoLogged();
+public class Vision extends SubsystemBase {
+    private final VisionIO io;
+    private final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
     
-    public PhotonVision(PhotonVisionIO io) {
+    public Vision(VisionIO io) {
        this.io = io;
     }
 

@@ -8,14 +8,14 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import stl.tempControl.MonitoredSparkMax;
 import stl.tempControl.TemperatureMonitor;
 
-public class IntakeSparkMax implements IntakeIO {
+public class IntakeIOSparkMax implements IntakeIO {
     private final MonitoredSparkMax intakeMotor;
     private final TemperatureMonitor monitor;
     /**
      * Creates a new IntakeSparkMax
      * @param intakeMotorID
      */
-    public IntakeSparkMax(int intakeMotorID){
+    public IntakeIOSparkMax(int intakeMotorID){
         this.intakeMotor = new MonitoredSparkMax(intakeMotorID, MotorType.kBrushless, "Intake motor");
         this.intakeMotor.setIdleMode(IdleMode.kBrake);
         this.intakeMotor.setInverted(true);

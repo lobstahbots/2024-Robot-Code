@@ -9,10 +9,10 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 /** Add your docs here. */
-public class NavXGyro implements GyroIO {
+public class GyroIONavX implements GyroIO {
     private final AHRS gyro = new AHRS();
 
-    public NavXGyro(){
+    public GyroIONavX(){
         gyro.zeroYaw();
     }
 

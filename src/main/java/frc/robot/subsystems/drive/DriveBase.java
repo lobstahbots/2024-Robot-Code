@@ -36,7 +36,11 @@ import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
-import frc.robot.subsystems.vision.PhotonVision;
+import frc.robot.subsystems.drive.swervemodules.SwerveModule;
+import frc.robot.subsystems.drive.swervemodules.SwerveModuleIO;
+import frc.robot.subsystems.drive.swervemodules.SwerveSetpoint;
+import frc.robot.subsystems.drive.swervemodules.SwerveSetpointGenerator;
+import frc.robot.subsystems.vision.Vision;
 import stl.sysId.CharacterizableSubsystem;
 
 public class DriveBase extends CharacterizableSubsystem {
@@ -57,11 +61,11 @@ public class DriveBase extends CharacterizableSubsystem {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private boolean isOpenLoop;
   private Rotation2d simRotation = new Rotation2d();
-  private final PhotonVision photonVision;
+  private final Vision photonVision;
 
   private Field2d field;
 
-  public DriveBase(GyroIO gyroIO, PhotonVision photonVision, SwerveModuleIO frontLeft, SwerveModuleIO frontRight,
+  public DriveBase(GyroIO gyroIO, Vision photonVision, SwerveModuleIO frontLeft, SwerveModuleIO frontRight,
       SwerveModuleIO backLeft, SwerveModuleIO backRight, boolean isOpenLoop) {
 
     this.modules = new SwerveModule[] { new SwerveModule(frontLeft, FrontLeftModuleConstants.moduleID), new SwerveModule(frontRight, FrontRightModuleConstants.moduleID),
