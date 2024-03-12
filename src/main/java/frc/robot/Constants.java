@@ -268,6 +268,11 @@ public final class Constants {
     public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(Units.inchesToMeters(-13.193037), Units.inchesToMeters(-9.543), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(-25), 0));
     public static final double POSE_CONFIDENCE_FILTER_THRESHOLD = 0.2;
     public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 0.5;
+
+    public static final double APRIL_TAG_NUMBER_CONFIDENCE_SCALE = 3; // Higher makes confidence lower at each number of AprilTags
+    public static final double APRIL_TAG_NUMBER_EXPONENT = 1 / (APRIL_TAG_NUMBER_CONFIDENCE_SCALE * Math.log(APRIL_TAG_NUMBER_CONFIDENCE_SCALE));
+    public static final double APRIL_TAG_AREA_CONFIDENCE_SCALE = 1.7; // Higher makes confidence lower at each area of AprilTags
+    // See https://www.desmos.com/calculator/hw9b2s1mlw
   }
 
   public static class IndexerConstants {
