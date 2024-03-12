@@ -6,7 +6,6 @@ package frc.robot;
 
 import frc.robot.AutoFactory.CharacterizationRoutine;
 import frc.robot.Constants.AlertConstants;
-import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
@@ -26,7 +25,6 @@ import frc.robot.networkalerts.Alert.AlertType;
 import frc.robot.auto.AutonSelector;
 import frc.robot.auto.AutonSelector.AutoQuestion;
 import frc.robot.commands.IntakeNoteCommand;
-import frc.robot.commands.MoveClimberCommand;
 import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.ShootWhileMovingCommand;
 import frc.robot.commands.SpinIndexerCommand;
@@ -35,8 +33,6 @@ import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveDriveStopCommand;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.ClimberSparkMax;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.NavXGyro;
@@ -90,9 +86,6 @@ public class RobotContainer {
   private final Pivot pivot;
   private final Shooter shooter;
   private final Indexer indexer = new Indexer(new IndexerSparkMax(IndexerConstants.INDEXER_MOTOR_ID));;
-  // private final Climber climber = new Climber(
-  // new ClimberSparkMax(ClimberConstants.LEFT_CLIMBER_ID,
-  // ClimberConstants.RIGHT_CLIMBER_ID));
   private final Intake intake = new Intake(
       new IntakeSparkMax(IntakeConstants.INTAKE_MOTOR_ID));
 
@@ -104,27 +97,12 @@ public class RobotContainer {
 //       IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
 //   private final JoystickButton alignToSpeakerButton = new JoystickButton(driverJoystick,
 //       IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
-//   private final JoystickButton driveToAmpButton = new JoystickButton(driverJoystick,
-    //   IOConstants.ALIGN_TO_AMP_BUTTON_ID);
-//   private final JoystickButton driveToSourceButton = new JoystickButton(driverJoystick,
-//       IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
-//   private final JoystickButton driveToSpeakerButton = new JoystickButton(driverJoystick,
-//       IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
-  private final JoystickButton driveToggleButton = new JoystickButton(driverJoystick,
-      IOConstants.TOGGLE_DRIVE_CENTRICITY_BUTTON_ID);
   private final Joystick operatorJoystick = new Joystick(IOConstants.OPERATOR_CONTROLLER_PORT);
   private final JoystickButton shooterButton = new JoystickButton(operatorJoystick, IOConstants.SHOOTER_BUTTON_ID);
   private final JoystickButton intakeButton = new JoystickButton(operatorJoystick, IOConstants.INTAKE_BUTTON_ID);
   private final JoystickButton ampButton = new JoystickButton(operatorJoystick, IOConstants.AMP_BUTTON_ID);
   private final JoystickButton outtakeButton = new JoystickButton(operatorJoystick, IOConstants.OUTTAKE_BUTTON_ID);
   private final JoystickButton indexButton = new JoystickButton(driverJoystick, IOConstants.INDEXER_BUTTON_ID);
-  // private final JoystickButton climberUpButton = new
-  // JoystickButton(operatorJoystick, IOConstants.CLIMBERUP_BUTTON_ID);
-  // private final JoystickButton climberDownButton = new
-  // JoystickButton(operatorJoystick,
-  // IOConstants.CLIMBERDOWN_BUTTON_ID);
-  // private final JoystickButton retractPivotButton = new
-  // JoystickButton(operatorJoystick, IOConstants.RESET_PIVOT_ANGLE_BUTTON_ID);
   private final JoystickButton slowdownButton = new JoystickButton(driverJoystick, IOConstants.SLOWDOWN_BUTTON_ID);
 
   private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
@@ -232,29 +210,6 @@ public class RobotContainer {
     // () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
     // () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
     // () -> DriveConstants.FIELD_CENTRIC));
-    // driveToAmpButton
-    //     .whileTrue(autoFactory
-    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D)
-    //         .andThen(new TurnToAngleCommand(driveBase,
-    //             FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation(),
-    //             0, 0, false))
-    //         .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
-    // driveToSourceButton
-    //     .whileTrue(autoFactory
-    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D)
-    //         .andThen(new TurnToAngleCommand(driveBase,
-    //             FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(),
-    //             0, 0, false))
-    //         .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
-    // driveToSpeakerButton
-    //     .whileTrue(autoFactory
-    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d())
-    //         .andThen(new TurnToPointCommand(driveBase, driveBase::getPose,
-    //             FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
-    //             0, 0, false))
-    //         .alongWith(new RotatePivotCommand(pivot, PivotKinematics.getShotAngle(driveBase::getPose,
-    //             () -> FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()))));
-
     slowdownButton.whileTrue(new SwerveDriveCommand(driveBase,
         () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
         () -> -DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
@@ -264,26 +219,14 @@ public class RobotContainer {
     //     .whileTrue(new ShootWhileMovingCommand(driveBase, driveBase::getPose, driveBase::getRobotRelativeSpeeds,
     //         AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()).getTranslation(),
     //         false, false).withTimeout(10).andThen(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
-    // climberUpButton.whileTrue(new MoveClimberCommand(climber,
-    // ClimberConstants.CLIMBER_SPEED));
-    // climberDownButton.whileTrue(new MoveClimberCommand(climber,
-    // -ClimberConstants.CLIMBER_SPEED));
     intakeButton.onTrue(new IntakeNoteCommand(indexer, intake));
     indexButton.whileTrue(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED));
     shooterButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
     ampButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED).alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT)));
-    // retractPivotButton.whileTrue(new RotatePivotCommand(pivot,
-    // PivotConstants.PIVOT_RESTING_ANGLE));
     outtakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.OUTTAKE_SPEED));
-    driveToggleButton.onTrue(new InstantCommand(() -> DriveConstants.FIELD_CENTRIC = !DriveConstants.FIELD_CENTRIC));
   }
 
   public void smartDashSetup() {
-    // autoChooser.addRoutine("Simple Auto", List.of(
-    // new AutoQuestion<>("Starting Position?", Map.of("Station 1", 1, "Station 2",
-    // 2, "Station 3", 3))),
-    // autoFactory::getSimpleAuto);
-
     // autoChooser.addRoutine("One-Note Auto", List.of(), autoFactory::getOneNoteAuto);
     // autoChooser.addRoutine("Two-Note Auto", List.of(), autoFactory::getTwoNoteAuto);
     // autoChooser.addRoutine("Three-Note Auto", List.of(), autoFactory::getThreeNoteAuto);
@@ -341,5 +284,4 @@ public class RobotContainer {
     intake.setIdleMode(idleMode);
     shooter.setIdleMode(shooterIdleMode);
   }
-
 }
