@@ -17,7 +17,7 @@ public class GyroIONavX implements GyroIO {
     }
 
     public Rotation2d getYaw() {
-        return Rotation2d.fromDegrees(gyro.getYaw());
+        return Rotation2d.fromDegrees(-gyro.getYaw());
       }
 
     public Rotation2d getPitch() {

@@ -60,11 +60,11 @@ public class Robot extends LoggedRobot {
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
   } else {
     if(SimConstants.REPLAY) {
-      String replayPath = logPath + SimConstants.REPLAY_LOG_PATH;
+      String replayPath = logPath + "\\" + SimConstants.REPLAY_LOG_PATH;
       Logger.setReplaySource(new WPILOGReader(replayPath));
       Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(replayPath, "_replay")));
-    } else {
       setUseTiming(false); // Run as fast as possible
+    } else {
       Logger.addDataReceiver(new WPILOGWriter(logPath, 0.02)); // Save outputs to a new log
     }
   }
