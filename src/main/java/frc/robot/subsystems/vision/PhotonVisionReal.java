@@ -48,14 +48,21 @@ public class PhotonVisionReal implements PhotonVisionIO {
             var frontTargetsSeen = estimatedFrontPose.targetsUsed.size();
             inputs.visibleFrontFiducialIDs = new int[frontTargetsSeen];
 
+            double area = 0;
+
             for (int i = 0; i < frontTargetsSeen; i++) {
                 var target = estimatedFrontPose.targetsUsed.get(i);
                 inputs.visibleFrontFiducialIDs[i] = target.getFiducialId();
                 frontAmbiguitySum += target.getPoseAmbiguity();
+                area += target.getArea() / 100; // Area is returned in percent but we want fraction
+                // See https://docs.photonvision.org/en/latest/docs/programming/photonlib/getting-target-data.html#getting-data-from-a-target
             }   
 
             int count = inputs.visibleFrontFiducialIDs.length;
-            inputs.frontConfidence = (1 - (frontAmbiguitySum / count)) * Math.exp(-1/count) * Math.pow(count, VisionConstants.APRIL_TAG_NUMBER_EXPONENT);
+            inputs.frontConfidence = (1 - (frontAmbiguitySum / count)) // Get the average ambiguity and turn it into confidence
+                * Math.exp(-1/count) * Math.pow(count, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the confidence scaling for the number of AprilTags
+                * Math.log(area+1) / (Math.pow(area, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE) * Math.log(2)); // Multiply by the confidence scaling for the area of the AprilTags
+            // For more information about the scaling see https://www.desmos.com/calculator/hw9b2s1mlw
         }
         Optional<EstimatedRobotPose> rearPoseOptional = rearPoseEstimator.update();
         
@@ -68,15 +75,21 @@ public class PhotonVisionReal implements PhotonVisionIO {
             var rearTargetsSeen = estimatedRearPose.targetsUsed.size();
             inputs.visibleRearFiducialIDs = new int[rearTargetsSeen];
         
+            double area = 0;
        
             for (int i = 0; i < rearTargetsSeen; i++) {
                 var target = estimatedRearPose.targetsUsed.get(i);
                 inputs.visibleFrontFiducialIDs[i] = target.getFiducialId();
                 rearAmbiguitySum += target.getPoseAmbiguity();
+                area += target.getArea() / 100; // Area is returned in percent but we want fraction
+                // See https://docs.photonvision.org/en/latest/docs/programming/photonlib/getting-target-data.html#getting-data-from-a-target
             }  
 
             int count = inputs.visibleRearFiducialIDs.length;
-            inputs.rearConfidence = (1 - (rearAmbiguitySum / count)) * Math.exp(-1/count) * Math.pow(count, VisionConstants.APRIL_TAG_NUMBER_EXPONENT); 
+            inputs.rearConfidence = (1 - (rearAmbiguitySum / count)) // Get the average ambiguity and turn it into confidence
+                * Math.exp(-1/count) * Math.pow(count, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the confidence scaling for the number of AprilTags
+                * Math.log(area+1) / (Math.pow(area, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE) * Math.log(2)); // Multiply by the confidence scaling for the area of the AprilTags
+            // For more information about the scaling see https://www.desmos.com/calculator/hw9b2s1mlw
         } 
     }
 
