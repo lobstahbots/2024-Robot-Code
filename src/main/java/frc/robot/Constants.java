@@ -253,12 +253,6 @@ public final class Constants {
       shotAngleMap.put(24.0,Units.degreesToRadians(19.0));
     }
   }
-
-  public static class ClimberConstants {
-    public static final double CLIMBER_SPEED = 1.0;
-    public static final int LEFT_CLIMBER_ID = 27;
-    public static final int RIGHT_CLIMBER_ID = 28;
-  }
   
   public static class VisionConstants {
     public static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
