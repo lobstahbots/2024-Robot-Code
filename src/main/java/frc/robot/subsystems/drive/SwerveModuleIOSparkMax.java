@@ -7,6 +7,7 @@ package frc.robot.subsystems.drive;
 import java.util.Arrays;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -151,12 +152,13 @@ public class SwerveModuleIOSparkMax implements SwerveModuleIO {
   }
 
   public void updateInputs(ModuleIOInputs inputs) {
-    inputs.drivePosition = Rotation2d.fromRotations(drivingEncoder.getPosition());
-    inputs.driveVelocityRadPerSec = Units.rotationsToRadians(angleAbsoluteEncoder.getVelocity() / 60);
+    inputs.drivePosition = driveMotor.getLastError() == REVLibError.kOk ? Rotation2d.fromRotations(drivingEncoder.getPosition()) : inputs.drivePosition;
+    inputs.driveVelocityRadPerSec = driveMotor.getLastError() == REVLibError.kOk ? Units.rotationsToRadians(angleAbsoluteEncoder.getVelocity() / 60) : inputs.driveVelocityRadPerSec;
     inputs.driveAppliedVolts = driveMotor.getAppliedOutput() * driveMotor.getBusVoltage();
     inputs.driveCurrentAmps = new double[] {driveMotor.getOutputCurrent()};
 
-    inputs.turnPosition = Rotation2d.fromRadians(-angleAbsoluteEncoder.getPosition() - angularOffset.getRadians());
+    inputs.turnPosition = angleMotor.getLastError() == REVLibError.kOk ? Rotation2d.fromRadians(-angleAbsoluteEncoder.getPosition() - angularOffset.getRadians()) : inputs.turnPosition;
+    inputs.turnVelocityRadPerSec = angleMotor.getLastError() == REVLibError.kOk? angleAbsoluteEncoder.getVelocity() : inputs.turnVelocityRadPerSec;
     inputs.turnAppliedVolts = angleMotor.getAppliedOutput() * angleMotor.getBusVoltage();
     inputs.turnCurrentAmps = new double[] {angleMotor.getOutputCurrent()};
     inputs.angularOffset = angularOffset;
