@@ -31,7 +31,7 @@ public class VisionIOPhoton implements VisionIO {
         this.rearPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, VisionConstants.POSE_STRATEGY, rearCamera, VisionConstants.ROBOT_TO_REAR_CAMERA);
     }
 
-    public void updateInputs(VisionIOInputs inputs) {
+    public void updateInputs(VisionIOInputs inputs, Pose3d robotPoseMeters) {
         double frontAmbiguitySum = 0;
         double rearAmbiguitySum = 0;
 

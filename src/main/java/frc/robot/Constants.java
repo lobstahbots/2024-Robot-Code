@@ -200,7 +200,7 @@ public final class Constants {
   
   public static class SimConstants {
     public static final double LOOP_TIME = 0.02;
-    public static final boolean REPLAY = true;
+    public static final boolean REPLAY = false;
     public static final String REPLAY_LOG_PATH = "Log_24-03-10_09-23-09_q61.wpilog";
   }
 
@@ -249,17 +249,26 @@ public final class Constants {
     public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
     static {
-      shotAngleMap.put(1.039, Units.degreesToRadians(90.0));
-      shotAngleMap.put(24.0,Units.degreesToRadians(19.0));
+      shotAngleMap.put(0.1, Units.degreesToRadians(40.0));
+      shotAngleMap.put(8.0,Units.degreesToRadians(10.0));
     }
   }
   
   public static class VisionConstants {
     public static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
-    public static final Transform3d ROBOT_TO_FRONT_CAMERA = new Transform3d(Units.inchesToMeters(13.916), Units.inchesToMeters(3.102475), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(25), 0));
-    public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(Units.inchesToMeters(-13.193037), Units.inchesToMeters(-9.543), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(-25), 0));
+    public static final Transform3d ROBOT_TO_FRONT_CAMERA = new Transform3d(Units.inchesToMeters(13.916), Units.inchesToMeters(3.102475), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(-25), 0));
+    public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(Units.inchesToMeters(-13.193037), Units.inchesToMeters(-9.543), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(-25), 180));
     public static final double POSE_CONFIDENCE_FILTER_THRESHOLD = 0.2;
     public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 0.5;
+    public static final int CAMERA_RES_WIDTH = 1280;
+    public static final int CAMERA_RES_HEIGHT = 960;
+    public static final int CAMERA_FOV_DEG = 70;
+    public static final double CAMERA_AVG_LATENCY_MS = 35;
+    public static final double AVG_ERROR_PX = 0.25;
+    public static final double ERROR_STDEV_PX = 0.08;
+    public static final double FPS = 20;
+    public static final double CAMERA_LATENCY_STDEV_MS = 5;
+
   }
 
   public static class IndexerConstants {

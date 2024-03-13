@@ -260,12 +260,12 @@ public class AutoFactory {
         if (startingWingNoteIndex < endingWingNoteIndex) {
             for (int i = startingWingNoteIndex; i <= endingWingNoteIndex; i++) {
                 autoCommand = autoCommand
-                        .andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i], new Pose2d()));
+                        .andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i], new Pose2d(16, 16, new Rotation2d())));
             }
         } else {
             for (int i = startingWingNoteIndex; i >= endingWingNoteIndex; i--) {
                 autoCommand = autoCommand
-                        .andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i], new Pose2d()));
+                        .andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i], new Pose2d(16, 16, new Rotation2d())));
             }
         }
 
