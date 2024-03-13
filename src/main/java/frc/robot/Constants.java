@@ -260,6 +260,15 @@ public final class Constants {
     public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(Units.inchesToMeters(-13.193037), Units.inchesToMeters(-9.543), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(-25), 180));
     public static final double POSE_CONFIDENCE_FILTER_THRESHOLD = 0.2;
     public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 0.5;
+    public static final int CAMERA_RES_WIDTH = 1280;
+    public static final int CAMERA_RES_HEIGHT = 960;
+    public static final int CAMERA_FOV_DEG = 70;
+    public static final double CAMERA_AVG_LATENCY_MS = 35;
+    public static final double AVG_ERROR_PX = 0.25;
+    public static final double ERROR_STDEV_PX = 0.08;
+    public static final double FPS = 20;
+    public static final double CAMERA_LATENCY_STDEV_MS = 5;
+
   }
 
   public static class IndexerConstants {
