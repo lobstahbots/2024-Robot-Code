@@ -8,6 +8,8 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.pathplanner.lib.path.PathConstraints;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,6 +18,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
 
@@ -270,9 +273,12 @@ public final class Constants {
     public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 0.5;
 
     public static final double APRIL_TAG_NUMBER_CONFIDENCE_SCALE = 3; // Higher makes confidence lower at each number of AprilTags
-    public static final double APRIL_TAG_NUMBER_EXPONENT = 1 / (APRIL_TAG_NUMBER_CONFIDENCE_SCALE * Math.log(APRIL_TAG_NUMBER_CONFIDENCE_SCALE));
+    public static final double APRIL_TAG_NUMBER_EXPONENT = -1 / (APRIL_TAG_NUMBER_CONFIDENCE_SCALE * Math.log(APRIL_TAG_NUMBER_CONFIDENCE_SCALE));
     public static final double APRIL_TAG_AREA_CONFIDENCE_SCALE = 1.7; // Higher makes confidence lower at each area of AprilTags
     // See https://www.desmos.com/calculator/hw9b2s1mlw
+
+    public static final double AMBIGUITY_TO_STDEV_EXP = 1;
+    public static final Vector<N3> BASE_STDEV = VecBuilder.fill(0.1, 0.1, 0.2); // x, y, angle
   }
 
   public static class IndexerConstants {

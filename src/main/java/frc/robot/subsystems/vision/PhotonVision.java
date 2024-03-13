@@ -1,13 +1,15 @@
 package frc.robot.subsystems.vision;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 
@@ -24,29 +26,35 @@ public class PhotonVision extends SubsystemBase {
      * @param odometryPose The current pose returned by the robot odometry to filter the vision estimate in comparison to.
      * @return The estimated pose.
      */
-    public Optional<Pose2d> getEstimatedPose(Pose2d odometryPose) {
-        Pose2d averagePose = null;
-        double sumX = 0;
-        double sumY = 0;
-        Rotation2d sumRotation = new Rotation2d();
-        double sumConfidence = 0;
+    public Poses getEstimatedPose(Pose2d odometryPose) {
+        Pose2d resolvedFrontPose = null;
+        Pose2d resolvedRearPose = null;
+        Vector<N3> frontStdev = null;
+        Vector<N3> rearStdev = null;
+
         Pose2d frontPose = inputs.estimatedFrontPose.toPose2d();
-        if (inputs.frontConfidence > VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD && frontPose.minus(odometryPose).getTranslation().getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
-            sumX += frontPose.getX() * inputs.frontConfidence;
-            sumY += frontPose.getY() * inputs.frontConfidence;
-            sumRotation = sumRotation.plus(frontPose.getRotation().times(inputs.frontConfidence));
-            sumConfidence += inputs.frontConfidence;
-        }
-        Pose2d rearPose = inputs.estimatedRearPose.toPose2d();
-        if (inputs.rearConfidence > VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD && rearPose.minus(odometryPose).getTranslation().getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
-            sumX += rearPose.getX() * inputs.rearConfidence;
-            sumY += rearPose.getY() * inputs.rearConfidence;
-            sumRotation = sumRotation.plus(rearPose.getRotation().times(inputs.rearConfidence));
-            sumConfidence += inputs.rearConfidence;
+        double frontAmbiguity = Arrays.stream(inputs.frontAmbiguities).average().orElse(1);
+        if (frontAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD) && frontPose.minus(odometryPose).getTranslation().getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
+            resolvedFrontPose = frontPose;
+            frontStdev = VisionConstants.BASE_STDEV.times(
+                Math.pow(frontAmbiguity, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with ambiguity
+                * Math.exp(1/inputs.visibleFrontFiducialIDs.length) * Math.pow(inputs.visibleFrontFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
+                * Math.pow(inputs.frontTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE) * Math.log(2) / Math.log(inputs.frontTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
+            );
         }
 
-        if (sumConfidence != 0) averagePose = new Pose2d(sumX, sumY, sumRotation).div(sumConfidence);
-        return Optional.ofNullable(averagePose);
+        Pose2d rearPose = inputs.estimatedRearPose.toPose2d();
+        double rearAmbiguity = Arrays.stream(inputs.rearAmbiguities).average().orElse(1);
+        if (rearAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD) && rearPose.minus(odometryPose).getTranslation().getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
+            resolvedRearPose = rearPose;
+            rearStdev = VisionConstants.BASE_STDEV.times(
+                Math.pow(rearAmbiguity, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with ambiguity
+                * Math.exp(1/inputs.visibleRearFiducialIDs.length) * Math.pow(inputs.visibleRearFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
+                * Math.pow(inputs.rearTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE) * Math.log(2) / Math.log(inputs.rearTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
+            );
+        }
+
+        return new Poses(Optional.ofNullable(resolvedFrontPose), Optional.ofNullable(resolvedRearPose), Optional.ofNullable(frontStdev), Optional.ofNullable(rearStdev));
     }
 
     /**
@@ -93,4 +101,6 @@ public class PhotonVision extends SubsystemBase {
     public void periodic() {
         Logger.processInputs("PhotonVision", inputs);
     }
+
+    public record Poses(Optional<Pose2d> frontPose, Optional<Pose2d> rearPose, Optional<Vector<N3>> frontStdev, Optional<Vector<N3>> rearStdev) {};
 }

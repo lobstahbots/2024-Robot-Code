@@ -40,7 +40,8 @@ public class PhotonVisionReal implements PhotonVisionIO {
             inputs.estimatedFrontPose = frontPoseInformation.estimatedPose;
             inputs.estimatedFrontPoseTimestamp = frontPoseInformation.timestamp;
             inputs.visibleFrontFiducialIDs = frontPoseInformation.fiducialIDs;
-            inputs.frontConfidence = frontPoseInformation.confidence;
+            inputs.frontAmbiguities = frontPoseInformation.ambiguities;
+            inputs.frontTotalArea = frontPoseInformation.totalArea;
         }
 
         Optional<EstimatedRobotPose> rearPoseOptional = rearPoseEstimator.update();
@@ -51,7 +52,8 @@ public class PhotonVisionReal implements PhotonVisionIO {
             inputs.estimatedRearPose = rearPoseInformation.estimatedPose;
             inputs.estimatedRearPoseTimestamp = rearPoseInformation.timestamp;
             inputs.visibleRearFiducialIDs = rearPoseInformation.fiducialIDs;
-            inputs.rearConfidence = rearPoseInformation.confidence;
+            inputs.rearAmbiguities = rearPoseInformation.ambiguities;
+            inputs.rearTotalArea = rearPoseInformation.totalArea;
         } 
     }
 
@@ -83,29 +85,23 @@ public class PhotonVisionReal implements PhotonVisionIO {
         return rearTagPoses;
     }
 
-    private record PoseInformation(Pose3d estimatedPose, double timestamp, int[] fiducialIDs, double confidence) {}
+    private record PoseInformation(Pose3d estimatedPose, double timestamp, int[] fiducialIDs, double[] ambiguities, double totalArea) {}
 
     private static PoseInformation getPoseInformation(EstimatedRobotPose estimatedPose) {
         var targetsSeen = estimatedPose.targetsUsed.size();
         var visibleFiducialIDs = new int[targetsSeen];
+        var ambiguities = new double[targetsSeen];
         
         double area = 0;
-        double ambiguitySum = 0;
        
         for (int i = 0; i < targetsSeen; i++) {
             var target = estimatedPose.targetsUsed.get(i);
             visibleFiducialIDs[i] = target.getFiducialId();
-            ambiguitySum += target.getPoseAmbiguity();
+            ambiguities[i] = target.getPoseAmbiguity();
             area += target.getArea() / 100; // Area is returned in percent but we want fraction
             // See https://docs.photonvision.org/en/latest/docs/programming/photonlib/getting-target-data.html#getting-data-from-a-target
-        }  
-
-        int count = visibleFiducialIDs.length;
-        double confidence = (1 - (ambiguitySum / count)) // Get the average ambiguity and turn it into confidence
-            * Math.exp(-1/count) * Math.pow(count, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the confidence scaling for the number of AprilTags
-            * Math.log(area+1) / (Math.pow(area, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE) * Math.log(2)); // Multiply by the confidence scaling for the area of the AprilTags
-        // For more information about the scaling see https://www.desmos.com/calculator/hw9b2s1mlw
-
-        return new PoseInformation(estimatedPose.estimatedPose, estimatedPose.timestampSeconds, visibleFiducialIDs, confidence);
+        } 
+        
+        return new PoseInformation(estimatedPose.estimatedPose, estimatedPose.timestampSeconds, visibleFiducialIDs, ambiguities, area);
     }
 }
