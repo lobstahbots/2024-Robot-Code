@@ -8,6 +8,8 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.pathplanner.lib.path.PathConstraints;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,8 +18,9 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.drive.swervemodules.SwerveKinematicLimits;
+import frc.robot.subsystems.drive.SwerveKinematicLimits;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -64,10 +67,11 @@ public final class Constants {
     public static final int DRIVE_TO_AMP_BUTTON_ID = 2;
     public static final int DRIVE_TO_SOURCE_BUTTON_ID = 3;
     public static final int DRIVE_TO_SPEAKER_BUTTON_ID = 4;
-    public static final int INDEXER_BUTTON_ID = 2;
-    public static final int SHOOTER_BUTTON_ID = 2;
-    public static final int INTAKE_BUTTON_ID = 3;
-    public static final int OUTTAKE_BUTTON_ID = 1;
+    public static final int INDEXER_BUTTON_ID = 1;
+    public static final int SHOOTER_BUTTON_ID = 6;
+    public static final int UNSHOOTER_BUTTON_ID = 5;
+    public static final int INTAKE_BUTTON_ID = 5;
+    public static final int OUTTAKE_BUTTON_ID = 3;
     public static final int CLIMBERUP_BUTTON_ID = 1;
     public static final int CLIMBERDOWN_BUTTON_ID = 1;
     public static final int SLOWDOWN_BUTTON_ID = 1;
@@ -180,7 +184,7 @@ public final class Constants {
   }
   
   public static class IntakeConstants {
-    public static final double INTAKE_SPEED = 0.5;
+    public static final double INTAKE_SPEED = 1;
     public static final double OUTTAKE_SPEED = -0.5;
     public static final int INTAKE_MOTOR_ID = 33;
     public static final int INDEXER_MOTOR_ID = 44;
@@ -189,6 +193,7 @@ public final class Constants {
   
   public static class ShooterConstants {
     public static final double SHOOTER_SPEED = 1;
+    public static final double UNSHOOTER_SPEED = -0.5;
     public static final double SPIN_UP_SPEED = 0.75;
     public static final double AMP_SPEED = 0.175;
     public static final int UPPER_SHOOTER_ID = 5;
@@ -201,11 +206,11 @@ public final class Constants {
   public static class SimConstants {
     public static final double LOOP_TIME = 0.02;
     public static final boolean REPLAY = false;
-    public static final String REPLAY_LOG_PATH = "Log_24-03-02_19-32-28.wpilog";
+    public static final String REPLAY_LOG_PATH = "Log_24-03-10_09-23-09_q61.wpilog";
   }
 
   public static class PivotConstants {
-    public static final double PID_P = 1;
+    public static final double PID_P = 0.5;
     public static final double PID_I = 0;
     public static final double PID_D = 0;
     public static final double PID_FF = 0;
@@ -249,23 +254,40 @@ public final class Constants {
     public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
     static {
-      shotAngleMap.put(1.039, Units.degreesToRadians(90.0));
-      shotAngleMap.put(24.0,Units.degreesToRadians(19.0));
+      shotAngleMap.put(0.1, Units.degreesToRadians(40.0));
+      shotAngleMap.put(8.0,Units.degreesToRadians(10.0));
     }
   }
   
   public static class VisionConstants {
     public static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
-    public static final Transform3d ROBOT_TO_FRONT_CAMERA = new Transform3d(Units.inchesToMeters(13.916), Units.inchesToMeters(3.102475), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(25), 0));
-    public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(Units.inchesToMeters(-13.193037), Units.inchesToMeters(-9.543), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(-25), 0));
+    public static final Transform3d ROBOT_TO_FRONT_CAMERA = new Transform3d(Units.inchesToMeters(13.916), Units.inchesToMeters(3.102475), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(-25), 0));
+    public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(Units.inchesToMeters(-13.193037), Units.inchesToMeters(-9.543), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(-25), 180));
     public static final double POSE_CONFIDENCE_FILTER_THRESHOLD = 0.2;
     public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 0.5;
+    public static final int CAMERA_RES_WIDTH = 1280;
+    public static final int CAMERA_RES_HEIGHT = 960;
+    public static final int CAMERA_FOV_DEG = 70;
+    public static final double CAMERA_AVG_LATENCY_MS = 35;
+    public static final double AVG_ERROR_PX = 0.25;
+    public static final double ERROR_STDEV_PX = 0.08;
+    public static final double FPS = 20;
+    public static final double CAMERA_LATENCY_STDEV_MS = 5;
+
+
+    public static final double APRIL_TAG_NUMBER_CONFIDENCE_SCALE = 3; // Higher makes confidence lower at each number of AprilTags
+    public static final double APRIL_TAG_NUMBER_EXPONENT = -1 / (APRIL_TAG_NUMBER_CONFIDENCE_SCALE * Math.log(APRIL_TAG_NUMBER_CONFIDENCE_SCALE));
+    public static final double APRIL_TAG_AREA_CONFIDENCE_SCALE = 1.7; // Higher makes confidence lower at each area of AprilTags
+    // See https://www.desmos.com/calculator/hw9b2s1mlw
+
+    public static final double AMBIGUITY_TO_STDEV_EXP = 1;
+    public static final Vector<N3> BASE_STDEV = VecBuilder.fill(0.1, 0.1, 0.2); // x, y, angle
   }
 
   public static class IndexerConstants {
     public static final int INDEXER_CURRENT_LIMIT = 40;
-    public static final int INDEXER_MOTOR_ID = 0; //update this
-    public static final double FAST_INDEXER_MOTOR_SPEED = 0.9;
+    public static final int INDEXER_MOTOR_ID = 44;
+    public static final double FAST_INDEXER_MOTOR_SPEED = -0.9;
     public static final double SLOW_INDEXER_MOTOR_SPEED = 0.5;
   }
   

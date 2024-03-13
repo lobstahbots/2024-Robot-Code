@@ -6,6 +6,7 @@ import java.util.List;
 import org.littletonrobotics.junction.AutoLog;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 
 public interface VisionIO {
@@ -17,8 +18,10 @@ public interface VisionIO {
         public double estimatedRearPoseTimestamp = 0.0;
         public int[] visibleFrontFiducialIDs = new int[]{};
         public int[] visibleRearFiducialIDs = new int[]{};
-        public double frontConfidence = 0.0;
-        public double rearConfidence = 0.0;
+        public double[] frontAmbiguities = new double[]{};
+        public double[] rearAmbiguities = new double[]{};
+        public double frontTotalArea = 0.0;
+        public double rearTotalArea = 0.0;
     }
 
     public default List<PhotonTrackedTarget> getFrontTrackedTargets() {
@@ -29,5 +32,7 @@ public interface VisionIO {
         return new ArrayList<>();
     }
 
-    public default void updateInputs(VisionIOInputs inputs) {}
+    public default void updateInputs(VisionIOInputs inputs, Pose3d robotPose) {}
+
+    public default void update(Pose2d robotPose) {}
 }

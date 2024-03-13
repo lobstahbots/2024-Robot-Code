@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -41,10 +42,13 @@ public class IntakeNoteCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    SmartDashboard.putBoolean("Beam Broken", indexer.beamBroken());
+    SmartDashboard.putString("State", indexerState.toString());
     updateIndexerState();
     switch(indexerState) {
       case NoNote:
         intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
+        indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);
         break;
       
       case MovingInIndexer: 
@@ -53,7 +57,7 @@ public class IntakeNoteCommand extends Command {
       
       case InShooter:
         intake.stopIntakeMotor();
-        indexer.setIndexerMotorSpeed(-IndexerConstants.SLOW_INDEXER_MOTOR_SPEED);
+        indexer.setIndexerMotorSpeed(IndexerConstants.SLOW_INDEXER_MOTOR_SPEED);
         break;
       
       default:
