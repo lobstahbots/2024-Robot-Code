@@ -36,7 +36,7 @@ public class Vision extends SubsystemBase {
 
         Pose2d frontPose = inputs.estimatedFrontPose.toPose2d();
         double frontAmbiguity = Arrays.stream(inputs.frontAmbiguities).average().orElse(1);
-        if (frontAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD) && frontPose.minus(odometryPose).getTranslation().getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
+        if (inputs.visibleFrontFiducialIDs.length > 0 && frontAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD) && frontPose.minus(odometryPose).getTranslation().getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
             resolvedFrontPose = frontPose;
             frontStdev = VisionConstants.BASE_STDEV.times(
                 Math.pow(frontAmbiguity, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with ambiguity
@@ -47,7 +47,7 @@ public class Vision extends SubsystemBase {
 
         Pose2d rearPose = inputs.estimatedRearPose.toPose2d();
         double rearAmbiguity = Arrays.stream(inputs.rearAmbiguities).average().orElse(1);
-        if (rearAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD) && rearPose.minus(odometryPose).getTranslation().getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
+        if (inputs.visibleRearFiducialIDs.length > 0 && rearAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD) && rearPose.minus(odometryPose).getTranslation().getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
             resolvedRearPose = rearPose;
             rearStdev = VisionConstants.BASE_STDEV.times(
                 Math.pow(rearAmbiguity, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with ambiguity

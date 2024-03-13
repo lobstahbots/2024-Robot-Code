@@ -247,15 +247,15 @@ public final class Constants {
     public static final int RIGHT_MOTOR_ID = 26;
     public static final int ENCODER_CHANNEL = 3;
 
-    public static final double MAX_PIVOT_ERROR = 2;
+    public static final double MAX_PIVOT_ERROR = 10;
     public static final double AMP_ANGLE_SETPOINT = 104;
     public static final double SOURCE_PICKUP_ANGLE = 60;
     public static final double GROUND_PICKUP_ANGLE = 0;
     public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
     static {
-      shotAngleMap.put(0.1, Units.degreesToRadians(40.0));
-      shotAngleMap.put(8.0,Units.degreesToRadians(10.0));
+      shotAngleMap.put(0.1, 40.0);
+      shotAngleMap.put(8.0, 10.0);
     }
   }
   

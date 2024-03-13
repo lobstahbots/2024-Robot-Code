@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
@@ -43,6 +42,7 @@ public class DriveBase extends CharacterizableSubsystem {
   private final SwerveModule[] modules;
 
   private SwerveDrivePoseEstimator swerveOdometry;
+  private SwerveDrivePoseEstimator visionLessOdometry;
   private SwerveSetpointGenerator setpointGenerator;
   private SwerveSetpoint swerveSetpoint = new SwerveSetpoint(
       new ChassisSpeeds(),
@@ -72,13 +72,15 @@ public class DriveBase extends CharacterizableSubsystem {
     this.photonVision = photonVision;
     swerveOdometry = new SwerveDrivePoseEstimator(DriveConstants.KINEMATICS, gyroInputs.yawPosition, getPositions(),
         new Pose2d());
+    visionLessOdometry = new SwerveDrivePoseEstimator(DriveConstants.KINEMATICS, gyroInputs.yawPosition, getPositions(),
+    new Pose2d());
     setpointGenerator = new SwerveSetpointGenerator(DriveConstants.KINEMATICS, DriveConstants.MODULE_LOCATIONS);
 
     field = new Field2d();
     SmartDashboard.putData("Field", field);
 
     this.isOpenLoop = isOpenLoop;
-    this.resetPose(PathConstants.STATION_3);
+    this.resetPose(getPose());
   }
 
   /**
@@ -255,18 +257,20 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
       simRotation = gyroInputs.yawPosition.plus(Rotation2d.fromDegrees(twist.dtheta));
       SmartDashboard.putNumber("Twist Theta", twist.dtheta);
       swerveOdometry.update(simRotation, getPositions());
+      visionLessOdometry.update(simRotation, getPositions());
       photonVision.update(getPose());
     } else {
       swerveOdometry.update(gyroInputs.yawPosition, getPositions());
     }
     Poses estimatedPoses = photonVision.getEstimatedPose(getPose());
-    if (estimatedPoses.frontPose().isPresent() && estimatedPoses.frontStdev().isPresent())
-      swerveOdometry.addVisionMeasurement(estimatedPoses.frontPose().get(), photonVision.getFrontTimestamp(), estimatedPoses.frontStdev().get());
-    if (estimatedPoses.rearPose().isPresent() && estimatedPoses.rearStdev().isPresent())
-      swerveOdometry.addVisionMeasurement(estimatedPoses.rearPose().get(), photonVision.getRearTimestamp(), estimatedPoses.rearStdev().get());
+    if (estimatedPoses.frontPose().isPresent() && estimatedPoses.frontStdev().isPresent()) 
+        swerveOdometry.addVisionMeasurement(estimatedPoses.frontPose().get(), photonVision.getFrontTimestamp(), estimatedPoses.frontStdev().get());
+    if (estimatedPoses.rearPose().isPresent() && estimatedPoses.rearStdev().isPresent()) 
+       swerveOdometry.addVisionMeasurement(estimatedPoses.rearPose().get(), photonVision.getRearTimestamp(), estimatedPoses.rearStdev().get());
     field.setRobotPose(getPose());
     SmartDashboard.putString("Pose", getPose().toString());
     Logger.recordOutput("Odometry", getPose());
+    Logger.recordOutput("Vision Less", visionLessOdometry.getEstimatedPosition());
     gyro.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
     SmartDashboard.putBoolean("Field Centric", DriveConstants.FIELD_CENTRIC);

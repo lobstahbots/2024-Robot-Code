@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -19,6 +18,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -47,6 +46,7 @@ import frc.robot.subsystems.pivot.PivotKinematics;
 import frc.robot.subsystems.shooter.NoteVisualizer;
 import frc.robot.subsystems.shooter.Shooter;
 import stl.sysId.CharacterizableSubsystem;
+import stl.trajectory.AlliancePoseMirror;
 
 public class AutoFactory {
     private final Supplier<List<Object>> responses;
@@ -203,29 +203,35 @@ public class AutoFactory {
         return pathCommand;
     }
 
-    public Command getSimpleAuto() {
-        int driverStation = (int) responses.get().get(0);
-        return getPathFindToPoseCommand(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[driverStation - 1]);
+    /* Aim and end. */
+    public Command aimOnce(Supplier<Rotation2d> value) {
+        return new RotatePivotCommand(pivot, value.get().getDegrees())
+                .until(() -> Math.abs(pivot.getPosition().minus(value.get()).getDegrees()) < PivotConstants.MAX_PIVOT_ERROR);
     }
 
-    public Command getPivotCommand(Rotation2d value) {
-        return new RotatePivotCommand(pivot, value.getDegrees())
-                .until(() -> Math.abs(pivot.getPosition().minus(value).getDegrees()) < PivotConstants.MAX_PIVOT_ERROR);
+    /* Automatically aim at speaker and stop once it reaches the angle. */
+    public Command autoAimOnce() {
+        return aimOnce(() -> Rotation2d.fromDegrees(PivotKinematics.getShotAngle(() -> AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()), driveBase::getPose).getAsDouble()));
     }
 
-    public Command getShootCommand() {
-        return new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED,
-                ShooterConstants.SHOOTER_SPEED).withTimeout(1);
+    /* Automatically aim at speaker and hold. */
+    public Command autoAimHold() {
+        return new RotatePivotCommand(pivot, () -> PivotKinematics.getShotAngle(() -> AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()), driveBase::getPose).getAsDouble());
     }
 
-    public Command getOneNoteAuto() {
-        return getPathFindToPoseCommand(AutoConstants.FIRST_NOTE_SHOOTING_POSITION)
-                .alongWith(getPivotCommand(AutoConstants.FIRST_NOTE_SHOOTING_ANGLE))
-                .andThen(getShootCommand());
+    /* Automatically aim and shoot note at speaker. */
+    public Command aimAndShoot() {
+        return autoAimOnce().andThen(
+                new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                        .alongWith(new WaitCommand(2)
+                                .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
+                        .alongWith(autoAimHold()))
+                .withTimeout(5);
     }
 
+    /* Hardcoded two-note auto. (BSU) */
     public Command getTwoNote() {
-        return getPivotCommand(Rotation2d.fromDegrees(40))
+        return aimOnce(() -> Rotation2d.fromDegrees(40))
                 .andThen(
                         new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
                                 .alongWith(new WaitCommand(2).andThen(
@@ -236,7 +242,7 @@ public class AutoFactory {
                         .alongWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
                                 .raceWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)
                                         .withTimeout(1))))
-                .andThen(getPivotCommand(Rotation2d.fromDegrees(40)).andThen(
+                .andThen(aimOnce(() -> Rotation2d.fromDegrees(40)).andThen(
                         new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
                                 .alongWith(new WaitCommand(2).andThen(
                                         new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
@@ -244,20 +250,14 @@ public class AutoFactory {
                         .withTimeout(5));
     }
 
-    public Command getThreeNoteAuto() {
-        return getOneNoteAuto().andThen(new PathPlannerAuto("3 Note Auto"));
-    }
-
-    public Command getFourNoteAuto() {
-        return getOneNoteAuto().andThen(new PathPlannerAuto("4 Note Auto"));
-    }
-
+    /* Hardcoded drive-back auto. (BSU) */
     public Command getDriveAuto() {
         return new SwerveDriveCommand(driveBase, -1, 0, 0, false).withTimeout(1.5);
     }
 
+    /* Hardcoded one-note auto. (BSU) */
     public Command getScoreAuto() {
-        return getPivotCommand(Rotation2d.fromDegrees(40)).andThen(
+        return aimOnce(() -> Rotation2d.fromDegrees(40)).andThen(
                 new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
                         .alongWith(new WaitCommand(2)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
@@ -265,8 +265,9 @@ public class AutoFactory {
                 .withTimeout(5);
     }
 
+    /* Hardcoded one note and drive back auto. (BSU) */
     public Command getScoreAndDriveAuto() {
-        return getPivotCommand(Rotation2d.fromDegrees(40))
+        return aimOnce(() -> Rotation2d.fromDegrees(40))
                 .andThen(
                         new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
                                 .alongWith(new WaitCommand(2).andThen(
@@ -275,24 +276,22 @@ public class AutoFactory {
                 .withTimeout(5).andThen(new SwerveDriveCommand(driveBase, -1, 0, 0, false).withTimeout(1));
     }
 
+    /* Pickup and score one note. */
     public Command pickupAndScore(Pose2d notePoseBlue, Pose2d scoringPose) {
         Pose2d targetPose = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d();
         Command pickupAndScoreCommand = getPathFindToPoseCommand(
                 notePoseBlue
-                        .plus(new Transform2d(-FieldConstants.PICKUP_OFFSET, 0, new Rotation2d())))
+                        .plus(new Transform2d(-FieldConstants.PICKUP_OFFSET, 0, new Rotation2d()))).raceWith(new RotatePivotCommand(pivot, 0))
                 .andThen(new SwerveDriveStopCommand(driveBase))
-                // .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, notePoseBlue,
-                // 0, 0, false))
                 .andThen(getPathFindToPoseCommand(
                         notePoseBlue)
                         .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)))
                 .andThen(getPathFindToPoseCommand(() -> scoringPose)
                         .onlyWhile(() -> notePoseBlue.getX() > scoringPose.getX()))
-                .andThen(getPivotCommand(new Rotation2d(
-                        PivotKinematics.getShotAngle(() -> targetPose, driveBase::getPose).getAsDouble()))
-                        .raceWith(
+                .andThen(autoAimOnce()
+                        .alongWith(
                                 new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false)))
-                .andThen(getShootCommand());
+                .andThen(aimAndShoot());
         return pickupAndScoreCommand;
     }
 
@@ -302,7 +301,7 @@ public class AutoFactory {
         int startingCenterNoteIndex = (int) responses.get().get(2);
         int endingCenterNoteIndex = (int) responses.get().get(3);
 
-        Command autoCommand = getShootCommand();
+        Command autoCommand = aimAndShoot();
 
         if (startingWingNoteIndex < endingWingNoteIndex) {
             for (int i = startingWingNoteIndex; i <= endingWingNoteIndex; i++) {

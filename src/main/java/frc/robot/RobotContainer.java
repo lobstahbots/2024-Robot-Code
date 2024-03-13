@@ -5,10 +5,7 @@
 package frc.robot;
 
 import frc.robot.AutoFactory.CharacterizationRoutine;
-import frc.robot.Constants.AlertConstants;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -18,21 +15,13 @@ import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
-import frc.robot.commands.TurnToAngleCommand;
-import frc.robot.commands.TurnToPointCommand;
-import frc.robot.networkalerts.Alert;
-import frc.robot.networkalerts.Alert.AlertType;
 import frc.robot.auto.AutonSelector;
 import frc.robot.auto.AutonSelector.AutoQuestion;
-import frc.robot.commands.IntakeNoteCommand;
 import frc.robot.commands.RotatePivotCommand;
-import frc.robot.commands.ShootWhileMovingCommand;
 import frc.robot.commands.SpinIndexerCommand;
 import frc.robot.commands.SpinIntakeCommand;
 import frc.robot.commands.SpinShooterCommand;
-import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.SwerveDriveCommand;
-import frc.robot.commands.SwerveDriveStopCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -41,36 +30,28 @@ import frc.robot.subsystems.drive.SwerveModuleIOSparkMax;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerSparkMax;
 import frc.robot.subsystems.pivot.Pivot;
-import frc.robot.subsystems.pivot.PivotKinematics;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOSparkMax;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhoton;
 import frc.robot.subsystems.vision.VisionIOSim;
-import stl.command.PeriodicConditionalCommand;
-import stl.trajectory.AlliancePoseMirror;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOSparkMax;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import java.util.List;
 import java.util.Map;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 /**
@@ -168,8 +149,6 @@ public class RobotContainer {
 
     this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, indexer, autoChooser::getResponses);
 
-    registerNamedCommands();
-
     setDefaultCommands();
     smartDashSetup();
     configureButtonBindings();
@@ -229,17 +208,11 @@ public class RobotContainer {
     //     .whileTrue(new ShootWhileMovingCommand(driveBase, driveBase::getPose, driveBase::getRobotRelativeSpeeds,
     //         AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()).getTranslation(),
     //         false, false).withTimeout(10).andThen(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
-    // climberUpButton.whileTrue(new MoveClimberCommand(climber,
-    // ClimberConstants.CLIMBER_SPEED));
-    // climberDownButton.whileTrue(new MoveClimberCommand(climber,
-    // -ClimberConstants.CLIMBER_SPEED));
     intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED).alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)));
     indexButton.whileTrue(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED));
     shooterButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
     unshooterButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED));
     ampButton.whileTrue(new RotatePivotCommand(pivot, 115).alongWith(new SpinShooterCommand(shooter, -ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED)));
-    // retractPivotButton.whileTrue(new RotatePivotCommand(pivot,
-    // PivotConstants.PIVOT_RESTING_ANGLE));
     outtakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.OUTTAKE_SPEED).alongWith(new SpinIndexerCommand(indexer, IndexerConstants.SLOW_INDEXER_MOTOR_SPEED)));
     subwooferButton.whileTrue(new RotatePivotCommand(pivot, 40).alongWith(new  SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
     wingButton.whileTrue(new RotatePivotCommand(pivot, 15).alongWith(new  SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
@@ -255,10 +228,6 @@ public class RobotContainer {
   }
 
   public void smartDashSetup() {
-    // autoChooser.addRoutine("One-Note Auto", List.of(), autoFactory::getOneNoteAuto);
-    // autoChooser.addRoutine("Two-Note Auto", List.of(), autoFactory::getTwoNoteAuto);
-    // autoChooser.addRoutine("Three-Note Auto", List.of(), autoFactory::getThreeNoteAuto);
-    // autoChooser.addRoutine("Four-Note Auto", List.of(), autoFactory::getFourNoteAuto);
 
     autoChooser.addRoutine("Characterize", List.of(
         new AutoQuestion<>("Which Subsystem?", Map.of("DriveBase", driveBase, "Pivot", pivot)),
@@ -270,7 +239,7 @@ public class RobotContainer {
     autoChooser.addRoutine("Drive", List.of(), autoFactory::getDriveAuto);  
     autoChooser.addRoutine("Score Preload", List.of(), autoFactory::getScoreAuto);  
     autoChooser.addRoutine("Score Preload And Drive", List.of(), autoFactory::getScoreAndDriveAuto);  
-    autoChooser.addRoutine("Suspicious 1.5-2 Note", List.of(), autoFactory::getTwoNote);
+    autoChooser.addRoutine("2 Note Subwoofer Center Auto", List.of(), autoFactory::getTwoNote);
 
     autoChooser.addRoutine("Wing And Midline Auto", List.of(
         new AutoQuestion<>("Starting Note?", Map.of("Wing Right", 0, "Wing Center", 1, "Wing Left", 2)),
@@ -282,15 +251,6 @@ public class RobotContainer {
             Map.of("-Midline Left", 0, "-Midline Center Left", 1, "-Midline Center", 2, "-Midline Center Right", 3,
                 "-Midline Right (Source Side)", 4))),
         autoFactory::getWingAndMidlineAuto);
-  }
-
-  private void registerNamedCommands() { 
-    NamedCommands.registerCommand("intake", new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
-    NamedCommands.registerCommand("shoot", autoFactory.getShootCommand());
-    NamedCommands.registerCommand("note1pivot", autoFactory.getPivotCommand(AutoConstants.NOTE_1_SHOOTING_ANGLE));
-    NamedCommands.registerCommand("note2pivot", autoFactory.getPivotCommand(AutoConstants.NOTE_2_SHOOTING_ANGLE));
-    NamedCommands.registerCommand("note3pivot", autoFactory.getPivotCommand(AutoConstants.NOTE_3_SHOOTING_ANGLE));
-    NamedCommands.registerCommand("intakePivot", autoFactory.getPivotCommand(AutoConstants.INTAKE_ANGLE));
   }
 
   public void setIdleMode(IdleMode idleMode, NeutralModeValue shooterIdleMode) {

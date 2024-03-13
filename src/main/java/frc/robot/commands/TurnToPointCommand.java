@@ -22,7 +22,7 @@ public class TurnToPointCommand extends TurnToAngleCommand {
    * @param fieldCentric Whether the robot drives field centric. Does not affect rotation.
    */
   public TurnToPointCommand(DriveBase driveBase, Supplier<Pose2d> robotPoseSupplier, Pose2d desiredPose, DoubleSupplier strafeXSupplier, DoubleSupplier strafeYSupplier, BooleanSupplier fieldCentric) {
-    super(driveBase, desiredPose.minus(robotPoseSupplier.get()).getRotation(), strafeXSupplier, strafeYSupplier, fieldCentric);
+    super(driveBase, () -> robotPoseSupplier.get().getTranslation().minus(desiredPose.getTranslation()).getAngle(), strafeXSupplier, strafeYSupplier, fieldCentric);
   }
 
   /**
@@ -35,6 +35,6 @@ public class TurnToPointCommand extends TurnToAngleCommand {
    * @param fieldCentric Whether the robot drives field centric. Does not affect rotation.
    */
   public TurnToPointCommand(DriveBase driveBase, Supplier<Pose2d> robotPoseSupplier, Pose2d desiredPose, double strafeX, double strafeY, boolean fieldCentric) {
-    super(driveBase, desiredPose.minus(robotPoseSupplier.get()).getRotation(), () -> strafeX, () -> strafeY, () -> fieldCentric);
+    super(driveBase, () -> robotPoseSupplier.get().getTranslation().minus(desiredPose.getTranslation()).getAngle(), () -> strafeX, () -> strafeY, () -> fieldCentric);
   }
 }
