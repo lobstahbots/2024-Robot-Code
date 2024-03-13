@@ -265,52 +265,6 @@ public class VisionIOSim implements VisionIO {
             dbgField.getObject("cameras").setPoses(cameraPoses2d);
     }
 
-    public void updateInputs(VisionIOInputs inputs) {
-        double frontAmbiguitySum = 0;
-        double rearAmbiguitySum = 0;
-        inputs.frontConfidence = 0;
-        inputs.rearConfidence = 0;
-
-        Optional<EstimatedRobotPose> frontPoseOptional = frontPoseEstimator.update();
-
-        if (frontPoseOptional.isPresent()) {
-            estimatedFrontPose = frontPoseOptional.get();
-
-            inputs.estimatedFrontPose = estimatedFrontPose.estimatedPose;
-            inputs.estimatedFrontPoseTimestamp = estimatedFrontPose.timestampSeconds;
-
-            var frontTargetsSeen = estimatedFrontPose.targetsUsed.size();
-            inputs.visibleFrontFiducialIDs = new int[frontTargetsSeen];
-
-            for (int i = 0; i < frontTargetsSeen; i++) {
-                var target = estimatedFrontPose.targetsUsed.get(i);
-                inputs.visibleFrontFiducialIDs[i] = target.getFiducialId();
-                frontAmbiguitySum += target.getPoseAmbiguity();
-            }
-
-            inputs.frontConfidence = 1 - (frontAmbiguitySum / inputs.visibleFrontFiducialIDs.length);
-        }
-        Optional<EstimatedRobotPose> rearPoseOptional = rearPoseEstimator.update();
-
-        if (rearPoseOptional.isPresent()) {
-            estimatedRearPose = rearPoseOptional.get();
-
-            inputs.estimatedRearPose = estimatedRearPose.estimatedPose;
-            inputs.estimatedRearPoseTimestamp = estimatedRearPose.timestampSeconds;
-
-            var rearTargetsSeen = estimatedRearPose.targetsUsed.size();
-            inputs.visibleRearFiducialIDs = new int[rearTargetsSeen];
-
-            for (int i = 0; i < rearTargetsSeen; i++) {
-                var target = estimatedRearPose.targetsUsed.get(i);
-                inputs.visibleFrontFiducialIDs[i] = target.getFiducialId();
-                rearAmbiguitySum += target.getPoseAmbiguity();
-            }
-
-            inputs.rearConfidence = 1 - (rearAmbiguitySum / inputs.visibleRearFiducialIDs.length);
-        }
-    }
-
     public List<PhotonTrackedTarget> getFrontTrackedTargets() {
         return estimatedFrontPose.targetsUsed;
     }
