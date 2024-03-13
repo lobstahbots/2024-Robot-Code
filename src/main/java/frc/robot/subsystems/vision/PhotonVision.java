@@ -58,11 +58,19 @@ public class PhotonVision extends SubsystemBase {
     }
 
     /**
-     * Get the timestamp of the pose capture.
+     * Get the timestamp of the front pose capture.
      * @return The latest timestamp.
      */
-    public double getTimestamp() {
-        return inputs.estimatedRearPoseTimestamp > inputs.estimatedFrontPoseTimestamp ? inputs.estimatedRearPoseTimestamp : inputs.estimatedFrontPoseTimestamp;
+    public double getFrontTimestamp() {
+        return inputs.estimatedFrontPoseTimestamp ;
+    }
+
+    /**
+     * Get the timestamp of the rear pose capture.
+     * @return The latest timestamp.
+     */
+    public double getRearTimestamp() {
+        return inputs.estimatedRearPoseTimestamp ;
     }
 
     /**
@@ -99,6 +107,7 @@ public class PhotonVision extends SubsystemBase {
     }
 
     public void periodic() {
+        io.updateInputs(inputs);
         Logger.processInputs("PhotonVision", inputs);
     }
 
