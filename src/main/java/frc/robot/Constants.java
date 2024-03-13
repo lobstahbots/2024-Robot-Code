@@ -249,8 +249,8 @@ public final class Constants {
     public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
     static {
-      shotAngleMap.put(1.039, Units.degreesToRadians(90.0));
-      shotAngleMap.put(24.0,Units.degreesToRadians(19.0));
+      shotAngleMap.put(0.1, Units.degreesToRadians(40.0));
+      shotAngleMap.put(8.0,Units.degreesToRadians(10.0));
     }
   }
   
