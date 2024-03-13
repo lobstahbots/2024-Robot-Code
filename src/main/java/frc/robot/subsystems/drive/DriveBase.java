@@ -256,6 +256,7 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
       simRotation = gyroInputs.yawPosition.plus(Rotation2d.fromDegrees(twist.dtheta));
       SmartDashboard.putNumber("Twist Theta", twist.dtheta);
       swerveOdometry.update(simRotation, getPositions());
+      photonVision.update(getPose());
     } else {
       swerveOdometry.update(gyroInputs.yawPosition, getPositions());
     }
