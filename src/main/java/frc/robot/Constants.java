@@ -8,6 +8,8 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.pathplanner.lib.path.PathConstraints;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,6 +18,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
 
@@ -64,10 +67,11 @@ public final class Constants {
     public static final int DRIVE_TO_AMP_BUTTON_ID = 2;
     public static final int DRIVE_TO_SOURCE_BUTTON_ID = 3;
     public static final int DRIVE_TO_SPEAKER_BUTTON_ID = 4;
-    public static final int INDEXER_BUTTON_ID = 2;
-    public static final int SHOOTER_BUTTON_ID = 2;
-    public static final int INTAKE_BUTTON_ID = 3;
-    public static final int OUTTAKE_BUTTON_ID = 1;
+    public static final int INDEXER_BUTTON_ID = 1;
+    public static final int SHOOTER_BUTTON_ID = 6;
+    public static final int UNSHOOTER_BUTTON_ID = 5;
+    public static final int INTAKE_BUTTON_ID = 5;
+    public static final int OUTTAKE_BUTTON_ID = 3;
     public static final int CLIMBERUP_BUTTON_ID = 1;
     public static final int CLIMBERDOWN_BUTTON_ID = 1;
     public static final int SLOWDOWN_BUTTON_ID = 1;
@@ -180,7 +184,7 @@ public final class Constants {
   }
   
   public static class IntakeConstants {
-    public static final double INTAKE_SPEED = 0.5;
+    public static final double INTAKE_SPEED = 1;
     public static final double OUTTAKE_SPEED = -0.5;
     public static final int INTAKE_MOTOR_ID = 33;
     public static final int INDEXER_MOTOR_ID = 44;
@@ -189,6 +193,7 @@ public final class Constants {
   
   public static class ShooterConstants {
     public static final double SHOOTER_SPEED = 1;
+    public static final double UNSHOOTER_SPEED = -0.5;
     public static final double SPIN_UP_SPEED = 0.75;
     public static final double AMP_SPEED = 0.175;
     public static final int UPPER_SHOOTER_ID = 5;
@@ -205,7 +210,7 @@ public final class Constants {
   }
 
   public static class PivotConstants {
-    public static final double PID_P = 1;
+    public static final double PID_P = 0.5;
     public static final double PID_I = 0;
     public static final double PID_D = 0;
     public static final double PID_FF = 0;
@@ -269,12 +274,20 @@ public final class Constants {
     public static final double FPS = 20;
     public static final double CAMERA_LATENCY_STDEV_MS = 5;
 
+
+    public static final double APRIL_TAG_NUMBER_CONFIDENCE_SCALE = 3; // Higher makes confidence lower at each number of AprilTags
+    public static final double APRIL_TAG_NUMBER_EXPONENT = -1 / (APRIL_TAG_NUMBER_CONFIDENCE_SCALE * Math.log(APRIL_TAG_NUMBER_CONFIDENCE_SCALE));
+    public static final double APRIL_TAG_AREA_CONFIDENCE_SCALE = 1.7; // Higher makes confidence lower at each area of AprilTags
+    // See https://www.desmos.com/calculator/hw9b2s1mlw
+
+    public static final double AMBIGUITY_TO_STDEV_EXP = 1;
+    public static final Vector<N3> BASE_STDEV = VecBuilder.fill(0.1, 0.1, 0.2); // x, y, angle
   }
 
   public static class IndexerConstants {
     public static final int INDEXER_CURRENT_LIMIT = 40;
-    public static final int INDEXER_MOTOR_ID = 0; //update this
-    public static final double FAST_INDEXER_MOTOR_SPEED = 0.9;
+    public static final int INDEXER_MOTOR_ID = 44;
+    public static final double FAST_INDEXER_MOTOR_SPEED = -0.9;
     public static final double SLOW_INDEXER_MOTOR_SPEED = 0.5;
   }
   

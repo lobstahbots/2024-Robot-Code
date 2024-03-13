@@ -6,6 +6,7 @@ package frc.robot.subsystems.indexer;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Indexer extends SubsystemBase {
@@ -43,6 +44,7 @@ public class Indexer extends SubsystemBase {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
     Logger.processInputs("Indexer", inputs);
+    SmartDashboard.putBoolean("Beam Broken", inputs.beamBroken);
     io.periodic();
   }
 }

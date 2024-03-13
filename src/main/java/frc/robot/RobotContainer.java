@@ -69,6 +69,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -98,27 +99,35 @@ public class RobotContainer {
 //       IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
 //   private final JoystickButton alignToSpeakerButton = new JoystickButton(driverJoystick,
 //       IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
+//   private final JoystickButton driveToAmpButton = new JoystickButton(driverJoystick,
+    //   IOConstants.ALIGN_TO_AMP_BUTTON_ID);
+//   private final JoystickButton driveToSourceButton = new JoystickButton(driverJoystick,
+//       IOConstants.ALIGN_TO_SOURCE_BUTTON_ID);
+//   private final JoystickButton driveToSpeakerButton = new JoystickButton(driverJoystick,
+//       IOConstants.ALIGN_TO_SPEAKER_BUTTON_ID);
   private final Joystick operatorJoystick = new Joystick(IOConstants.OPERATOR_CONTROLLER_PORT);
   private final JoystickButton shooterButton = new JoystickButton(operatorJoystick, IOConstants.SHOOTER_BUTTON_ID);
-  private final JoystickButton intakeButton = new JoystickButton(operatorJoystick, IOConstants.INTAKE_BUTTON_ID);
+  private final JoystickButton unshooterButton = new JoystickButton(operatorJoystick, IOConstants.UNSHOOTER_BUTTON_ID);
+  private final JoystickButton intakeButton = new JoystickButton(driverJoystick, IOConstants.INTAKE_BUTTON_ID);
   private final JoystickButton ampButton = new JoystickButton(operatorJoystick, IOConstants.AMP_BUTTON_ID);
   private final JoystickButton outtakeButton = new JoystickButton(operatorJoystick, IOConstants.OUTTAKE_BUTTON_ID);
-  private final JoystickButton indexButton = new JoystickButton(driverJoystick, IOConstants.INDEXER_BUTTON_ID);
+  private final JoystickButton indexButton = new JoystickButton(operatorJoystick, IOConstants.INDEXER_BUTTON_ID);
+  private final POVButton subwooferButton = new POVButton(operatorJoystick, 0); //UP
+  private final POVButton wingButton = new POVButton(operatorJoystick, 90); // RIGHT
+  private final POVButton podiumButton = new POVButton(operatorJoystick, 270); // LEFT
+  
+  // private final JoystickButton climberUpButton = new
+  // JoystickButton(operatorJoystick, IOConstants.CLIMBERUP_BUTTON_ID);
+  // private final JoystickButton climberDownButton = new
+  // JoystickButton(operatorJoystick,
+  // IOConstants.CLIMBERDOWN_BUTTON_ID);
+  // private final JoystickButton retractPivotButton = new
+  // JoystickButton(operatorJoystick, IOConstants.RESET_PIVOT_ANGLE_BUTTON_ID);
   private final JoystickButton slowdownButton = new JoystickButton(driverJoystick, IOConstants.SLOWDOWN_BUTTON_ID);
 
   private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
-      () -> Commands.none());
+() -> Commands.none());
   private final AutoFactory autoFactory;
-
-  private final Alert endgameAlert1 = new Alert(
-      String.format("Endgame started - %d seconds remaining", AlertConstants.ENDGAME_ALERT_1_TIME), AlertType.INFO);
-  private final Alert endgameAlert2 = new Alert(
-      String.format("%d seconds remaining", AlertConstants.ENDGAME_ALERT_2_TIME), AlertType.INFO);
-  private final Alert lowBatteryAlert = new Alert(
-      String.format("Low battery voltage - below %f volts", AlertConstants.LOW_BATTERY_VOLTAGE), AlertType.WARNING);
-  private final Alert driverControllerDisconnectedAlert = new Alert("Driver controller disconnected", AlertType.ERROR);
-  private final Alert operatorControllerDisconnectedAlert = new Alert("Operator controller disconnected",
-      AlertType.ERROR);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -157,7 +166,7 @@ public class RobotContainer {
           new ShooterIOSim());
     }
 
-    this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, autoChooser::getResponses);
+    this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, indexer, autoChooser::getResponses);
 
     registerNamedCommands();
 
@@ -169,8 +178,8 @@ public class RobotContainer {
   private void setDefaultCommands() {
     driveBase.setDefaultCommand(
         new SwerveDriveCommand(driveBase,
-            () -> driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
             () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
+            () -> driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
             () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
             () -> DriveConstants.FIELD_CENTRIC));
     pivot.setDefaultCommand(new RotatePivotCommand(pivot,
@@ -214,17 +223,35 @@ public class RobotContainer {
     slowdownButton.whileTrue(new SwerveDriveCommand(driveBase,
         () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
         () -> -DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
-        () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
+        () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),  
         () -> DriveConstants.FIELD_CENTRIC));
     // shooterButton
     //     .whileTrue(new ShootWhileMovingCommand(driveBase, driveBase::getPose, driveBase::getRobotRelativeSpeeds,
     //         AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()).getTranslation(),
     //         false, false).withTimeout(10).andThen(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
-    intakeButton.onTrue(new IntakeNoteCommand(indexer, intake));
+    // climberUpButton.whileTrue(new MoveClimberCommand(climber,
+    // ClimberConstants.CLIMBER_SPEED));
+    // climberDownButton.whileTrue(new MoveClimberCommand(climber,
+    // -ClimberConstants.CLIMBER_SPEED));
+    intakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED).alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)));
     indexButton.whileTrue(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED));
     shooterButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
-    ampButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED).alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT)));
-    outtakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.OUTTAKE_SPEED));
+    unshooterButton.whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED));
+    ampButton.whileTrue(new RotatePivotCommand(pivot, 115).alongWith(new SpinShooterCommand(shooter, -ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED)));
+    // retractPivotButton.whileTrue(new RotatePivotCommand(pivot,
+    // PivotConstants.PIVOT_RESTING_ANGLE));
+    outtakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.OUTTAKE_SPEED).alongWith(new SpinIndexerCommand(indexer, IndexerConstants.SLOW_INDEXER_MOTOR_SPEED)));
+    subwooferButton.whileTrue(new RotatePivotCommand(pivot, 40).alongWith(new  SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
+    wingButton.whileTrue(new RotatePivotCommand(pivot, 15).alongWith(new  SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
+    podiumButton.whileTrue(new RotatePivotCommand(pivot, 30).alongWith(new  SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
+  }
+
+  public boolean getOperatorConnected() {
+    return operatorJoystick.isConnected();
+  }
+
+  public boolean getDriverConnected() {
+    return driverJoystick.isConnected();
   }
 
   public void smartDashSetup() {
@@ -240,6 +267,11 @@ public class RobotContainer {
             CharacterizationRoutine.DYNAMIC_FORWARD, "Dynamic Backward", CharacterizationRoutine.DYNAMIC_BACKWARD))),
         autoFactory::getCharacterizationRoutine);
 
+    autoChooser.addRoutine("Drive", List.of(), autoFactory::getDriveAuto);  
+    autoChooser.addRoutine("Score Preload", List.of(), autoFactory::getScoreAuto);  
+    autoChooser.addRoutine("Score Preload And Drive", List.of(), autoFactory::getScoreAndDriveAuto);  
+    autoChooser.addRoutine("Suspicious 1.5-2 Note", List.of(), autoFactory::getTwoNote);
+
     autoChooser.addRoutine("Wing And Midline Auto", List.of(
         new AutoQuestion<>("Starting Note?", Map.of("Wing Right", 0, "Wing Center", 1, "Wing Left", 2)),
         new AutoQuestion<>("Last Wing Note?", Map.of("-Wing Right", 0, "-Wing Center", 1, "-Wing Left", 2)),
@@ -250,27 +282,9 @@ public class RobotContainer {
             Map.of("-Midline Left", 0, "-Midline Center Left", 1, "-Midline Center", 2, "-Midline Center Right", 3,
                 "-Midline Right (Source Side)", 4))),
         autoFactory::getWingAndMidlineAuto);
-
-    new Trigger(() -> DriverStation.isTeleop() && AlertConstants.ENDGAME_ALERT_2_TIME < DriverStation.getMatchTime()
-        && DriverStation.getMatchTime() < AlertConstants.ENDGAME_ALERT_1_TIME)
-        .onTrue(new InstantCommand(() -> endgameAlert1.set(true)))
-        .onFalse(new InstantCommand(() -> endgameAlert1.set(false)));
-    new Trigger(() -> DriverStation.isTeleop() && 0 < DriverStation.getMatchTime()
-        && DriverStation.getMatchTime() < AlertConstants.ENDGAME_ALERT_2_TIME)
-        .onTrue(new InstantCommand(() -> endgameAlert2.set(true)))
-        .onFalse(new InstantCommand(() -> endgameAlert2.set(false)));
-    new Trigger(() -> RobotController.getBatteryVoltage() < AlertConstants.LOW_BATTERY_VOLTAGE)
-        .onTrue(new InstantCommand(() -> lowBatteryAlert.set(true)))
-        .onFalse(new InstantCommand(() -> lowBatteryAlert.set(false)));
-    new Trigger(driverJoystick::isConnected)
-        .onTrue(new InstantCommand(() -> driverControllerDisconnectedAlert.set(false)))
-        .onFalse(new InstantCommand(() -> driverControllerDisconnectedAlert.set(true)));
-    new Trigger(operatorJoystick::isConnected)
-        .onTrue(new InstantCommand(() -> operatorControllerDisconnectedAlert.set(false)))
-        .onFalse(new InstantCommand(() -> operatorControllerDisconnectedAlert.set(true)));
   }
 
-  private void registerNamedCommands() {
+  private void registerNamedCommands() { 
     NamedCommands.registerCommand("intake", new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED));
     NamedCommands.registerCommand("shoot", autoFactory.getShootCommand());
     NamedCommands.registerCommand("note1pivot", autoFactory.getPivotCommand(AutoConstants.NOTE_1_SHOOTING_ANGLE));

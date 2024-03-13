@@ -231,30 +231,28 @@ public class VisionIOSim implements VisionIO {
             if (camSim.getCamera().getName().equals(frontCamera.getName())) {
                 Optional<EstimatedRobotPose> frontPoseOptional = frontPoseEstimator.update(camResult);
                 if (frontPoseOptional.isPresent()) {
-                    double frontAmbiguitySum = 0;
-                    inputs.frontConfidence = 0;
                     estimatedFrontPose = frontPoseOptional.get();
                     inputs.estimatedFrontPose = estimatedFrontPose.estimatedPose;
                     inputs.estimatedFrontPoseTimestamp = estimatedFrontPose.timestampSeconds;
                     inputs.visibleFrontFiducialIDs = estimatedFrontPose.targetsUsed.stream()
-                            .map((target) -> target.getFiducialId()).mapToInt(Integer::intValue).toArray();
-                    frontAmbiguitySum = estimatedFrontPose.targetsUsed.stream()
-                            .map((target) -> target.getPoseAmbiguity()).mapToDouble(Double::doubleValue).sum();
-                    inputs.frontConfidence = 1 - (frontAmbiguitySum / inputs.visibleFrontFiducialIDs.length);
+                            .mapToInt((target) -> target.getFiducialId()).toArray();
+                    inputs.frontAmbiguities = estimatedFrontPose.targetsUsed.stream()
+                            .mapToDouble((target) -> target.getPoseAmbiguity()).toArray();
+                    inputs.frontTotalArea = estimatedFrontPose.targetsUsed.stream()
+                            .mapToDouble((target) -> target.getArea() / 100).sum();
                 }
             } else {
                 Optional<EstimatedRobotPose> rearPoseOptional = rearPoseEstimator.update(camResult);
                 if (rearPoseOptional.isPresent()) {
-                    double rearAmbiguitySum = 0;
-                    inputs.rearConfidence = 0;
                     estimatedRearPose = rearPoseOptional.get();
                     inputs.estimatedRearPose = estimatedRearPose.estimatedPose;
                     inputs.estimatedRearPoseTimestamp = estimatedRearPose.timestampSeconds;
                     inputs.visibleRearFiducialIDs = estimatedRearPose.targetsUsed.stream()
-                            .map((target) -> target.getFiducialId()).mapToInt(Integer::intValue).toArray();
-                    rearAmbiguitySum = estimatedRearPose.targetsUsed.stream().map((target) -> target.getPoseAmbiguity())
-                            .mapToDouble(Double::doubleValue).sum();
-                    inputs.rearConfidence = 1 - (rearAmbiguitySum / inputs.visibleRearFiducialIDs.length);
+                            .mapToInt((target) -> target.getFiducialId()).toArray();
+                    inputs.rearAmbiguities = estimatedRearPose.targetsUsed.stream()
+                            .mapToDouble((target) -> target.getPoseAmbiguity()).toArray();
+                    inputs.rearTotalArea = estimatedRearPose.targetsUsed.stream()
+                            .mapToDouble((target) -> target.getArea() / 100).sum();
                 }
             }
 

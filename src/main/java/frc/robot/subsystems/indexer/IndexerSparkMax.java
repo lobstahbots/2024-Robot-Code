@@ -16,7 +16,7 @@ import stl.tempControl.TemperatureMonitor;
 
 public class IndexerSparkMax implements IndexerIO {
   private final MonitoredSparkMax indexerMotor;
-  private DigitalInput beamBreak = new DigitalInput(0);
+  private DigitalInput beamBreak = new DigitalInput(2);
   private final TemperatureMonitor monitor;
 
   /** Creates a new IndexerSparkMax. */

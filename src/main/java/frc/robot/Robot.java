@@ -6,8 +6,6 @@ package frc.robot;
 
 
 import java.io.File;
-
-
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -21,10 +19,15 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.AlertConstants;
 import frc.robot.Constants.SimConstants;
+import frc.robot.networkalerts.Alert;
+import frc.robot.networkalerts.Alert.AlertType;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -36,6 +39,15 @@ public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+    private final Alert endgameAlert1 = new Alert(
+      String.format("Endgame started - %d seconds remaining", AlertConstants.ENDGAME_ALERT_1_TIME), AlertType.INFO);
+  private final Alert endgameAlert2 = new Alert(
+      String.format("%d seconds remaining", AlertConstants.ENDGAME_ALERT_2_TIME), AlertType.INFO);
+  private final Alert lowBatteryAlert = new Alert(
+      String.format("Low battery voltage - below %f volts", AlertConstants.LOW_BATTERY_VOLTAGE), AlertType.WARNING);
+  private final Alert driverControllerDisconnectedAlert = new Alert("Driver controller disconnected", AlertType.ERROR);
+  private final Alert operatorControllerDisconnectedAlert = new Alert("Operator controller disconnected",
+      AlertType.ERROR);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -91,6 +103,12 @@ public class Robot extends LoggedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    endgameAlert1.set(DriverStation.isTeleop() && AlertConstants.ENDGAME_ALERT_2_TIME < DriverStation.getMatchTime() && DriverStation.getMatchTime() < AlertConstants.ENDGAME_ALERT_1_TIME);
+    endgameAlert2.set(DriverStation.isTeleop() && AlertConstants.ENDGAME_ALERT_2_TIME < DriverStation.getMatchTime());
+    lowBatteryAlert.set(RobotController.getBatteryVoltage() < AlertConstants.LOW_BATTERY_VOLTAGE);
+    operatorControllerDisconnectedAlert.set(!m_robotContainer.getOperatorConnected());
+    driverControllerDisconnectedAlert.set(!m_robotContainer.getDriverConnected());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

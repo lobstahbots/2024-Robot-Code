@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.drive;
 
-import java.util.Optional;
-
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -37,6 +35,7 @@ import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.Vision.Poses;
 import stl.sysId.CharacterizableSubsystem;
 
 public class DriveBase extends CharacterizableSubsystem {
@@ -260,9 +259,11 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     } else {
       swerveOdometry.update(gyroInputs.yawPosition, getPositions());
     }
-    Optional<Pose2d> estimatedPose = photonVision.getEstimatedPose(getPose());
-    if (estimatedPose.isPresent())
-      swerveOdometry.addVisionMeasurement(estimatedPose.get(), photonVision.getTimestamp());
+    Poses estimatedPoses = photonVision.getEstimatedPose(getPose());
+    if (estimatedPoses.frontPose().isPresent() && estimatedPoses.frontStdev().isPresent())
+      swerveOdometry.addVisionMeasurement(estimatedPoses.frontPose().get(), photonVision.getFrontTimestamp(), estimatedPoses.frontStdev().get());
+    if (estimatedPoses.rearPose().isPresent() && estimatedPoses.rearStdev().isPresent())
+      swerveOdometry.addVisionMeasurement(estimatedPoses.rearPose().get(), photonVision.getRearTimestamp(), estimatedPoses.rearStdev().get());
     field.setRobotPose(getPose());
     SmartDashboard.putString("Pose", getPose().toString());
     Logger.recordOutput("Odometry", getPose());
