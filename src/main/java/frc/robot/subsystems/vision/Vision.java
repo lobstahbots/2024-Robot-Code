@@ -10,14 +10,17 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 
-public class PhotonVision extends SubsystemBase {
-    private final PhotonVisionIO io;
-    private final PhotonVisionIOInputsAutoLogged inputs = new PhotonVisionIOInputsAutoLogged();
+public class Vision extends SubsystemBase {
+    private final VisionIO io;
+    private final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
+    private Pose2d robotPose = new Pose2d();
     
-    public PhotonVision(PhotonVisionIO io) {
+    public Vision(VisionIO io) {
        this.io = io;
     }
 
@@ -107,9 +110,13 @@ public class PhotonVision extends SubsystemBase {
     }
 
     public void periodic() {
-        io.updateInputs(inputs);
+        io.updateInputs(inputs, new Pose3d(robotPose));
         Logger.processInputs("PhotonVision", inputs);
     }
 
     public record Poses(Optional<Pose2d> frontPose, Optional<Pose2d> rearPose, Optional<Vector<N3>> frontStdev, Optional<Vector<N3>> rearStdev) {};
+
+    public void update(Pose2d robotPose) {
+        this.robotPose = robotPose;
+    }
 }

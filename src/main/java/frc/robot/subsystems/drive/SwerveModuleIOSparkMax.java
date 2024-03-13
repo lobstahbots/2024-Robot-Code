@@ -22,7 +22,7 @@ import frc.robot.Constants.SwerveConstants;
 import stl.tempControl.MonitoredSparkMax;
 import stl.tempControl.TemperatureMonitor;
 
-public class SwerveModuleReal implements SwerveModuleIO {
+public class SwerveModuleIOSparkMax implements SwerveModuleIO {
   private final MonitoredSparkMax angleMotor;
   private final MonitoredSparkMax driveMotor;
   private final RelativeEncoder drivingEncoder;
@@ -38,7 +38,7 @@ public class SwerveModuleReal implements SwerveModuleIO {
    * @param driveMotorID The CAN ID of the motor controlling drive speed.
    * @param angularOffsetDegrees The offset angle in degrees.
   */
-  public SwerveModuleReal (int moduleID, String name, int angleMotorID, int driveMotorID, double angularOffsetDegrees, boolean inverted) {
+  public SwerveModuleIOSparkMax (int moduleID, String name, int angleMotorID, int driveMotorID, double angularOffsetDegrees, boolean inverted) {
     this.moduleID = moduleID;
 
     this.angleMotor = new MonitoredSparkMax(angleMotorID, MotorType.kBrushless, name + " angle motor");

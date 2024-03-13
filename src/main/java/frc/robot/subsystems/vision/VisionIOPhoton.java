@@ -15,7 +15,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import frc.robot.Constants.VisionConstants;
 
-public class PhotonVisionReal implements PhotonVisionIO {
+public class VisionIOPhoton implements VisionIO {
     private final PhotonCamera frontCamera;
     private final PhotonCamera rearCamera;
     private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
@@ -24,14 +24,14 @@ public class PhotonVisionReal implements PhotonVisionIO {
     private EstimatedRobotPose estimatedFrontPose = new EstimatedRobotPose(new Pose3d(), 0, new ArrayList<PhotonTrackedTarget>(), VisionConstants.POSE_STRATEGY);
     private EstimatedRobotPose estimatedRearPose = new EstimatedRobotPose(new Pose3d(), 0, new ArrayList<PhotonTrackedTarget>(), VisionConstants.POSE_STRATEGY);
     
-    public PhotonVisionReal() {
+    public VisionIOPhoton() {
         this.rearCamera = new PhotonCamera("photonvision_rear");
         this.frontCamera = new PhotonCamera("photonvision_front");
         this.frontPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, VisionConstants.POSE_STRATEGY, frontCamera, VisionConstants.ROBOT_TO_FRONT_CAMERA);
         this.rearPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, VisionConstants.POSE_STRATEGY, rearCamera, VisionConstants.ROBOT_TO_REAR_CAMERA);
     }
 
-    public void updateInputs(PhotonVisionIOInputs inputs) {
+    public void updateInputs(VisionIOInputs inputs, Pose3d robotPoseMeters) {
         Optional<EstimatedRobotPose> frontPoseOptional = frontPoseEstimator.update();
         if (frontPoseOptional.isPresent()) {
             estimatedFrontPose = frontPoseOptional.get();

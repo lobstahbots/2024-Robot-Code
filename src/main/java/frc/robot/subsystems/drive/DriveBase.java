@@ -34,8 +34,8 @@ import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
-import frc.robot.subsystems.vision.PhotonVision;
-import frc.robot.subsystems.vision.PhotonVision.Poses;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.Vision.Poses;
 import stl.sysId.CharacterizableSubsystem;
 
 public class DriveBase extends CharacterizableSubsystem {
@@ -56,11 +56,11 @@ public class DriveBase extends CharacterizableSubsystem {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private boolean isOpenLoop;
   private Rotation2d simRotation = new Rotation2d();
-  private final PhotonVision photonVision;
+  private final Vision photonVision;
 
   private Field2d field;
 
-  public DriveBase(GyroIO gyroIO, PhotonVision photonVision, SwerveModuleIO frontLeft, SwerveModuleIO frontRight,
+  public DriveBase(GyroIO gyroIO, Vision photonVision, SwerveModuleIO frontLeft, SwerveModuleIO frontRight,
       SwerveModuleIO backLeft, SwerveModuleIO backRight, boolean isOpenLoop) {
 
     this.modules = new SwerveModule[] { new SwerveModule(frontLeft, FrontLeftModuleConstants.moduleID), new SwerveModule(frontRight, FrontRightModuleConstants.moduleID),
@@ -147,10 +147,6 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
   swerveSetpoint = setpointGenerator.generateSetpoint(DriveConstants.MODULE_LIMITS, new SwerveSetpoint(discreteSpeeds, DriveConstants.KINEMATICS.toSwerveModuleStates(discreteSpeeds)), discreteSpeeds, SimConstants.LOOP_TIME);
   SwerveDriveKinematics.desaturateWheelSpeeds(swerveSetpoint.moduleStates, DriveConstants.MAX_DRIVE_SPEED);
   setModuleStates(swerveSetpoint.moduleStates);
-  // ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
-  // SwerveModuleState[] newStates = DriveConstants.KINEMATICS.toSwerveModuleStates(discreteSpeeds);
-  // SwerveDriveKinematics.desaturateWheelSpeeds(newStates, DriveConstants.MAX_DRIVE_SPEED);
-  // setModuleStates(newStates);
 }
 
   /**
@@ -160,7 +156,7 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
    * @return The optimized SwerveModuleStates, now desired states.
    */
   public SwerveModuleState[] setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveModuleState[] optimizedStates = new SwerveModuleState[4];
+     SwerveModuleState[] optimizedStates = new SwerveModuleState[4];
     // SwerveDriveKinematics.desaturateWheelSpeeds(
     // desiredStates, DriveConstants.MAX_DRIVE_SPEED);
     for (SwerveModule module : modules) {
@@ -170,7 +166,7 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     Logger.recordOutput("SwerveStates/Desired", desiredStates);
     Logger.recordOutput("SwerveStates/Optimized", swerveSetpoint.moduleStates);
     Logger.recordOutput("SwerveStates/SetpointSpeeds", swerveSetpoint.chassisSpeeds);
-    return optimizedStates;
+     return optimizedStates;
   }
 
   /**
@@ -256,9 +252,10 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
 
     if (Robot.isSimulation()) {
       var twist = DriveConstants.KINEMATICS.toTwist2d(getPositions());
-      simRotation = Rotation2d.fromDegrees(twist.dtheta);
+      simRotation = gyroInputs.yawPosition.plus(Rotation2d.fromDegrees(twist.dtheta));
       SmartDashboard.putNumber("Twist Theta", twist.dtheta);
       swerveOdometry.update(simRotation, getPositions());
+      photonVision.update(getPose());
     } else {
       swerveOdometry.update(gyroInputs.yawPosition, getPositions());
     }

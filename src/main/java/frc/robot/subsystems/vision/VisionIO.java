@@ -6,11 +6,12 @@ import java.util.List;
 import org.littletonrobotics.junction.AutoLog;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 
-public interface PhotonVisionIO {
+public interface VisionIO {
     @AutoLog
-    public static class PhotonVisionIOInputs {
+    public static class VisionIOInputs {
         public Pose3d estimatedFrontPose = new Pose3d();
         public Pose3d estimatedRearPose = new Pose3d();
         public double estimatedFrontPoseTimestamp = 0.0;
@@ -31,5 +32,7 @@ public interface PhotonVisionIO {
         return new ArrayList<>();
     }
 
-    public default void updateInputs(PhotonVisionIOInputs inputs) {}
+    public default void updateInputs(VisionIOInputs inputs, Pose3d robotPose) {}
+
+    public default void update(Pose2d robotPose) {}
 }

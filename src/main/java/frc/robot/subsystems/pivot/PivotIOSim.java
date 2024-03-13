@@ -20,7 +20,7 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.SimConstants;
 
 /** Add your docs here. */
-public class PivotSim implements PivotIO {
+public class PivotIOSim implements PivotIO {
   private final DCMotor armGearbox = DCMotor.getNEO(2);
 
   private final Mechanism2d pivot = new Mechanism2d(1, 1);
@@ -41,7 +41,7 @@ public class PivotSim implements PivotIO {
       VecBuilder.fill(2.0 * Math.PI / 2048) // Add noise with a std-dev of 1 tick
   );
 
-  public PivotSim() {
+  public PivotIOSim() {
     this.arm = root.append(new MechanismLigament2d("arm", Units.inchesToMeters(17.18), -45));
     this.shooter = arm.append(new MechanismLigament2d("shooter", Units.inchesToMeters(7.5), 45));
     this.shooterIndexer = arm.append(new MechanismLigament2d("shooterIndexer", Units.inchesToMeters(-7.5), 45));

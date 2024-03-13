@@ -6,7 +6,6 @@ package frc.robot;
 
 import frc.robot.AutoFactory.CharacterizationRoutine;
 import frc.robot.Constants.AlertConstants;
-import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
@@ -26,7 +25,6 @@ import frc.robot.networkalerts.Alert.AlertType;
 import frc.robot.auto.AutonSelector;
 import frc.robot.auto.AutonSelector.AutoQuestion;
 import frc.robot.commands.IntakeNoteCommand;
-import frc.robot.commands.MoveClimberCommand;
 import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.ShootWhileMovingCommand;
 import frc.robot.commands.SpinIndexerCommand;
@@ -35,28 +33,27 @@ import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveDriveStopCommand;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.ClimberSparkMax;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.NavXGyro;
-import frc.robot.subsystems.drive.SwerveModuleReal;
-import frc.robot.subsystems.drive.SwerveModuleSim;
+import frc.robot.subsystems.drive.GyroIONavX;
+import frc.robot.subsystems.drive.SwerveModuleIOSim;
+import frc.robot.subsystems.drive.SwerveModuleIOSparkMax;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerSparkMax;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotKinematics;
-import frc.robot.subsystems.pivot.PivotSim;
-import frc.robot.subsystems.pivot.PivotSparkMax;
-import frc.robot.subsystems.shooter.ShooterTalonFX;
-import frc.robot.subsystems.vision.PhotonVision;
-import frc.robot.subsystems.vision.PhotonVisionReal;
+import frc.robot.subsystems.pivot.PivotIOSim;
+import frc.robot.subsystems.pivot.PivotIOSparkMax;
+import frc.robot.subsystems.shooter.ShooterIOTalonFX;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOPhoton;
+import frc.robot.subsystems.vision.VisionIOSim;
 import stl.command.PeriodicConditionalCommand;
 import stl.trajectory.AlliancePoseMirror;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterSim;
+import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.IntakeSparkMax;
+import frc.robot.subsystems.intake.IntakeIOSparkMax;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -91,11 +88,8 @@ public class RobotContainer {
   private final Pivot pivot;
   private final Shooter shooter;
   private final Indexer indexer = new Indexer(new IndexerSparkMax(IndexerConstants.INDEXER_MOTOR_ID));;
-  // private final Climber climber = new Climber(
-  // new ClimberSparkMax(ClimberConstants.LEFT_CLIMBER_ID,
-  // ClimberConstants.RIGHT_CLIMBER_ID));
   private final Intake intake = new Intake(
-      new IntakeSparkMax(IntakeConstants.INTAKE_MOTOR_ID));
+      new IntakeIOSparkMax(IntakeConstants.INTAKE_MOTOR_ID));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick = new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
@@ -140,36 +134,36 @@ public class RobotContainer {
    */
   public RobotContainer() {
     if (Robot.isReal()) {
-      SwerveModuleReal frontLeft = new SwerveModuleReal(FrontLeftModuleConstants.moduleID, "Front left ",
+      SwerveModuleIOSparkMax frontLeft = new SwerveModuleIOSparkMax(FrontLeftModuleConstants.moduleID, "Front left ",
           FrontLeftModuleConstants.angleID, FrontLeftModuleConstants.driveID, FrontLeftModuleConstants.angleOffset,
           FrontLeftModuleConstants.inverted);
-      SwerveModuleReal frontRight = new SwerveModuleReal(FrontRightModuleConstants.moduleID, " Front right",
+      SwerveModuleIOSparkMax frontRight = new SwerveModuleIOSparkMax(FrontRightModuleConstants.moduleID, " Front right",
           FrontRightModuleConstants.angleID, FrontRightModuleConstants.driveID, FrontRightModuleConstants.angleOffset,
           FrontRightModuleConstants.inverted);
-      SwerveModuleReal backLeft = new SwerveModuleReal(BackLeftModuleConstants.moduleID, " Back left",
+      SwerveModuleIOSparkMax backLeft = new SwerveModuleIOSparkMax(BackLeftModuleConstants.moduleID, " Back left",
           BackLeftModuleConstants.angleID, BackLeftModuleConstants.driveID, BackLeftModuleConstants.angleOffset,
           BackLeftModuleConstants.inverted);
-      SwerveModuleReal backRight = new SwerveModuleReal(BackRightModuleConstants.moduleID, "Back right",
+      SwerveModuleIOSparkMax backRight = new SwerveModuleIOSparkMax(BackRightModuleConstants.moduleID, "Back right",
           BackRightModuleConstants.angleID, BackRightModuleConstants.driveID, BackRightModuleConstants.angleOffset,
           BackRightModuleConstants.inverted);
 
-      driveBase = new DriveBase(new NavXGyro(), new PhotonVision(new PhotonVisionReal()), frontLeft, frontRight,
+      driveBase = new DriveBase(new GyroIONavX(), new Vision(new VisionIOPhoton()), frontLeft, frontRight,
           backLeft, backRight, false);
-      pivot = new Pivot(new PivotSparkMax(PivotConstants.LEFT_MOTOR_ID, PivotConstants.RIGHT_MOTOR_ID,
+      pivot = new Pivot(new PivotIOSparkMax(PivotConstants.LEFT_MOTOR_ID, PivotConstants.RIGHT_MOTOR_ID,
           PivotConstants.ENCODER_CHANNEL));
       shooter = new Shooter(
-          new ShooterTalonFX(ShooterConstants.UPPER_SHOOTER_ID, ShooterConstants.LOWER_SHOOTER_ID));
+          new ShooterIOTalonFX(ShooterConstants.UPPER_SHOOTER_ID, ShooterConstants.LOWER_SHOOTER_ID));
     } else {
-      SwerveModuleSim frontLeft = new SwerveModuleSim(FrontLeftModuleConstants.angleOffset);
-      SwerveModuleSim frontRight = new SwerveModuleSim(FrontRightModuleConstants.angleOffset);
-      SwerveModuleSim backLeft = new SwerveModuleSim(BackLeftModuleConstants.angleOffset);
-      SwerveModuleSim backRight = new SwerveModuleSim(BackRightModuleConstants.angleOffset);
+      SwerveModuleIOSim frontLeft = new SwerveModuleIOSim(FrontLeftModuleConstants.angleOffset);
+      SwerveModuleIOSim frontRight = new SwerveModuleIOSim(FrontRightModuleConstants.angleOffset);
+      SwerveModuleIOSim backLeft = new SwerveModuleIOSim(BackLeftModuleConstants.angleOffset);
+      SwerveModuleIOSim backRight = new SwerveModuleIOSim(BackRightModuleConstants.angleOffset);
 
       driveBase = new DriveBase(new GyroIO() {
-      }, new PhotonVision(new PhotonVisionReal()), frontLeft, frontRight, backLeft, backRight, false);
-      pivot = new Pivot(new PivotSim());
+      }, new Vision(new VisionIOSim()), frontLeft, frontRight, backLeft, backRight, false);
+      pivot = new Pivot(new PivotIOSim());
       shooter = new Shooter(
-          new ShooterSim());
+          new ShooterIOSim());
     }
 
     this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, indexer, autoChooser::getResponses);
@@ -226,29 +220,6 @@ public class RobotContainer {
     // () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
     // () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
     // () -> DriveConstants.FIELD_CENTRIC));
-    // driveToAmpButton
-    //     .whileTrue(autoFactory
-    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D)
-    //         .andThen(new TurnToAngleCommand(driveBase,
-    //             FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation(),
-    //             0, 0, false))
-    //         .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
-    // driveToSourceButton
-    //     .whileTrue(autoFactory
-    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D)
-    //         .andThen(new TurnToAngleCommand(driveBase,
-    //             FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(),
-    //             0, 0, false))
-    //         .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_PICKUP_ANGLE)));
-    // driveToSpeakerButton
-    //     .whileTrue(autoFactory
-    //         .getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d())
-    //         .andThen(new TurnToPointCommand(driveBase, driveBase::getPose,
-    //             FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
-    //             0, 0, false))
-    //         .alongWith(new RotatePivotCommand(pivot, PivotKinematics.getShotAngle(driveBase::getPose,
-    //             () -> FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()))));
-
     slowdownButton.whileTrue(new SwerveDriveCommand(driveBase,
         () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
         () -> -DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
@@ -284,11 +255,6 @@ public class RobotContainer {
   }
 
   public void smartDashSetup() {
-    // autoChooser.addRoutine("Simple Auto", List.of(
-    // new AutoQuestion<>("Starting Position?", Map.of("Station 1", 1, "Station 2",
-    // 2, "Station 3", 3))),
-    // autoFactory::getSimpleAuto);
-
     // autoChooser.addRoutine("One-Note Auto", List.of(), autoFactory::getOneNoteAuto);
     // autoChooser.addRoutine("Two-Note Auto", List.of(), autoFactory::getTwoNoteAuto);
     // autoChooser.addRoutine("Three-Note Auto", List.of(), autoFactory::getThreeNoteAuto);
@@ -333,5 +299,4 @@ public class RobotContainer {
     intake.setIdleMode(idleMode);
     shooter.setIdleMode(shooterIdleMode);
   }
-
 }
