@@ -192,7 +192,20 @@ public final class Constants {
     public static final int LOWER_SHOOTER_ID = 32;
     public static final double CURRENT_LIMIT = 40;
     public static final double SHOOT_TIME = 2; // in seconds
-    public static final double FLYWHEEL_VELOCITY_RPS = 1;
+    public static final double SHOOTING_FLYWHEEL_VELOCITY_RPS = 1;
+
+    public static final double PID_P = 0.5;
+    public static final double PID_I = 0;
+    public static final double PID_D = 0;
+
+    public static final double KS = 0.56453;
+    public static final double KG = 0.38989;
+    public static final double KV = 0.0015868;
+    public static final double KA = 0.0027206;
+
+    public static final double MAX_VELOCITY = 0;
+    public static final double MAX_ACCELERATION = 0;
+    public static final double PID_TOLERANCE = 1;
   }
   
   public static class SimConstants {
@@ -205,7 +218,6 @@ public final class Constants {
     public static final double PID_P = 0.5;
     public static final double PID_I = 0;
     public static final double PID_D = 0;
-    public static final double PID_FF = 0;
 
     public static final double KS = 0.56453;
     public static final double KG = 0.38989;
@@ -214,6 +226,7 @@ public final class Constants {
 
     public static final double MAX_VELOCITY = 0;
     public static final double MAX_ACCELERATION = 0;
+    public static final double PID_TOLERANCE = 1;
     public static final int MAX_CURRENT = 30;
 
     public static final double PIVOT_SIM_ROTATION_POINT_DISTANCE_INCHES = 5;
