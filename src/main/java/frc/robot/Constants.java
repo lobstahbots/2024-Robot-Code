@@ -192,6 +192,7 @@ public final class Constants {
     public static final int LOWER_SHOOTER_ID = 32;
     public static final double CURRENT_LIMIT = 40;
     public static final double SHOOT_TIME = 2; // in seconds
+    public static final double FLYWHEEL_VELOCITY_RPS = 1;
   }
   
   public static class SimConstants {

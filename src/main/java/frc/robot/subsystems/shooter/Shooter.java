@@ -39,6 +39,10 @@ public class Shooter extends SubsystemBase {
     io.setIdleMode(shooterIdleMode);
   }
 
+  public double getFlywheelVelocityRPS() {
+    return inputs.lowerShooterMotorVelocity;
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);

@@ -148,11 +148,11 @@ public class RobotContainer {
 
   private void setDefaultCommands() {
     driveBase.setDefaultCommand(
-    new SwerveDriveCommand(driveBase,
-    () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
-    () -> driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
-    () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
-    () -> DriveConstants.FIELD_CENTRIC));
+        new SwerveDriveCommand(driveBase,
+            () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
+            () -> driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
+            () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
+            () -> DriveConstants.FIELD_CENTRIC));
     pivot.setDefaultCommand(new RotatePivotCommand(pivot,
         () -> pivot.getPosition().getDegrees() + -5 * MathUtil
             .applyDeadband(operatorJoystick.getRawAxis(IOConstants.PIVOT_ANGLE_AXIS), PivotConstants.INPUT_DEADBAND)));
@@ -175,8 +175,8 @@ public class RobotContainer {
   public void configureButtonBindings() {
     alignToAmpButton
         .whileTrue(new PeriodicConditionalCommand(
-          new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT)
-          .alongWith(new SpinShooterCommand(shooter, -ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED)),
+            new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT)
+                .alongWith(new SpinShooterCommand(shooter, -ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED)),
             autoFactory.getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D)
                 .andThen(new TurnToAngleCommand(driveBase,
                     () -> FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation(),
@@ -189,9 +189,9 @@ public class RobotContainer {
                 PathConstants.AMP_ALIGN_DEADBAND)));
     alignToSourceButton
         .whileTrue(new PeriodicConditionalCommand(
-          new RotatePivotCommand(pivot, PivotConstants.SOURCE_PICKUP_ANGLE_SETPOINT)
-          .alongWith(new SpinShooterCommand(shooter, -ShooterConstants.UNSHOOTER_SPEED,
-              ShooterConstants.UNSHOOTER_SPEED)),
+            new RotatePivotCommand(pivot, PivotConstants.SOURCE_PICKUP_ANGLE_SETPOINT)
+                .alongWith(new SpinShooterCommand(shooter, -ShooterConstants.UNSHOOTER_SPEED,
+                    ShooterConstants.UNSHOOTER_SPEED)),
             autoFactory.getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D)
                 .andThen(new TurnToAngleCommand(driveBase,
                     () -> FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(),
@@ -215,9 +215,11 @@ public class RobotContainer {
         () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
         () -> DriveConstants.FIELD_CENTRIC));
     intakeButton.whileTrue(new PeriodicConditionalCommand(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
-        .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)), new RotatePivotCommand(pivot, 0), () -> Math
-        .abs(pivot.getPosition().getDegrees()) < PivotConstants.MAX_PIVOT_ERROR));
-    indexButton.whileTrue(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED));
+        .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)),
+        new RotatePivotCommand(pivot, 0), () -> Math
+            .abs(pivot.getPosition().getDegrees()) < PivotConstants.MAX_PIVOT_ERROR));
+    indexButton.whileTrue(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)
+        .onlyIf(() -> shooter.getFlywheelVelocityRPS() > ShooterConstants.FLYWHEEL_VELOCITY_RPS));
     shooterButton
         .whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED));
     unshooterButton.whileTrue(
