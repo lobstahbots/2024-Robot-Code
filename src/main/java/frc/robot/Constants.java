@@ -238,7 +238,7 @@ public final class Constants {
     public static final int RIGHT_MOTOR_ID = 26;
     public static final int ENCODER_CHANNEL = 3;
 
-    public static final double MAX_PIVOT_ERROR = 10;
+    public static final double MAX_PIVOT_ERROR = 2;
     public static final double AMP_ANGLE_SETPOINT = 115;
     public static final double SOURCE_PICKUP_ANGLE_SETPOINT = 115;
     public static final double SUBWOOFER_ANGLE_SETPOINT = 40;
