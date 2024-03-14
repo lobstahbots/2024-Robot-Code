@@ -41,17 +41,9 @@ public final class Constants {
     public static final Pose2d STATION_1 = new Pose2d(0.4119143784046173, 7.161474227905273, Rotation2d.fromRotations(0));
     public static final Pose2d STATION_2 = new Pose2d(0.5068893432617188, 3.710716009140014, Rotation2d.fromRotations(0));
     public static final Pose2d STATION_3 = new Pose2d(0.44357267022132874, 2.3525, Rotation2d.fromRotations(0));
-  }
-
-  public static class AutoConstants {
-    public static final Pose2d FIRST_NOTE_SHOOTING_POSITION = new Pose2d(2.5, 4, Rotation2d.fromRotations(0));
-    public static final Rotation2d FIRST_NOTE_SHOOTING_ANGLE = Rotation2d.fromDegrees(20);
-
-    public static final Rotation2d NOTE_1_SHOOTING_ANGLE = Rotation2d.fromDegrees(21);
-    public static final Rotation2d NOTE_2_SHOOTING_ANGLE = Rotation2d.fromDegrees(22);
-    public static final Rotation2d NOTE_3_SHOOTING_ANGLE = Rotation2d.fromDegrees(23);
-
-    public static final Rotation2d INTAKE_ANGLE = Rotation2d.fromDegrees(190);
+    public static final double SPIN_UP_FLYWHEELS_RADIUS_METERS = 7.62;
+    public static final double AMP_ALIGN_DEADBAND = Units.inchesToMeters(6);
+    public static final double SOURCE_ALIGN_DEADBAND = Units.inchesToMeters(6);
   }
   
   public static class IOConstants {
@@ -200,7 +192,6 @@ public final class Constants {
     public static final int LOWER_SHOOTER_ID = 32;
     public static final double CURRENT_LIMIT = 40;
     public static final double SHOOT_TIME = 2; // in seconds
-    public static final double SPIN_UP_FLYWHEELS_RADIUS_METERS = 7.62;
   }
   
   public static class SimConstants {
@@ -248,8 +239,9 @@ public final class Constants {
     public static final int ENCODER_CHANNEL = 3;
 
     public static final double MAX_PIVOT_ERROR = 10;
-    public static final double AMP_ANGLE_SETPOINT = 104;
-    public static final double SOURCE_PICKUP_ANGLE = 60;
+    public static final double AMP_ANGLE_SETPOINT = 115;
+    public static final double SOURCE_PICKUP_ANGLE_SETPOINT = 115;
+    public static final double SUBWOOFER_ANGLE_SETPOINT = 40;
     public static final double GROUND_PICKUP_ANGLE = 0;
     public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
@@ -299,12 +291,11 @@ public final class Constants {
   public static class FieldConstants {
     public static final double FIELD_LENGTH = 16.54;
     public static final Pose3d BLUE_ALLIANCE_SPEAKER_POSE3D = new Pose3d(0.225, 5.55, 2.1, new Rotation3d(0, 0, Units.degreesToRadians(180)));
-    public static final Pose2d BLUE_ALLIANCE_AMP_POSE2D = new Pose2d(1.8, 8 , Rotation2d.fromDegrees(-90));
-    public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(16, 0.5, Rotation2d.fromDegrees(60));
+    public static final Pose2d BLUE_ALLIANCE_AMP_POSE2D = new Pose2d(2, 8.25 , Rotation2d.fromDegrees(90));
+    public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(14.75, 0.75, Rotation2d.fromDegrees(-120));
     public static final Pose2d[] MIDLINE_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(8.258, 7.462, new Rotation2d()), new Pose2d(8.258, 5.785, new Rotation2d()), new Pose2d(8.258, 4.109, new Rotation2d()), new Pose2d(8.258, 2.432, new Rotation2d()), new Pose2d(8.258, 0.756, new Rotation2d())};
     public static final Pose2d[] BLUE_WING_NOTES_STARTING_POSES = new Pose2d[]{new Pose2d(2.884, 4.109, new Rotation2d()), new Pose2d(2.884, 5.557, new Rotation2d()), new Pose2d(2.884, 7.004, new Rotation2d())};
     public static final Pose3d[] NOTES_SIM_POSES = new Pose3d[]{new Pose3d(2.884, 4.109, 0, new Rotation3d()), new Pose3d(2.884, 5.557, 0, new Rotation3d()), new Pose3d(2.884, 7.004, 0, new Rotation3d()), new Pose3d(8.258, 7.462, 0, new Rotation3d()), new Pose3d(8.258, 5.785, 0, new Rotation3d()), new Pose3d(8.258, 4.109, 0, new Rotation3d()), new Pose3d(8.258, 2.432, 0, new Rotation3d()), new Pose3d(8.258, 0.756, 0, new Rotation3d())};
-    public static final Pose2d BLUE_ALLIANCE_LOADING_STATION_POSE = new Pose2d(15, 1, new Rotation2d());
     public static final double PICKUP_OFFSET = 1;
     public static final double WING_LINE_X_METERS = 5.8217054;
     public static final Pose2d[] SHOOTING_POSES = new Pose2d[]{new Pose2d(WING_LINE_X_METERS, 7.004, new Rotation2d()), new Pose2d(WING_LINE_X_METERS, 0.756, new Rotation2d())};

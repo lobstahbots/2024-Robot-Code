@@ -3,8 +3,10 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -18,7 +20,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -75,7 +76,7 @@ public class AutoFactory {
                         new PIDConstants(0.1, 0.0, 0), // Rotation PID constants
                         4.5, // Max module speed, in m/s
                         0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-                        new ReplanningConfig(true, false) // Default path replanning config. See the API for the options
+                        new ReplanningConfig(true, true) // Default path replanning config. See the API for the options
                 ),
                 () -> {
                     return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
@@ -206,17 +207,23 @@ public class AutoFactory {
     /* Aim and end. */
     public Command aimOnce(Supplier<Rotation2d> value) {
         return new RotatePivotCommand(pivot, value.get().getDegrees())
-                .until(() -> Math.abs(pivot.getPosition().minus(value.get()).getDegrees()) < PivotConstants.MAX_PIVOT_ERROR);
+                .until(() -> Math
+                        .abs(pivot.getPosition().minus(value.get()).getDegrees()) < PivotConstants.MAX_PIVOT_ERROR);
     }
 
     /* Automatically aim at speaker and stop once it reaches the angle. */
     public Command autoAimOnce() {
-        return aimOnce(() -> Rotation2d.fromDegrees(PivotKinematics.getShotAngle(() -> AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()), driveBase::getPose).getAsDouble()));
+        return aimOnce(() -> Rotation2d.fromDegrees(PivotKinematics
+                .getShotAngle(() -> FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(), driveBase::getPose)
+                .getAsDouble()));
     }
 
     /* Automatically aim at speaker and hold. */
     public Command autoAimHold() {
-        return new RotatePivotCommand(pivot, () -> PivotKinematics.getShotAngle(() -> AlliancePoseMirror.mirrorPose2d(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()), driveBase::getPose).getAsDouble());
+        return new RotatePivotCommand(pivot,
+                () -> PivotKinematics
+                        .getShotAngle(() -> FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(), driveBase::getPose)
+                        .getAsDouble());
     }
 
     /* Automatically aim and shoot note at speaker. */
@@ -281,7 +288,8 @@ public class AutoFactory {
         Pose2d targetPose = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d();
         Command pickupAndScoreCommand = getPathFindToPoseCommand(
                 notePoseBlue
-                        .plus(new Transform2d(-FieldConstants.PICKUP_OFFSET, 0, new Rotation2d()))).raceWith(new RotatePivotCommand(pivot, 0))
+                        .plus(new Transform2d(-FieldConstants.PICKUP_OFFSET, 0, new Rotation2d())))
+                .raceWith(new RotatePivotCommand(pivot, 0))
                 .andThen(new SwerveDriveStopCommand(driveBase))
                 .andThen(getPathFindToPoseCommand(
                         notePoseBlue)
@@ -295,6 +303,13 @@ public class AutoFactory {
         return pickupAndScoreCommand;
     }
 
+    @AutoLogOutput
+    public BooleanSupplier isWithinTarget(Pose2d target, double zone) {
+        return () -> Math.abs(driveBase.getPose().getTranslation()
+                .getDistance(
+                        AlliancePoseMirror.mirrorTranslation2d(target.getTranslation()))) < zone;
+    }
+
     public Command getWingAndMidlineAuto() {
         int startingWingNoteIndex = (int) responses.get().get(0);
         int endingWingNoteIndex = (int) responses.get().get(1);
@@ -306,12 +321,14 @@ public class AutoFactory {
         if (startingWingNoteIndex < endingWingNoteIndex) {
             for (int i = startingWingNoteIndex; i <= endingWingNoteIndex; i++) {
                 autoCommand = autoCommand
-                        .andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i], new Pose2d(16, 16, new Rotation2d())));
+                        .andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i],
+                                new Pose2d(16, 16, new Rotation2d())));
             }
         } else {
             for (int i = startingWingNoteIndex; i >= endingWingNoteIndex; i--) {
                 autoCommand = autoCommand
-                        .andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i], new Pose2d(16, 16, new Rotation2d())));
+                        .andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i],
+                                new Pose2d(16, 16, new Rotation2d())));
             }
         }
 
