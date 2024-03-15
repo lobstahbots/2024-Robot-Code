@@ -308,20 +308,8 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
                   0.0,
                   0.0));
 
-      Pose3d frontLeftPose3d = new Pose3d(getPose().getX(),
-          getPose().getY(), Units.inchesToMeters(8),
-          new Rotation3d(Units.degreesToRadians(180), -Units.degreesToRadians(180), Units.degreesToRadians(180)));
-      frontLeftPose3d = frontLeftPose3d
-          .exp(new Twist3d(0.0, 0.0, 0.0,
-              0.0, 0.0, getPose().getRotation().getRadians()))
-       .exp(new Twist3d(Units.inchesToMeters(14.5), Units.inchesToMeters(9), 0.0, 0.0, 0.0, 0.0));
-      Pose3d backRightPose3d = new Pose3d(getPose().getX(), getPose().getY(), Units.inchesToMeters(8),
-          new Rotation3d(Units.degreesToRadians(180), -Units.degreesToRadians(180), Units.degreesToRadians(0)));
-      backRightPose3d = backRightPose3d
-          .exp(new Twist3d(0.0, 0.0, 0.0,
-              0.0, 0.0, getPose().getRotation().getRadians()))
-          .exp(new Twist3d(Units.inchesToMeters(8),
-              0.0, 0.0, 0.0, 0.0, 0.0));
+      Pose3d frontLeftPose3d = new Pose3d(getPose()).plus(VisionConstants.ROBOT_TO_FRONT_CAMERA);
+      Pose3d backRightPose3d = new Pose3d(getPose()).plus(VisionConstants.ROBOT_TO_REAR_CAMERA);
 
       Logger.recordOutput("Back Right", backRightPose3d);
       Logger.recordOutput("Front Left", frontLeftPose3d);
