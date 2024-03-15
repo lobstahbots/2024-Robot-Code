@@ -17,7 +17,7 @@ import frc.robot.Constants.PivotConstants;
 import stl.tempControl.MonitoredSparkMax;
 import stl.tempControl.TemperatureMonitor;
 
-public class PivotSparkMax implements PivotIO {
+public class PivotIOSparkMax implements PivotIO {
   private final MonitoredSparkMax leftMotor;
   private final MonitoredSparkMax rightMotor;
   private final DutyCycleEncoder encoder;
@@ -29,7 +29,7 @@ public class PivotSparkMax implements PivotIO {
    * @param rightMotorID The CAN ID of the right motor.
    * @param pivotEncoderChannel The channel for the arm encoder to plug into the RIO.
    */
-  public PivotSparkMax(int leftMotorID, int rightMotorID, int pivotEncoderChannel) {
+  public PivotIOSparkMax(int leftMotorID, int rightMotorID, int pivotEncoderChannel) {
     this.leftMotor = new MonitoredSparkMax(leftMotorID, MotorType.kBrushless, "Left pivot motor");
     this.rightMotor = new MonitoredSparkMax(rightMotorID, MotorType.kBrushless, "Right pivot motor");
     

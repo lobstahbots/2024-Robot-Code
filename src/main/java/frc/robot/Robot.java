@@ -6,8 +6,6 @@ package frc.robot;
 
 
 import java.io.File;
-import java.sql.Driver;
-
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -26,8 +24,6 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AlertConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.networkalerts.Alert;
@@ -76,11 +72,11 @@ public class Robot extends LoggedRobot {
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
   } else {
     if(SimConstants.REPLAY) {
-      String replayPath = logPath + SimConstants.REPLAY_LOG_PATH;
+      String replayPath = logPath + "\\" + SimConstants.REPLAY_LOG_PATH;
       Logger.setReplaySource(new WPILOGReader(replayPath));
       Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(replayPath, "_replay")));
-    } else {
       setUseTiming(false); // Run as fast as possible
+    } else {
       Logger.addDataReceiver(new WPILOGWriter(logPath, 0.02)); // Save outputs to a new log
     }
   }

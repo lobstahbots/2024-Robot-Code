@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
 
-public class SwerveModuleSim implements SwerveModuleIO {
+public class SwerveModuleIOSim implements SwerveModuleIO {
   /** Creates a new SwerveModuleSim. */
   private DCMotorSim simDriveMotor = new DCMotorSim(DCMotor.getNEO(1), RobotConstants.DRIVE_GEAR_RATIO, 0.025);
   private DCMotorSim simAngleMotor = new DCMotorSim(DCMotor.getNEO(1), RobotConstants.ANGLE_GEAR_RATIO, 0.025);
@@ -22,7 +22,7 @@ public class SwerveModuleSim implements SwerveModuleIO {
 
   private Rotation2d angularOffset;
 
-  public SwerveModuleSim(double angularOffsetDegrees) {
+  public SwerveModuleIOSim(double angularOffsetDegrees) {
     this.angularOffset = Rotation2d.fromDegrees(angularOffsetDegrees);
   }
 

@@ -37,7 +37,7 @@ public class Pivot extends CharacterizableSubsystem {
   public Pivot(PivotIO io) {
     this.io = io;
     controller.setGoal(0);
-    controller.setTolerance(1);
+    controller.setTolerance(PivotConstants.PID_TOLERANCE);
   }
 
   /**
@@ -52,9 +52,9 @@ public class Pivot extends CharacterizableSubsystem {
    * @param angle The desired angle
    */
   public void setDesiredAngle(double angle) {
+    controller.setGoal(angle);
     double pidOutput = controller.calculate(inputs.position.getDegrees(), angle);
-    controller.setGoal(inputs.position.getDegrees());
-    State setpoint = controller.getGoal();
+    State setpoint = controller.getSetpoint();
     double feedforwardOutput = feedforward.calculate(setpoint.position, setpoint.velocity);
     io.setVoltage(pidOutput + feedforwardOutput);
   }

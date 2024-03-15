@@ -13,7 +13,7 @@ import frc.robot.Constants.ShooterConstants;
 import stl.tempControl.MonitoredTalonFX;
 import stl.tempControl.TemperatureMonitor;
 
-public class ShooterTalonFX implements ShooterIO {
+public class ShooterIOTalonFX implements ShooterIO {
   private final MonitoredTalonFX upperShooterMotor;
   private final MonitoredTalonFX lowerShooterMotor;
   private final TemperatureMonitor monitor;
@@ -23,7 +23,7 @@ public class ShooterTalonFX implements ShooterIO {
    * @param upperShooterMotorID The CAN ID of the upper shooter motor
    * @param lowerShooterMotorID The CAN ID of the lower shooter motor
    */
-  public ShooterTalonFX(int upperShooterMotorID, int lowerShooterMotorID) {
+  public ShooterIOTalonFX(int upperShooterMotorID, int lowerShooterMotorID) {
     this.upperShooterMotor = new MonitoredTalonFX(upperShooterMotorID, "Upper shooter motor");
     this.lowerShooterMotor = new MonitoredTalonFX(lowerShooterMotorID, "Lower shooter motor");
     this.upperShooterMotor.setInverted(true);

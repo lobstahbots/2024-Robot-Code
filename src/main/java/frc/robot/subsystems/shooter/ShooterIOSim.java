@@ -7,14 +7,14 @@ package frc.robot.subsystems.shooter;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
-public class ShooterSim implements ShooterIO {
+public class ShooterIOSim implements ShooterIO {
   private final FlywheelSim upperShooterMotor;
   private final FlywheelSim lowerShooterMotor;
 
   /**
    * Creates a new simulated Shooter subsystem. 
    **/
-  public ShooterSim() {
+  public ShooterIOSim() {
     this.upperShooterMotor = new FlywheelSim(DCMotor.getFalcon500(1), 1, 0.001);
     this.lowerShooterMotor = new FlywheelSim(DCMotor.getFalcon500(1), 1, 0.001);
   }

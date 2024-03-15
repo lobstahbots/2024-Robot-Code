@@ -15,7 +15,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import frc.robot.Constants.VisionConstants;
 
-public class PhotonVisionReal implements PhotonVisionIO {
+public class VisionIOPhoton implements VisionIO {
     private final PhotonCamera frontCamera;
     private final PhotonCamera rearCamera;
     private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
@@ -24,57 +24,36 @@ public class PhotonVisionReal implements PhotonVisionIO {
     private EstimatedRobotPose estimatedFrontPose = new EstimatedRobotPose(new Pose3d(), 0, new ArrayList<PhotonTrackedTarget>(), VisionConstants.POSE_STRATEGY);
     private EstimatedRobotPose estimatedRearPose = new EstimatedRobotPose(new Pose3d(), 0, new ArrayList<PhotonTrackedTarget>(), VisionConstants.POSE_STRATEGY);
     
-    public PhotonVisionReal() {
+    public VisionIOPhoton() {
         this.rearCamera = new PhotonCamera("photonvision_rear");
         this.frontCamera = new PhotonCamera("photonvision_front");
         this.frontPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, VisionConstants.POSE_STRATEGY, frontCamera, VisionConstants.ROBOT_TO_FRONT_CAMERA);
         this.rearPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, VisionConstants.POSE_STRATEGY, rearCamera, VisionConstants.ROBOT_TO_REAR_CAMERA);
     }
 
-    public void updateInputs(PhotonVisionIOInputs inputs) {
-        double frontAmbiguitySum = 0;
-        double rearAmbiguitySum = 0;
-
-        inputs.rearConfidence = 0;
-        inputs.frontConfidence = 0;
-
+    public void updateInputs(VisionIOInputs inputs, Pose3d robotPoseMeters) {
         Optional<EstimatedRobotPose> frontPoseOptional = frontPoseEstimator.update();
         if (frontPoseOptional.isPresent()) {
             estimatedFrontPose = frontPoseOptional.get();
+            PoseInformation frontPoseInformation = getPoseInformation(estimatedFrontPose);
 
-            inputs.estimatedFrontPose = estimatedFrontPose.estimatedPose;
-            inputs.estimatedFrontPoseTimestamp = estimatedFrontPose.timestampSeconds;
-
-            var frontTargetsSeen = estimatedFrontPose.targetsUsed.size();
-            inputs.visibleFrontFiducialIDs = new int[frontTargetsSeen];
-
-            for (int i = 0; i < frontTargetsSeen; i++) {
-                var target = estimatedFrontPose.targetsUsed.get(i);
-                inputs.visibleFrontFiducialIDs[i] = target.getFiducialId();
-                frontAmbiguitySum += target.getPoseAmbiguity();
-            }   
-
-            inputs.frontConfidence = 1 - (frontAmbiguitySum / inputs.visibleFrontFiducialIDs.length);
+            inputs.estimatedFrontPose = frontPoseInformation.estimatedPose;
+            inputs.estimatedFrontPoseTimestamp = frontPoseInformation.timestamp;
+            inputs.visibleFrontFiducialIDs = frontPoseInformation.fiducialIDs;
+            inputs.frontAmbiguities = frontPoseInformation.ambiguities;
+            inputs.frontTotalArea = frontPoseInformation.totalArea;
         }
+
         Optional<EstimatedRobotPose> rearPoseOptional = rearPoseEstimator.update();
-        
         if (rearPoseOptional.isPresent()) {
             estimatedRearPose = rearPoseOptional.get();
-
-            inputs.estimatedRearPose = estimatedRearPose.estimatedPose;
-            inputs.estimatedRearPoseTimestamp = estimatedRearPose.timestampSeconds;
-        
-            var rearTargetsSeen = estimatedRearPose.targetsUsed.size();
-            inputs.visibleRearFiducialIDs = new int[rearTargetsSeen];
-        
-       
-            for (int i = 0; i < rearTargetsSeen; i++) {
-                var target = estimatedRearPose.targetsUsed.get(i);
-                inputs.visibleFrontFiducialIDs[i] = target.getFiducialId();
-                rearAmbiguitySum += target.getPoseAmbiguity();
-            }  
-
-            inputs.rearConfidence = 1 - (rearAmbiguitySum / inputs.visibleRearFiducialIDs.length); 
+            PoseInformation rearPoseInformation = getPoseInformation(estimatedRearPose);
+            
+            inputs.estimatedRearPose = rearPoseInformation.estimatedPose;
+            inputs.estimatedRearPoseTimestamp = rearPoseInformation.timestamp;
+            inputs.visibleRearFiducialIDs = rearPoseInformation.fiducialIDs;
+            inputs.rearAmbiguities = rearPoseInformation.ambiguities;
+            inputs.rearTotalArea = rearPoseInformation.totalArea;
         } 
     }
 
@@ -104,5 +83,25 @@ public class PhotonVisionReal implements PhotonVisionIO {
             rearTagPoses[i] = aprilTagFieldLayout.getTagPose(rearTargets.get(i).getFiducialId()).get();
         }
         return rearTagPoses;
+    }
+
+    private record PoseInformation(Pose3d estimatedPose, double timestamp, int[] fiducialIDs, double[] ambiguities, double totalArea) {}
+
+    private static PoseInformation getPoseInformation(EstimatedRobotPose estimatedPose) {
+        var targetsSeen = estimatedPose.targetsUsed.size();
+        var visibleFiducialIDs = new int[targetsSeen];
+        var ambiguities = new double[targetsSeen];
+        
+        double area = 0;
+       
+        for (int i = 0; i < targetsSeen; i++) {
+            var target = estimatedPose.targetsUsed.get(i);
+            visibleFiducialIDs[i] = target.getFiducialId();
+            ambiguities[i] = target.getPoseAmbiguity();
+            area += target.getArea() / 100; // Area is returned in percent but we want fraction
+            // See https://docs.photonvision.org/en/latest/docs/programming/photonlib/getting-target-data.html#getting-data-from-a-target
+        } 
+        
+        return new PoseInformation(estimatedPose.estimatedPose, estimatedPose.timestampSeconds, visibleFiducialIDs, ambiguities, area);
     }
 }
