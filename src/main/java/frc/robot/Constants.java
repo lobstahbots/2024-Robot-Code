@@ -76,6 +76,7 @@ public final class Constants {
     public static final int RESET_PIVOT_ANGLE_BUTTON_ID = 1;
     public static final int PIVOT_ANGLE_AXIS = 1;
     public static final int TOGGLE_DRIVE_CENTRICITY_BUTTON_ID = 2;
+    public static final int SOURCE_BUTTON_ID = 2;
   }
   
   public static class RobotConstants {

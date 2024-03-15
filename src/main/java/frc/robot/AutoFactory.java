@@ -233,16 +233,17 @@ public class AutoFactory {
                                         new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                                 .alongWith(new RotatePivotCommand(pivot, 40)))
                 .withTimeout(5).andThen(new RotatePivotCommand(pivot, 0).withTimeout(1))
-                .andThen(new SwerveDriveCommand(driveBase, -1, 0, 0, false).withTimeout(1)
-                        .alongWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
-                                .raceWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)
-                                        .withTimeout(1))))
-                .andThen(getPivotCommand(Rotation2d.fromDegrees(40)).andThen(
+                .andThen(new SwerveDriveCommand(driveBase, -0.25, 0, 0, true).withTimeout(1.5)
+                        .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
+                                .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))))
+                 .andThen(getPivotCommand(Rotation2d.fromDegrees(18)).andThen(
                         new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
                                 .alongWith(new WaitCommand(2).andThen(
                                         new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
-                                .alongWith(new RotatePivotCommand(pivot, 40)))
-                        .withTimeout(5));
+                                .alongWith(new RotatePivotCommand(pivot, 18))
+                                .alongWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)))
+                        .withTimeout(5)
+               );
     }
 
     public Command getThreeNoteAuto() {
@@ -273,7 +274,7 @@ public class AutoFactory {
                                 .alongWith(new WaitCommand(2).andThen(
                                         new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                                 .alongWith(new RotatePivotCommand(pivot, 40)))
-                .withTimeout(5).andThen(new SwerveDriveCommand(driveBase, -1, 0, 0, false).withTimeout(1));
+                .withTimeout(5).andThen(new SwerveDriveCommand(driveBase, -1, 0, 0, true).withTimeout(1));
     }
 
     public Command pickupAndScore(Pose2d notePoseBlue, Pose2d scoringPose) {
