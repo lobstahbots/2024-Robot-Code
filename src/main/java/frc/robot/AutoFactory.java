@@ -269,9 +269,9 @@ public class AutoFactory {
         return aimOnce(() -> Rotation2d.fromDegrees(40)).andThen(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
                         .alongWith(new WaitCommand(2).until(() -> shooter
-                                        .getLowerFlywheelVelocityRPS() > ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_RPS
+                                        .getLowerFlywheelVelocityRPS() > shooter.getSetpoint() * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
                                         && shooter
-                                                .getUpperFlywheelVelocityRPS() > ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_RPS)
+                                                .getUpperFlywheelVelocityRPS() > shooter.getSetpoint() * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(new RotatePivotCommand(pivot, 40)))
                 .withTimeout(5);

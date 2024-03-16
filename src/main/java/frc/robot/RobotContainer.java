@@ -56,6 +56,7 @@ import java.util.Map;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -260,8 +261,8 @@ public class RobotContainer {
                 indexButton.whileTrue(new PeriodicConditionalCommand(
                                 new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                                 new SpinIndexerCommand(indexer, 0),
-                                () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint() - ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_RPS
-                                                && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint() - ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_RPS));
+                                () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint() * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
+                                                && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint() * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR));
                 shooterButton
                                 .whileTrue(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED,
                                                 ShooterConstants.SHOOTER_SPEED));
