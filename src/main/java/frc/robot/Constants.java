@@ -53,7 +53,7 @@ public final class Constants {
     public static final int STRAFE_Y_AXIS = 1;
     public static final int ROTATION_AXIS = 2;
     public static final double JOYSTICK_DEADBAND = 0.1;
-    public static final int ALIGN_TO_AMP_BUTTON_ID = 1;
+    public static final int ALIGN_TO_AMP_BUTTON_ID = 4;
     public static final int ALIGN_TO_SOURCE_BUTTON_ID = 2;
     public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 3;
     public static final int DRIVE_TO_AMP_BUTTON_ID = 2;
@@ -64,11 +64,7 @@ public final class Constants {
     public static final int UNSHOOTER_BUTTON_ID = 5;
     public static final int INTAKE_BUTTON_ID = 5;
     public static final int OUTTAKE_BUTTON_ID = 3;
-    public static final int CLIMBERUP_BUTTON_ID = 1;
-    public static final int CLIMBERDOWN_BUTTON_ID = 1;
-    public static final int SLOWDOWN_BUTTON_ID = 1;
     public static final int AMP_BUTTON_ID = 4;
-    public static final int RESET_PIVOT_ANGLE_BUTTON_ID = 1;
     public static final int PIVOT_ANGLE_AXIS = 1;
     public static final int TOGGLE_DRIVE_CENTRICITY_BUTTON_ID = 2;
     public static final int SOURCE_BUTTON_ID = 2;

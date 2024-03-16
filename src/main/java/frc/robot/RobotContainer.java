@@ -99,7 +99,6 @@ public class RobotContainer {
     private final POVButton wingButton = new POVButton(operatorJoystick, 90); // RIGHT
     private final POVButton podiumButton = new POVButton(operatorJoystick, 270); // LEFT
     private final JoystickButton sourceButton = new JoystickButton(operatorJoystick, IOConstants.SOURCE_BUTTON_ID); // DOWN
-    private final JoystickButton slowdownButton = new JoystickButton(driverJoystick, IOConstants.SLOWDOWN_BUTTON_ID);
 
     private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
             () -> Commands.none());
@@ -201,6 +200,11 @@ public class RobotContainer {
                                                         ShooterConstants.AMP_SPEED))),
                         autoFactory.isWithinTarget(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D,
                                 PathConstants.AMP_ALIGN_DEADBAND)));
+        // alignToAmpButton.whileTrue(new TurnToAngleCommand(driveBase, () -> FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation(),
+        //                                 () -> 0,
+        //                                 () -> 0,
+        //                                 () -> DriveConstants.FIELD_CENTRIC));
+        // alignToAmpButton.whileTrue(new RotatePivotCommand(pivot, 40));
         alignToSourceButton
                 .whileTrue(new PeriodicConditionalCommand(
                         new RotatePivotCommand(pivot, PivotConstants.SOURCE_PICKUP_ANGLE_SETPOINT)
@@ -224,11 +228,6 @@ public class RobotContainer {
                         () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
                         () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
                         () -> DriveConstants.FIELD_CENTRIC).alongWith(autoFactory.autoAimHold()));
-        slowdownButton.whileTrue(new SwerveDriveCommand(driveBase,
-                () -> DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
-                () -> -DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
-                () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
-                () -> DriveConstants.FIELD_CENTRIC));
         intakeButton.whileTrue(
                 new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
                         .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))
