@@ -42,6 +42,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhoton;
 import frc.robot.subsystems.vision.VisionIOSim;
 import stl.command.PeriodicConditionalCommand;
+import stl.trajectory.AlliancePoseMirror;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.intake.Intake;
@@ -97,7 +98,7 @@ public class RobotContainer {
     private final POVButton subwooferButton = new POVButton(operatorJoystick, 0); // UP
     private final POVButton wingButton = new POVButton(operatorJoystick, 90); // RIGHT
     private final POVButton podiumButton = new POVButton(operatorJoystick, 270); // LEFT
-  private final JoystickButton sourceButton = new JoystickButton(operatorJoystick, IOConstants.SOURCE_BUTTON_ID); //DOWN
+    private final JoystickButton sourceButton = new JoystickButton(operatorJoystick, IOConstants.SOURCE_BUTTON_ID); // DOWN
     private final JoystickButton slowdownButton = new JoystickButton(driverJoystick, IOConstants.SLOWDOWN_BUTTON_ID);
 
     private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
@@ -166,11 +167,11 @@ public class RobotContainer {
                 () -> pivot.getPosition().getDegrees() + -5 * MathUtil
                         .applyDeadband(operatorJoystick.getRawAxis(IOConstants.PIVOT_ANGLE_AXIS),
                                 PivotConstants.INPUT_DEADBAND)));
-        shooter.setDefaultCommand(new PeriodicConditionalCommand(
-                new SpinShooterCommand(shooter, -ShooterConstants.SPIN_UP_SPEED, ShooterConstants.SPIN_UP_SPEED),
-                new StopShooterCommand(shooter),
-                autoFactory.isWithinTarget(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
-                        PathConstants.SPIN_UP_FLYWHEELS_RADIUS_METERS)));
+        // shooter.setDefaultCommand(new PeriodicConditionalCommand(
+        //         new SpinShooterCommand(shooter, -ShooterConstants.SPIN_UP_SPEED, ShooterConstants.SPIN_UP_SPEED),
+        //         new StopShooterCommand(shooter),
+        //         autoFactory.isWithinTarget(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
+        //                 PathConstants.SPIN_UP_FLYWHEELS_RADIUS_METERS)));
     }
 
     /**
@@ -228,11 +229,10 @@ public class RobotContainer {
                 () -> -DriveConstants.SLOWDOWN_PERCENT * driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
                 () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
                 () -> DriveConstants.FIELD_CENTRIC));
-        intakeButton.whileTrue(new PeriodicConditionalCommand(
+        intakeButton.whileTrue(
                 new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
-                        .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)),
-                new RotatePivotCommand(pivot, 0), () -> Math
-                        .abs(pivot.getPosition().getDegrees()) < PivotConstants.MAX_PIVOT_ERROR));
+                        .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))
+                        .alongWith(new RotatePivotCommand(pivot, 0)));
         indexButton.whileTrue(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)
                 .onlyIf(() -> shooter.getLowerFlywheelVelocityRPS() > ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_RPS
                         && shooter.getUpperFlywheelVelocityRPS() > ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_RPS));
@@ -254,8 +254,9 @@ public class RobotContainer {
         podiumButton.whileTrue(new RotatePivotCommand(pivot, 20)
                 .alongWith(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED,
                         ShooterConstants.SHOOTER_SPEED)));
-      sourceButton.whileTrue(new RotatePivotCommand(pivot, 108).alongWith(new  SpinShooterCommand(shooter, -ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED)));
-  }
+        sourceButton.whileTrue(new RotatePivotCommand(pivot, 108).alongWith(
+                new SpinShooterCommand(shooter, -ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED)));
+    }
 
     public boolean getOperatorConnected() {
         return operatorJoystick.isConnected();

@@ -53,9 +53,9 @@ public final class Constants {
     public static final int STRAFE_Y_AXIS = 1;
     public static final int ROTATION_AXIS = 2;
     public static final double JOYSTICK_DEADBAND = 0.1;
-    public static final int ALIGN_TO_AMP_BUTTON_ID = 3;
-    public static final int ALIGN_TO_SOURCE_BUTTON_ID = 3;
-    public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 4;
+    public static final int ALIGN_TO_AMP_BUTTON_ID = 1;
+    public static final int ALIGN_TO_SOURCE_BUTTON_ID = 2;
+    public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 3;
     public static final int DRIVE_TO_AMP_BUTTON_ID = 2;
     public static final int DRIVE_TO_SOURCE_BUTTON_ID = 3;
     public static final int DRIVE_TO_SPEAKER_BUTTON_ID = 4;
@@ -108,11 +108,11 @@ public final class Constants {
     public static final double PATH_MAX_ACCEL = 3;
     public static final double PATH_MAX_VELOCITY = 3;
 
-    public static final double TURN_KP = 0.1;
+    public static final double TURN_KP = 1;
     public static final double TURN_KI = 0;
     public static final double TURN_KD = 0;
 
-    public static final double TURN_DEADBAND = 1;
+    public static final double TURN_DEADBAND = Units.degreesToRadians(5);
 
     public static class FrontLeftModuleConstants {
       public static final int moduleID = 0;
@@ -187,7 +187,7 @@ public final class Constants {
   public static class ShooterConstants {
     public static final double SHOOTER_SPEED = 1;
     public static final double UNSHOOTER_SPEED = -0.5;
-    public static final double SPIN_UP_SPEED = 0.75;
+    public static final double SPIN_UP_SPEED = 0;
     public static final double AMP_SPEED = 0.175;
     public static final int UPPER_SHOOTER_ID = 5;
     public static final int LOWER_SHOOTER_ID = 32;
@@ -199,10 +199,9 @@ public final class Constants {
     public static final double PID_I = 0;
     public static final double PID_D = 0;
 
-    public static final double KS = 0.56453;
-    public static final double KG = 0.38989;
-    public static final double KV = 0.0015868;
-    public static final double KA = 0.0027206;
+    public static final double KS = 0;
+    public static final double KV = 0;
+    public static final double KA = 0;
 
     public static final double MAX_VELOCITY = 0;
     public static final double MAX_ACCELERATION = 0;
@@ -216,7 +215,7 @@ public final class Constants {
   }
 
   public static class PivotConstants {
-    public static final double PID_P = 0.5;
+    public static final double PID_P = 0.25;
     public static final double PID_I = 0;
     public static final double PID_D = 0;
 
@@ -253,7 +252,7 @@ public final class Constants {
     public static final int RIGHT_MOTOR_ID = 26;
     public static final int ENCODER_CHANNEL = 3;
 
-    public static final double MAX_PIVOT_ERROR = 2;
+    public static final double MAX_PIVOT_ERROR = 5;
     public static final double AMP_ANGLE_SETPOINT = 115;
     public static final double SOURCE_PICKUP_ANGLE_SETPOINT = 115;
     public static final double SUBWOOFER_ANGLE_SETPOINT = 40;

@@ -67,6 +67,11 @@ public class TurnToAngleCommand extends Command {
   }
 
   @Override
+  public void initialize() {
+    pidController.reset();
+  }
+
+  @Override
   public void execute() {
     Logger.recordOutput("Desired angle", new Pose2d(driveBase.getPose().getTranslation(), desiredRotation.get()));
     pidController.setSetpoint(desiredRotation.get().getRadians());

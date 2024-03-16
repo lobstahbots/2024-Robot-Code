@@ -54,7 +54,7 @@ public class SwerveModuleIOSparkMax implements SwerveModuleIO {
     driveMotor.enableVoltageCompensation(12.0);
     angleMotor.enableVoltageCompensation(12.0);
     angleMotor.setInverted(false);
-    driveMotor.setInverted(true);
+    driveMotor.setInverted(false);
 
     drivingEncoder = driveMotor.getEncoder();
     angleAbsoluteEncoder = angleMotor.getAbsoluteEncoder(Type.kDutyCycle);

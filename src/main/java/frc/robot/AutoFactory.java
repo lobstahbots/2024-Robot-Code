@@ -243,8 +243,8 @@ public class AutoFactory {
                         new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
                                 .alongWith(new WaitCommand(2).andThen(
                                         new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
-                                .alongWith(new RotatePivotCommand(pivot, 40)))
-                .withTimeout(5).andThen(new RotatePivotCommand(pivot, 0).withTimeout(1))
+                                .alongWith(new RotatePivotCommand(pivot, 40))).withTimeout(5)
+                .andThen(aimOnce(() -> new Rotation2d(0)))
                 .andThen(new SwerveDriveCommand(driveBase, -0.25, 0, 0, true).withTimeout(1.5)
                         .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
                                 .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))))
