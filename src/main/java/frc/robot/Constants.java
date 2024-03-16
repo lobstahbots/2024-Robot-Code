@@ -181,17 +181,17 @@ public final class Constants {
   } 
   
   public static class ShooterConstants {
-    public static final double SHOOTER_SPEED = -1;
-    public static final double UNSHOOTER_SPEED = 0.5;
+    public static final double SHOOTER_SPEED = 1;
+    public static final double UNSHOOTER_SPEED = -0.5;
     public static final double SPIN_UP_SPEED = 0;
-    public static final double AMP_SPEED = -0.175;
+    public static final double AMP_SPEED = 0.175;
     public static final int UPPER_SHOOTER_ID = 5;
     public static final int LOWER_SHOOTER_ID = 32;
     public static final double CURRENT_LIMIT = 40;
     public static final double SHOOT_TIME = 2; // in seconds
-    public static final double SHOOTING_FLYWHEEL_VELOCITY_RPS = 48;
+    public static final double SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_RPS = 10;
 
-    public static final double PID_P = 0.5;
+    public static final double PID_P = 0.05;
     public static final double PID_I = 0;
     public static final double PID_D = 0;
 
@@ -199,8 +199,8 @@ public final class Constants {
     public static final double KV = 0;
     public static final double KA = 0;
 
-    public static final double MAX_VELOCITY = 0;
-    public static final double MAX_ACCELERATION = 0;
+    public static final double MAX_VELOCITY = 100;
+    public static final double MAX_ACCELERATION = 100;
     public static final double PID_TOLERANCE = 1;
   }
   

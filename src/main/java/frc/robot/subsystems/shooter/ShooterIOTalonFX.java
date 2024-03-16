@@ -60,14 +60,14 @@ public class ShooterIOTalonFX implements ShooterIO {
   }
 
   public void updateInputs(ShooterIOInputs inputs) {
-    inputs.upperShooterMotorVoltage = upperShooterMotor.getMotorVoltage().getAppliedUpdateFrequency();
-    inputs.upperShooterMotorTemperature = upperShooterMotor.getDeviceTemp().getAppliedUpdateFrequency();
-    inputs.upperShooterMotorCurrent = upperShooterMotor.getSupplyCurrent().getAppliedUpdateFrequency();
-    inputs.upperShooterMotorVelocity = upperShooterMotor.getVelocity().getAppliedUpdateFrequency();
-    inputs.lowerShooterMotorVoltage = lowerShooterMotor.getMotorVoltage().getAppliedUpdateFrequency();
-    inputs.lowerShooterMotorTemperature = lowerShooterMotor.getDeviceTemp().getAppliedUpdateFrequency();
-    inputs.lowerShooterMotorCurrent = lowerShooterMotor.getSupplyCurrent().getAppliedUpdateFrequency();
-    inputs.lowerShooterMotorVelocity = lowerShooterMotor.getVelocity().getAppliedUpdateFrequency();
+    inputs.upperShooterMotorVoltage = upperShooterMotor.getMotorVoltage().getValueAsDouble();
+    inputs.upperShooterMotorTemperature = upperShooterMotor.getDeviceTemp().getValueAsDouble();
+    inputs.upperShooterMotorCurrent = upperShooterMotor.getSupplyCurrent().getValueAsDouble();
+    inputs.upperShooterMotorVelocity = upperShooterMotor.getVelocity().getValueAsDouble();
+    inputs.lowerShooterMotorVoltage = lowerShooterMotor.getMotorVoltage().getValueAsDouble();
+    inputs.lowerShooterMotorTemperature = lowerShooterMotor.getDeviceTemp().getValueAsDouble();
+    inputs.lowerShooterMotorCurrent = lowerShooterMotor.getSupplyCurrent().getValueAsDouble();
+    inputs.lowerShooterMotorVelocity = lowerShooterMotor.getVelocity().getValueAsDouble();
   }
 
   public void periodic() {
