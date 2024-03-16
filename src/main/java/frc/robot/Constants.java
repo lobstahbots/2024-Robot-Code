@@ -108,7 +108,7 @@ public final class Constants {
     public static final double TURN_KI = 0;
     public static final double TURN_KD = 0;
 
-    public static final double TURN_DEADBAND = Units.degreesToRadians(5);
+    public static final double TURN_DEADBAND = Units.degreesToRadians(3);
 
     public static class FrontLeftModuleConstants {
       public static final int moduleID = 0;
@@ -181,15 +181,15 @@ public final class Constants {
   } 
   
   public static class ShooterConstants {
-    public static final double SHOOTER_SPEED = 1;
-    public static final double UNSHOOTER_SPEED = -0.5;
+    public static final double SHOOTER_SPEED = -1;
+    public static final double UNSHOOTER_SPEED = 0.5;
     public static final double SPIN_UP_SPEED = 0;
-    public static final double AMP_SPEED = 0.175;
+    public static final double AMP_SPEED = -0.175;
     public static final int UPPER_SHOOTER_ID = 5;
     public static final int LOWER_SHOOTER_ID = 32;
     public static final double CURRENT_LIMIT = 40;
     public static final double SHOOT_TIME = 2; // in seconds
-    public static final double SHOOTING_FLYWHEEL_VELOCITY_RPS = 1;
+    public static final double SHOOTING_FLYWHEEL_VELOCITY_RPS = 48;
 
     public static final double PID_P = 0.5;
     public static final double PID_I = 0;

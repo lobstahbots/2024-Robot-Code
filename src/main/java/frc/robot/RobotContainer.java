@@ -158,16 +158,16 @@ public class RobotContainer {
     private void setDefaultCommands() {
         driveBase.setDefaultCommand(
                 new SwerveDriveCommand(driveBase,
-                        () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
-                        () -> driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
-                        () -> driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
+                        () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
+                        () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
+                        () -> -driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
                         () -> DriveConstants.FIELD_CENTRIC));
         pivot.setDefaultCommand(new RotatePivotCommand(pivot,
                 () -> pivot.getPosition().getDegrees() + -5 * MathUtil
                         .applyDeadband(operatorJoystick.getRawAxis(IOConstants.PIVOT_ANGLE_AXIS),
                                 PivotConstants.INPUT_DEADBAND)));
         // shooter.setDefaultCommand(new PeriodicConditionalCommand(
-        //         new SpinShooterCommand(shooter, -ShooterConstants.SPIN_UP_SPEED, ShooterConstants.SPIN_UP_SPEED),
+        //         new SpinShooterCommand(shooter, ShooterConstants.SPIN_UP_SPEED, ShooterConstants.SPIN_UP_SPEED),
         //         new StopShooterCommand(shooter),
         //         autoFactory.isWithinTarget(FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
         //                 PathConstants.SPIN_UP_FLYWHEELS_RADIUS_METERS)));
@@ -186,7 +186,7 @@ public class RobotContainer {
         alignToAmpButton
                 .whileTrue(new PeriodicConditionalCommand(
                         new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT)
-                                .alongWith(new SpinShooterCommand(shooter, -ShooterConstants.AMP_SPEED,
+                                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.AMP_SPEED,
                                         ShooterConstants.AMP_SPEED)),
                         autoFactory.getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D)
                                 .andThen(new TurnToAngleCommand(driveBase,
@@ -196,7 +196,7 @@ public class RobotContainer {
                                         () -> DriveConstants.FIELD_CENTRIC)
                                         .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT))
                                         .raceWith(
-                                                new SpinShooterCommand(shooter, -ShooterConstants.AMP_SPEED,
+                                                new SpinShooterCommand(shooter, ShooterConstants.AMP_SPEED,
                                                         ShooterConstants.AMP_SPEED))),
                         autoFactory.isWithinTarget(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D,
                                 PathConstants.AMP_ALIGN_DEADBAND)));
@@ -208,7 +208,7 @@ public class RobotContainer {
         alignToSourceButton
                 .whileTrue(new PeriodicConditionalCommand(
                         new RotatePivotCommand(pivot, PivotConstants.SOURCE_PICKUP_ANGLE_SETPOINT)
-                                .alongWith(new SpinShooterCommand(shooter, -ShooterConstants.UNSHOOTER_SPEED,
+                                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED,
                                         ShooterConstants.UNSHOOTER_SPEED)),
                         autoFactory.getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D)
                                 .andThen(new TurnToAngleCommand(driveBase,
@@ -218,7 +218,7 @@ public class RobotContainer {
                                         () -> DriveConstants.FIELD_CENTRIC)
                                         .alongWith(new RotatePivotCommand(pivot,
                                                 PivotConstants.SOURCE_PICKUP_ANGLE_SETPOINT))
-                                        .raceWith(new SpinShooterCommand(shooter, -ShooterConstants.UNSHOOTER_SPEED,
+                                        .raceWith(new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED,
                                                 ShooterConstants.UNSHOOTER_SPEED))),
                         autoFactory.isWithinTarget(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D,
                                 PathConstants.SOURCE_ALIGN_DEADBAND)));
@@ -236,25 +236,25 @@ public class RobotContainer {
                 .onlyIf(() -> shooter.getLowerFlywheelVelocityRPS() > ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_RPS
                         && shooter.getUpperFlywheelVelocityRPS() > ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_RPS));
         shooterButton
-                .whileTrue(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED,
+                .whileTrue(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED,
                         ShooterConstants.SHOOTER_SPEED));
         unshooterButton.whileTrue(
-                new SpinShooterCommand(shooter, -ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED));
+                new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED));
         ampButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT)
-                .alongWith(new SpinShooterCommand(shooter, -ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED)));
+                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED)));
         outtakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.OUTTAKE_SPEED)
                 .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.SLOW_INDEXER_MOTOR_SPEED)));
         subwooferButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.SUBWOOFER_ANGLE_SETPOINT)
-                .alongWith(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED,
+                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED,
                         ShooterConstants.SHOOTER_SPEED)));
         wingButton.whileTrue(new RotatePivotCommand(pivot, 15)
-                .alongWith(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED,
+                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED,
                         ShooterConstants.SHOOTER_SPEED)));
         podiumButton.whileTrue(new RotatePivotCommand(pivot, 20)
-                .alongWith(new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED,
+                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED,
                         ShooterConstants.SHOOTER_SPEED)));
         sourceButton.whileTrue(new RotatePivotCommand(pivot, 108).alongWith(
-                new SpinShooterCommand(shooter, -ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED)));
+                new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED)));
     }
 
     public boolean getOperatorConnected() {

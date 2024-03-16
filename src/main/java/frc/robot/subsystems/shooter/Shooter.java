@@ -53,7 +53,11 @@ public class Shooter extends SubsystemBase {
     double pidOutputUpper = upperController.calculate(inputs.upperShooterMotorVelocity, upperShooterMotorSpeed);
     double feedforwardOutputUpper = feedforward.calculate(upperController.getSetpoint().velocity);
     double feedforwardOutputLower = feedforward.calculate(lowerController.getSetpoint().velocity);
-    io.setShooterSpeed(pidOutputUpper + feedforwardOutputUpper, pidOutputLower + feedforwardOutputLower);
+    double outputUpper = pidOutputUpper + feedforwardOutputUpper;
+    double outputLower = pidOutputLower + feedforwardOutputLower;
+    outputUpper *= Math.signum(upperShooterMotorSpeed);
+    outputLower *= Math.signum(lowerShooterMotorSpeed);
+    io.setShooterSpeed(outputUpper, outputLower);
   }
 
 
