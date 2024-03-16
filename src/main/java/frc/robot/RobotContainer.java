@@ -11,6 +11,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
@@ -44,6 +45,9 @@ import frc.robot.subsystems.vision.PhotonVisionReal;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeSparkMax;
+import frc.robot.subsystems.leds.LEDs;
+import frc.robot.subsystems.leds.LEDsReal;
+import frc.robot.subsystems.leds.LEDsSim;
 
 import java.util.List;
 import java.util.Map;
@@ -74,6 +78,7 @@ public class RobotContainer {
   private final Climber climber = new Climber(
       new ClimberSparkMax(ClimberConstants.LEFT_CLIMBER_ID, ClimberConstants.RIGHT_CLIMBER_ID));
   private final Intake intake = new Intake(new IntakeSparkMax(IntakeConstants.INTAKE_MOTOR_ID));
+  private final LEDs leds;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final Joystick driverJoystick = new Joystick(IOConstants.DRIVER_CONTROLLER_PORT);
@@ -125,6 +130,7 @@ public class RobotContainer {
       driveBase = new DriveBase(new NavXGyro(), new PhotonVision(new PhotonVisionReal()), frontLeft, frontRight,
           backRight, backLeft, false);
       pivot = new Pivot(new PivotSparkMax(PivotConstants.LEFT_MOTOR_ID, PivotConstants.RIGHT_MOTOR_ID));
+      leds = new LEDs(new LEDsReal(LEDConstants.LED_PORT, LEDConstants.LED_LENGTH));
     } else {
       SwerveModuleSim frontLeft = new SwerveModuleSim(FrontLeftModuleConstants.angleOffset);
       SwerveModuleSim frontRight = new SwerveModuleSim(FrontRightModuleConstants.angleOffset);
@@ -134,6 +140,7 @@ public class RobotContainer {
       driveBase = new DriveBase(new GyroIO() {
       }, new PhotonVision(new PhotonVisionReal()), frontLeft, frontRight, backLeft, backRight, false);
       pivot = new Pivot(new PivotSim());
+      leds = new LEDs(new LEDsSim(LEDConstants.LED_LENGTH));
     }
 
     this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, autoChooser::getResponses);

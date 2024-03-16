@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.simulation.AddressableLEDSim;
 public class LEDsSim implements LEDIO {
     AddressableLEDSim leds;
 
-    LEDsSim(int length) {
+    public LEDsSim(int length) {
         leds = new AddressableLEDSim();
         leds.setLength(length);
     }
