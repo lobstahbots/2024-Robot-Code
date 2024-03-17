@@ -27,6 +27,10 @@ public class MaskedLEDBuffer {
         this(ledBuffer, 1);
     }
 
+    public MaskedLEDBuffer(int length) {
+        this(new AddressableLEDBuffer(length));
+    }
+
     public AddressableLEDBuffer flatten() {
         AddressableLEDBuffer buffer = new AddressableLEDBuffer(color.getLength());
         for (int i = 0; i < color.getLength(); i++) {
