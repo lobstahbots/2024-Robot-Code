@@ -41,13 +41,9 @@ public interface SwerveModuleIO {
   public default void setDriveSpeed(SwerveModuleState optimizedDesiredState, boolean isOpenLoop){}
 
   /** Enable or disable brake mode on the drive motor. */
-  public default void setDriveBrakeMode(IdleMode mode) {}
-
-  /** Enable or disable brake mode on the turn motor. */
-  public default void setTurnBrakeMode(IdleMode mode) {}
-
   public default void setDriveIdleMode(IdleMode mode) {}
 
+  /** Enable or disable brake mode on the turn motor. */
   public default void setTurnIdleMode(IdleMode mode) {}
 
   public default void periodic() {}

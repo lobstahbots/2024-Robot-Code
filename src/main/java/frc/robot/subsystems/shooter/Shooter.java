@@ -70,8 +70,7 @@ public class Shooter extends SubsystemBase {
     lowerController.reset(lowerSpeed);
   }
 
-
-  /** Stops the intake motor. */
+  /** Stops the shooter motor. */
   public void stopMotor() {
     io.stopMotor();
     desiredSpeed = 0;

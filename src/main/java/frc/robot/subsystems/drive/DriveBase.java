@@ -196,12 +196,6 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
    * 
    * @param mode The braking mode (Coast or Brake) of the swerve module motors.
    */
-  public void setBrakingMode(IdleMode mode) {
-    for (SwerveModule module : modules) {
-      module.setBrakingMode(mode);
-    }
-  }
-
   public void setIdleMode(IdleMode mode) {
     for(SwerveModule module: modules) {
       module.setIdleMode(mode);

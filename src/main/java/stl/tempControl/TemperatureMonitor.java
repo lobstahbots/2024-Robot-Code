@@ -63,7 +63,6 @@ public class TemperatureMonitor {
     public void monitor() {
         boolean safe = true;
         for (Monitorable motor : motors) {
-            SmartDashboard.putNumber(motor.getLabel(), motor.getMotorTemperature());
             double temp = motor.getMotorTemperature();
             if (temp > TempConstants.SAFE_TEMP) safe = false;
             else alerts.get(motor.getLabel()).set(false);

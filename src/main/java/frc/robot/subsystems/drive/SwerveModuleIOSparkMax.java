@@ -115,18 +115,18 @@ public class SwerveModuleIOSparkMax implements SwerveModuleIO {
   /**
    * Sets the braking mode of the driving motor.
    * 
-   * @param the {@link IdleMode} to set motors to.
+   * @param mode the {@link IdleMode} to set motors to.
    */
-  public void setDriveBrakingMode(IdleMode mode) {
+  public void setDriveIdleMode(IdleMode mode) {
     driveMotor.setIdleMode(mode);
   }
 
    /**
    * Sets the braking mode of the turning motor.
    * 
-   * @param the {@link IdleMode} to set motors to.
+   * @param mode the {@link IdleMode} to set motors to.
    */
-  public void setTurnBrakingMode(IdleMode mode) {
+  public void setTurnIdleMode(IdleMode mode) {
     angleMotor.setIdleMode(mode);
   }
 

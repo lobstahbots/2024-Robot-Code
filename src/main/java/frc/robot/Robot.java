@@ -116,7 +116,9 @@ public class Robot extends LoggedRobot {
   public void disabledInit() {} 
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    m_robotContainer.setIdleMode(IdleMode.kCoast, NeutralModeValue.Coast);
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -145,7 +147,7 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer.setIdleMode(IdleMode.kBrake, NeutralModeValue.Brake);
+    m_robotContainer.setIdleMode(IdleMode.kBrake, NeutralModeValue.Coast);
   }
 
   /** This function is called periodically during operator control. */
@@ -156,7 +158,6 @@ public class Robot extends LoggedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    m_robotContainer.setIdleMode(IdleMode.kCoast, NeutralModeValue.Coast);
   }
 
   /** This function is called periodically during test mode. */
