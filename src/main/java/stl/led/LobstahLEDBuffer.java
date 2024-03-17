@@ -83,6 +83,26 @@ public class LobstahLEDBuffer {
         return output;
     }
 
+    public static LobstahLEDBuffer tile(int length, LobstahLEDBuffer source) {
+        LobstahLEDBuffer tiled = new LobstahLEDBuffer(length);
+        for (int i = 0; i < length; i++) {
+            int j = Math.floorMod(i, source.length);
+            tiled.color.setLED(i, source.color.getLED(j));
+            tiled.alpha[i] = source.alpha[j];
+        }
+        return tiled;
+    }
+
+    public static LobstahLEDBuffer repeat(int times, LobstahLEDBuffer source) {
+        LobstahLEDBuffer repeated = new LobstahLEDBuffer(times * source.length);
+        for (int i = 0; i < repeated.length; i++) {
+            int j = Math.floorMod(i, source.length);
+            repeated.color.setLED(i, source.color.getLED(j));
+            repeated.alpha[i] = source.alpha[j];
+        }
+        return repeated;
+    }
+
     public static LobstahLEDBuffer wrappedTranslate(int length, LobstahLEDBuffer source, int offset) {
         LobstahLEDBuffer translated = new LobstahLEDBuffer(length);
         for (int i = 0; i < source.length; i++) {
