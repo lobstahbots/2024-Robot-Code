@@ -94,13 +94,7 @@ public class LobstahLEDBuffer {
     }
 
     public static LobstahLEDBuffer repeat(int times, LobstahLEDBuffer source) {
-        LobstahLEDBuffer repeated = new LobstahLEDBuffer(times * source.length);
-        for (int i = 0; i < repeated.length; i++) {
-            int j = Math.floorMod(i, source.length);
-            repeated.color.setLED(i, source.color.getLED(j));
-            repeated.alpha[i] = source.alpha[j];
-        }
-        return repeated;
+        return tile(times * source.length, source);
     }
 
     public static LobstahLEDBuffer wrappedTranslate(int length, LobstahLEDBuffer source, int offset) {
