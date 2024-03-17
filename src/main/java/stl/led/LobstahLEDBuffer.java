@@ -35,8 +35,12 @@ public class LobstahLEDBuffer {
         this(ledBuffer, 1);
     }
 
+    public LobstahLEDBuffer(int length, double alpha) {
+        this(new AddressableLEDBuffer(length), alpha);
+    }
+
     public LobstahLEDBuffer(int length) {
-        this(new AddressableLEDBuffer(length));
+        this(new AddressableLEDBuffer(length), new double[length]);
     }
 
     public AddressableLEDBuffer flatten() {
@@ -52,7 +56,7 @@ public class LobstahLEDBuffer {
     }
 
     public static LobstahLEDBuffer solid(int length, Color color, double alpha) {
-        LobstahLEDBuffer ledBuffer = new LobstahLEDBuffer(new AddressableLEDBuffer(length), alpha);
+        LobstahLEDBuffer ledBuffer = new LobstahLEDBuffer(length, alpha);
         for (int i = 0; i < ledBuffer.length; i++) {
             ledBuffer.color.setLED(i, color);
         }
@@ -80,7 +84,7 @@ public class LobstahLEDBuffer {
     }
 
     public static LobstahLEDBuffer wrappedTranslate(int length, LobstahLEDBuffer source, int offset) {
-        LobstahLEDBuffer translated = new LobstahLEDBuffer(new AddressableLEDBuffer(length), 0);
+        LobstahLEDBuffer translated = new LobstahLEDBuffer(length);
         for (int i = 0; i < source.length; i++) {
             int j = Math.floorMod(i + offset, length);
             translated.color.setLED(j, source.color.getLED(i));
@@ -90,7 +94,7 @@ public class LobstahLEDBuffer {
     }
 
     public static LobstahLEDBuffer translate(int length, LobstahLEDBuffer source, int offset) {
-        LobstahLEDBuffer translated = new LobstahLEDBuffer(new AddressableLEDBuffer(length), 0);
+        LobstahLEDBuffer translated = new LobstahLEDBuffer(length);
         for (int i = Math.max(0, -offset); i < Math.min(source.length, length - offset); i++) {
             int j = i + offset;
             translated.color.setLED(j, source.color.getLED(i));
