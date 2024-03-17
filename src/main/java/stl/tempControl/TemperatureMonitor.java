@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.TempConstants;
 import frc.robot.networkalerts.Alert;
 import frc.robot.networkalerts.Alert.AlertType;

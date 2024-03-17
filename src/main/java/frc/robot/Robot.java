@@ -116,9 +116,7 @@ public class Robot extends LoggedRobot {
   public void disabledInit() {} 
 
   @Override
-  public void disabledPeriodic() {
-    m_robotContainer.setIdleMode(IdleMode.kCoast, NeutralModeValue.Coast);
-  }
+  public void disabledPeriodic() {}
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -162,7 +160,9 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    m_robotContainer.setIdleMode(IdleMode.kCoast, NeutralModeValue.Coast);
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override
