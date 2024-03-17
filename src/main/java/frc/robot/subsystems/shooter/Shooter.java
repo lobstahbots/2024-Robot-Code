@@ -11,7 +11,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
@@ -54,6 +53,7 @@ public class Shooter extends SubsystemBase {
     desiredSpeed = upperShooterMotorSpeed;
     lowerController.setGoal(lowerShooterMotorSpeed);
     upperController.setGoal(upperShooterMotorSpeed);
+    resetControllerError(upperShooterMotorSpeed, lowerShooterMotorSpeed);
     double pidOutputLower = lowerController.calculate(inputs.lowerShooterMotorVelocity, lowerShooterMotorSpeed);
     double pidOutputUpper = upperController.calculate(inputs.upperShooterMotorVelocity, upperShooterMotorSpeed);
     double feedforwardOutputUpper = feedforward.calculate(upperController.getSetpoint().velocity);
@@ -65,9 +65,9 @@ public class Shooter extends SubsystemBase {
     io.setShooterSpeed(outputUpper, outputLower);
   }
 
-  public void resetControllerError() {
-    upperController.reset(inputs.upperShooterMotorVelocity);
-    lowerController.reset(inputs.lowerShooterMotorVelocity);
+  public void resetControllerError(double upperSpeed, double lowerSpeed) {
+    upperController.reset(upperSpeed);
+    lowerController.reset(lowerSpeed);
   }
 
 
@@ -82,12 +82,10 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getLowerFlywheelVelocityRPS() {
-    System.out.println(inputs.lowerShooterMotorVelocity);
     return inputs.lowerShooterMotorVelocity;
   }
 
   public double getUpperFlywheelVelocityRPS() {
-    System.out.println(inputs.upperShooterMotorVelocity);
     return inputs.upperShooterMotorVelocity;
   }
 
