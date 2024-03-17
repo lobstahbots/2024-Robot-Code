@@ -23,7 +23,6 @@ import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.SpinIndexerCommand;
 import frc.robot.commands.SpinIntakeCommand;
 import frc.robot.commands.SpinShooterCommand;
-import frc.robot.commands.StopShooterCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.TurnToPointCommand;
@@ -42,7 +41,6 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhoton;
 import frc.robot.subsystems.vision.VisionIOSim;
 import stl.command.PeriodicConditionalCommand;
-import stl.trajectory.AlliancePoseMirror;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.intake.Intake;
@@ -56,7 +54,6 @@ import java.util.Map;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -172,7 +169,7 @@ public class RobotContainer {
                                                 () -> -driverJoystick.getRawAxis(IOConstants.ROTATION_AXIS),
                                                 () -> DriveConstants.FIELD_CENTRIC));
                 pivot.setDefaultCommand(new RotatePivotCommand(pivot,
-                                () -> pivot.getPosition().getDegrees() + -5 * MathUtil
+                                () -> pivot.getPosition().getDegrees() + -20 * MathUtil
                                                 .applyDeadband(operatorJoystick
                                                                 .getRawAxis(IOConstants.PIVOT_ANGLE_AXIS),
                                                                 PivotConstants.INPUT_DEADBAND)));
