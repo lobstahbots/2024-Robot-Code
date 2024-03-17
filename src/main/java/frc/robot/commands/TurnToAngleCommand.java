@@ -30,6 +30,7 @@ public class TurnToAngleCommand extends Command {
   private final DoubleSupplier strafeXSupplier;
   private final DoubleSupplier strafeYSupplier;
   private final BooleanSupplier fieldCentric;
+  private final boolean end;
 
   /**
    * Creates a TurnToAngleCommand which turns the robot to a specific angle
@@ -39,13 +40,18 @@ public class TurnToAngleCommand extends Command {
    * @param strafeYSupplier A supplier for the Y component of the robot translation.
    * @param fieldCentric Whether the robot drives field centric. Does not affect rotation.
    */
-  public TurnToAngleCommand(DriveBase driveBase, Supplier<Rotation2d> desiredRotation, DoubleSupplier strafeXSupplier, DoubleSupplier strafeYSupplier, BooleanSupplier fieldCentric) {
+  public TurnToAngleCommand(DriveBase driveBase, Supplier<Rotation2d> desiredRotation, DoubleSupplier strafeXSupplier, DoubleSupplier strafeYSupplier, BooleanSupplier fieldCentric, boolean end) {
     this.driveBase = driveBase;
     this.strafeXSupplier = strafeXSupplier;
     this.strafeYSupplier = strafeYSupplier;
     this.desiredRotation = desiredRotation;
     this.fieldCentric = fieldCentric;
+    this.end = end;
     addRequirements(driveBase);
+  }
+
+  public TurnToAngleCommand(DriveBase driveBase, Supplier<Rotation2d> desiredRotation, DoubleSupplier strafeXSupplier, DoubleSupplier strafeYSupplier, BooleanSupplier fieldCentric) {
+    this(driveBase, desiredRotation, strafeXSupplier, strafeYSupplier, fieldCentric, false);
   }
 
   /**
@@ -57,7 +63,7 @@ public class TurnToAngleCommand extends Command {
    * @param fieldCentric Whether the robot drives field centric. Does not affect rotation.
    */
   public TurnToAngleCommand(DriveBase driveBase, Rotation2d desiredRotation, double strafeX, double strafeY, boolean fieldCentric) {
-    this(driveBase, () -> desiredRotation, () -> strafeX, () -> strafeY, () -> fieldCentric);
+    this(driveBase, () -> desiredRotation, () -> strafeX, () -> strafeY, () -> fieldCentric, true);
   }
 
   /*
@@ -80,7 +86,7 @@ public class TurnToAngleCommand extends Command {
     if (fieldCentric.getAsBoolean()) {
       double linearMagnitude = MathUtil.applyDeadband(
           Math.hypot(strafeXSupplier.getAsDouble(), strafeYSupplier.getAsDouble()), IOConstants.JOYSTICK_DEADBAND);
-      Rotation2d linearDirection = new Rotation2d(strafeXSupplier.getAsDouble(), strafeYSupplier.getAsDouble());
+      Rotation2d linearDirection = new Rotation2d(-strafeXSupplier.getAsDouble(), strafeYSupplier.getAsDouble());
 
       // Calculate new linear velocity
       Translation2d linearVelocity = new Pose2d(new Translation2d(), linearDirection)
@@ -105,6 +111,6 @@ public class TurnToAngleCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return MathUtil.applyDeadband(getError(), DriveConstants.TURN_DEADBAND) == 0;
+    return end && MathUtil.applyDeadband(getError(), DriveConstants.TURN_DEADBAND) == 0;
   }
 }

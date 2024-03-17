@@ -207,7 +207,7 @@ public class RobotContainer {
                                                                                                 .getRotation(),
                                                                                 () -> 0,
                                                                                 () -> 0,
-                                                                                () -> DriveConstants.FIELD_CENTRIC)
+                                                                                () -> DriveConstants.FIELD_CENTRIC, true)
                                                                                 .alongWith(new RotatePivotCommand(pivot,
                                                                                                 PivotConstants.AMP_ANGLE_SETPOINT))
                                                                                 .raceWith(
@@ -237,7 +237,7 @@ public class RobotContainer {
                                                                                                 .getRotation(),
                                                                                 () -> 0,
                                                                                 () -> 0,
-                                                                                () -> DriveConstants.FIELD_CENTRIC)
+                                                                                () -> DriveConstants.FIELD_CENTRIC, true)
                                                                                 .alongWith(new RotatePivotCommand(pivot,
                                                                                                 PivotConstants.SOURCE_PICKUP_ANGLE_SETPOINT))
                                                                                 .raceWith(new SpinShooterCommand(
@@ -251,7 +251,7 @@ public class RobotContainer {
                                                 FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
                                                 () -> driverJoystick.getRawAxis(IOConstants.STRAFE_Y_AXIS),
                                                 () -> -driverJoystick.getRawAxis(IOConstants.STRAFE_X_AXIS),
-                                                () -> DriveConstants.FIELD_CENTRIC)
+                                                () -> DriveConstants.FIELD_CENTRIC, false)
                                                 .alongWith(autoFactory.autoAimHold()));
                 intakeButton.whileTrue(
                                 new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
