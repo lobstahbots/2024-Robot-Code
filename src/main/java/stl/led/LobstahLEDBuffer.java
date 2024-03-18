@@ -83,6 +83,28 @@ public class LobstahLEDBuffer {
         return output;
     }
 
+    public static LobstahLEDBuffer concat(int length, LobstahLEDBuffer... layers) { // TODO: Implement concat
+        LobstahLEDBuffer output = new LobstahLEDBuffer(length);
+        int i = 0;
+        for (LobstahLEDBuffer layer : layers) {
+            for (int j = 0; j < layer.length; j++) {
+                if (i >= length) return output;
+                output.color.setLED(i, layer.color.getLED(j));
+                output.alpha[i] = layer.alpha[j];
+                i++;
+            }
+        }
+        return output;
+    }
+
+    public static LobstahLEDBuffer concat(LobstahLEDBuffer... layers) {
+        int length = 0;
+        for (LobstahLEDBuffer layer : layers) {
+            length += layer.length;
+        }
+        return concat(length, layers);
+    }
+
     public static LobstahLEDBuffer tile(int length, LobstahLEDBuffer source) {
         LobstahLEDBuffer tiled = new LobstahLEDBuffer(length);
         for (int i = 0; i < length; i++) {
