@@ -36,7 +36,7 @@ public class IntakeNoteCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    indexerState = IndexerState.NoNote;
+    if(indexerState == IndexerState.InIndexer) indexerState = IndexerState.NoNote;
     intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
   }
 
@@ -72,9 +72,29 @@ public class IntakeNoteCommand extends Command {
   }
 
   private void updateIndexerState() {
-        if (indexer.intakeBeamBroken() && indexer.flywheelBeamBroken()) indexerState = IndexerState.InIndexer;
-        else if (indexer.intakeBeamBroken()) indexerState = IndexerState.MovingInIndexer;
-        else if (indexer.flywheelBeamBroken()) indexerState = IndexerState.InShooter;
+        // if (indexer.intakeBeamBroken() && indexer.flywheelBeamBroken()) indexerState = IndexerState.InIndexer;
+        // else if (indexer.intakeBeamBroken()) indexerState = IndexerState.MovingInIndexer;
+        // else if (indexer.flywheelBeamBroken()) indexerState = IndexerState.InShooter;
+        switch (indexerState) {
+          case NoNote:
+            if(indexer.intakeBeamBroken()) indexerState = IndexerState.MovingInIndexer;
+              break;
+            
+          case MovingInIndexer:
+            if(!indexer.intakeBeamBroken()) indexerState = IndexerState.InShooter;
+            break;
+            
+          case InShooter:
+            if(indexer.intakeBeamBroken()) indexerState = IndexerState.InIndexer;
+            break;
+          
+          case InIndexer:
+            break;
+
+          default: 
+            indexerState = IndexerState.NoNote;
+            break;
+        }
   }
 
   // Called once the command ends or is interrupted.
