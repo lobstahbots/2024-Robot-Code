@@ -170,4 +170,44 @@ public class LobstahLEDBuffer {
         }
         return translated;
     }
+
+    public LobstahLEDBuffer layerAbove(LobstahLEDBuffer background) {
+        return layer(length, background, this);
+    }
+
+    public LobstahLEDBuffer layerBelow(LobstahLEDBuffer foreground) {
+        return layer(length, this, foreground);
+    }
+
+    public LobstahLEDBuffer append(LobstahLEDBuffer other) {
+        return concat(this, other);
+    }
+
+    public LobstahLEDBuffer prepend(LobstahLEDBuffer other) {
+        return concat(other, this);
+    }
+
+    public LobstahLEDBuffer crop(int length) {
+        return crop(length, this);
+    }
+
+    public LobstahLEDBuffer flip() {
+        return flip(this);
+    }
+
+    public LobstahLEDBuffer tile(int length) {
+        return tile(length, this);
+    }
+
+    public LobstahLEDBuffer repeat(int times) {
+        return repeat(times, this);
+    }
+
+    public LobstahLEDBuffer cycle(int offset) {
+        return cycle(offset, this);
+    }
+
+    public LobstahLEDBuffer shift(int outputLength, int offset) {
+        return shift(outputLength, offset, this);
+    }
 }
