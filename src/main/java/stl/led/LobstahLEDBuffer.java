@@ -77,10 +77,10 @@ public class LobstahLEDBuffer {
         return solid(length, color, 1);
     }
     
-    public static LobstahLEDBuffer layer(int length, LobstahLEDBuffer... layers) {
-        LobstahLEDBuffer output = new LobstahLEDBuffer(length);
+    public static LobstahLEDBuffer layer(int outputLength, LobstahLEDBuffer... layers) {
+        LobstahLEDBuffer output = new LobstahLEDBuffer(outputLength);
         for (LobstahLEDBuffer layer : layers) {
-            for (int i = 0; i < Math.min(length, layer.color.getLength()); i++) {
+            for (int i = 0; i < Math.min(outputLength, layer.color.getLength()); i++) {
                 output.color.setRGB(i,
                     (int) (layer.color.getRed(i) * layer.alpha[i] + output.color.getRed(i) * output.alpha[i] * (1 - layer.alpha[i])),
                     (int) (layer.color.getGreen(i) * layer.alpha[i] + output.color.getGreen(i) * output.alpha[i] * (1 - layer.alpha[i])),
@@ -93,12 +93,12 @@ public class LobstahLEDBuffer {
         return output;
     }
 
-    public static LobstahLEDBuffer concat(int length, LobstahLEDBuffer... layers) { // TODO: Implement concat
-        LobstahLEDBuffer output = new LobstahLEDBuffer(length);
+    public static LobstahLEDBuffer concat(int outputLength, LobstahLEDBuffer... layers) { // TODO: Implement concat
+        LobstahLEDBuffer output = new LobstahLEDBuffer(outputLength);
         int i = 0;
         for (LobstahLEDBuffer layer : layers) {
             for (int j = 0; j < layer.length; j++) {
-                if (i >= length) return output;
+                if (i >= outputLength) return output;
                 output.color.setLED(i, layer.color.getLED(j));
                 output.alpha[i] = layer.alpha[j];
                 i++;
@@ -115,20 +115,20 @@ public class LobstahLEDBuffer {
         return concat(length, layers);
     }
 
-    public static LobstahLEDBuffer crop(int length, LobstahLEDBuffer source) {
+    public static LobstahLEDBuffer crop(int length, LobstahLEDBuffer input) {
         LobstahLEDBuffer cropped = new LobstahLEDBuffer(length);
-        for (int i = 0; i < Math.min(length, source.length); i++) {
-            cropped.color.setLED(i, source.color.getLED(i));
-            cropped.alpha[i] = source.alpha[i];
+        for (int i = 0; i < Math.min(length, input.length); i++) {
+            cropped.color.setLED(i, input.color.getLED(i));
+            cropped.alpha[i] = input.alpha[i];
         }
         return cropped;
     }
 
-    public static LobstahLEDBuffer flip(LobstahLEDBuffer source) {
-        LobstahLEDBuffer flipped = new LobstahLEDBuffer(source.length);
-        for (int i = 0; i < source.length; i++) {
-            flipped.color.setLED(i, source.color.getLED(source.length - i - 1));
-            flipped.alpha[i] = source.alpha[source.length - i - 1];
+    public static LobstahLEDBuffer flip(LobstahLEDBuffer input) {
+        LobstahLEDBuffer flipped = new LobstahLEDBuffer(input.length);
+        for (int i = 0; i < input.length; i++) {
+            flipped.color.setLED(i, input.color.getLED(input.length - i - 1));
+            flipped.alpha[i] = input.alpha[input.length - i - 1];
         }
         return flipped;
     }
@@ -147,26 +147,26 @@ public class LobstahLEDBuffer {
         return tile(times * source.length, source);
     }
 
-    public static LobstahLEDBuffer wrappedShift(int length, LobstahLEDBuffer source, int offset) {
-        LobstahLEDBuffer translated = new LobstahLEDBuffer(length);
-        for (int i = 0; i < source.length; i++) {
-            int j = Math.floorMod(i + offset, length);
-            translated.color.setLED(j, source.color.getLED(i));
-            translated.alpha[j] = source.alpha[i];
+    public static LobstahLEDBuffer wrappedShift(int outputLength, int offset, LobstahLEDBuffer input) {
+        LobstahLEDBuffer translated = new LobstahLEDBuffer(outputLength);
+        for (int i = 0; i < input.length; i++) {
+            int j = Math.floorMod(i + offset, outputLength);
+            translated.color.setLED(j, input.color.getLED(i));
+            translated.alpha[j] = input.alpha[i];
         }
         return translated;
     }
 
-    public static LobstahLEDBuffer cycle(LobstahLEDBuffer source, int offset) {
-        return wrappedShift(source.length, source, offset);
+    public static LobstahLEDBuffer cycle(int offset, LobstahLEDBuffer input) {
+        return wrappedShift(input.length, offset, input);
     }
 
-    public static LobstahLEDBuffer shift(int length, LobstahLEDBuffer source, int offset) {
-        LobstahLEDBuffer translated = new LobstahLEDBuffer(length);
-        for (int i = Math.max(0, -offset); i < Math.min(source.length, length - offset); i++) {
+    public static LobstahLEDBuffer shift(int outputLength, int offset, LobstahLEDBuffer input) {
+        LobstahLEDBuffer translated = new LobstahLEDBuffer(outputLength);
+        for (int i = Math.max(0, -offset); i < Math.min(input.length, outputLength - offset); i++) {
             int j = i + offset;
-            translated.color.setLED(j, source.color.getLED(i));
-            translated.alpha[j] = source.alpha[i];
+            translated.color.setLED(j, input.color.getLED(i));
+            translated.alpha[j] = input.alpha[i];
         }
         return translated;
     }
