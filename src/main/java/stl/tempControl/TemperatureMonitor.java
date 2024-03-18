@@ -42,11 +42,12 @@ public class TemperatureMonitor {
     private boolean disabled = false;
     private List<Monitorable> motors;
     private final HashMap<String, Alert> alerts;
+    private final boolean disableAll;
 
-    public TemperatureMonitor(List<Monitorable> motors) {
+    public TemperatureMonitor(List<Monitorable> motors, boolean disableAll) {
         this.motors = motors;
         alerts = new HashMap<>(motors.size(), 1); // Load factor can be 1 because the size will never change
-        for (var motor: motors) {
+        for (var motor : motors) {
             alerts.put(motor.getLabel(), new Alert(
                 String.format(
                     "%s has overheated above %d C. It and related motors will be disabled until its temperature drops below %d C.",
@@ -57,6 +58,11 @@ public class TemperatureMonitor {
                 AlertType.ERROR
             ));
         }
+        this.disableAll = disableAll;
+    }
+
+    public TemperatureMonitor(List<Monitorable> motors) {
+        this(motors, true);
     }
 
     public void monitor() {
@@ -64,13 +70,18 @@ public class TemperatureMonitor {
         for (Monitorable motor : motors) {
             double temp = motor.getMotorTemperature();
             if (temp > TempConstants.SAFE_TEMP) safe = false;
-            else alerts.get(motor.getLabel()).set(false);
+            else {
+                alerts.get(motor.getLabel()).set(false);
+                if (!disableAll) motor.setDisabled(false); // This motor is at a safe temperature so if we don't disable all motors we know it's safe to enable
+            }
             if (temp > TempConstants.OVERHEAT_TEMP && overheatTime == -1) overheatTime = Timer.getFPGATimestamp();
             else if (temp > TempConstants.OVERHEAT_TEMP && Timer.getFPGATimestamp() - overheatTime >= 2) {
                 disabled = true;
                 alerts.get(motor.getLabel()).set(true);
+                motor.setDisabled(true); // It's overheated so we definitely disable it
             }
-            motor.setDisabled(disabled);
+            if (disabled && disableAll) motor.setDisabled(true);
+            else if (!disabled) motor.setDisabled(false);
         }
         if (safe) {
             disabled = false;

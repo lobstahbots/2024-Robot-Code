@@ -301,7 +301,7 @@ public final class Constants {
         / (APRIL_TAG_NUMBER_CONFIDENCE_SCALE * Math.log(APRIL_TAG_NUMBER_CONFIDENCE_SCALE));
     public static final double APRIL_TAG_AREA_CONFIDENCE_SCALE = 1.7; // Higher makes confidence lower at each area of
                                                                       // AprilTags
-    // See https://www.desmos.com/calculator/hw9b2s1mlw
+    // See https://www.desmos.com/calculator/i5z7ddbjy4
 
     public static final double AMBIGUITY_TO_STDEV_EXP = 1;
     public static final Vector<N3> BASE_STDEV = VecBuilder.fill(0.1, 0.1, 0.2); // x, y, angle
