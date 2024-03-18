@@ -129,6 +129,10 @@ public class LobstahLEDBuffer {
         return translated;
     }
 
+    public static LobstahLEDBuffer wrappedTranslate(LobstahLEDBuffer source, int offset) {
+        return wrappedTranslate(source.length, source, offset);
+    }
+
     public static LobstahLEDBuffer translate(int length, LobstahLEDBuffer source, int offset) {
         LobstahLEDBuffer translated = new LobstahLEDBuffer(length);
         for (int i = Math.max(0, -offset); i < Math.min(source.length, length - offset); i++) {
