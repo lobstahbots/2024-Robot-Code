@@ -105,6 +105,15 @@ public class LobstahLEDBuffer {
         return concat(length, layers);
     }
 
+    public static LobstahLEDBuffer crop(int length, LobstahLEDBuffer source) {
+        LobstahLEDBuffer cropped = new LobstahLEDBuffer(length);
+        for (int i = 0; i < Math.min(length, source.length); i++) {
+            cropped.color.setLED(i, source.color.getLED(i));
+            cropped.alpha[i] = source.alpha[i];
+        }
+        return cropped;
+    }
+
     public static LobstahLEDBuffer flip(LobstahLEDBuffer source) {
         LobstahLEDBuffer flipped = new LobstahLEDBuffer(source.length);
         for (int i = 0; i < source.length; i++) {
