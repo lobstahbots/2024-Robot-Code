@@ -26,6 +26,16 @@ public class LobstahLEDBuffer {
         }
     }
 
+    public LobstahLEDBuffer(int[] red, int[] green, int[] blue, double[] alpha) {
+        this(new AddressableLEDBuffer(red.length), alpha);
+        if (red.length != green.length || red.length != blue.length) {
+            throw new IllegalArgumentException("Length of red, green, and blue must be the same");
+        }
+        for (int i = 0; i < length; i++) {
+            color.setRGB(i, red[i], green[i], blue[i]);
+        }
+    }
+
     public LobstahLEDBuffer(AddressableLEDBuffer ledBuffer, double alpha) {
         this(ledBuffer, new double[ledBuffer.getLength()]);
         Arrays.fill(this.alpha, alpha);
