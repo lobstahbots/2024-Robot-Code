@@ -16,10 +16,10 @@ public interface VisionIO {
         public Pose3d estimatedRearPose = new Pose3d();
         public double estimatedFrontPoseTimestamp = 0.0;
         public double estimatedRearPoseTimestamp = 0.0;
-        public int[] visibleFrontFiducialIDs = new int[]{};
-        public int[] visibleRearFiducialIDs = new int[]{};
-        public double[] frontAmbiguities = new double[]{};
-        public double[] rearAmbiguities = new double[]{};
+        public int[] visibleFrontFiducialIDs = new int[] {};
+        public int[] visibleRearFiducialIDs = new int[] {};
+        public double[] frontAmbiguities = new double[] {};
+        public double[] rearAmbiguities = new double[] {};
         public double frontTotalArea = 0.0;
         public double rearTotalArea = 0.0;
     }
@@ -35,4 +35,6 @@ public interface VisionIO {
     public default void updateInputs(VisionIOInputs inputs, Pose3d robotPose) {}
 
     public default void update(Pose2d robotPose) {}
+
+    public default void periodic() {}
 }
