@@ -53,7 +53,7 @@ public class LobstahLEDBuffer {
         this(new AddressableLEDBuffer(length), new double[length]);
     }
 
-    public AddressableLEDBuffer flatten() {
+    public AddressableLEDBuffer toAdressableLEDBuffer() {
         AddressableLEDBuffer buffer = new AddressableLEDBuffer(color.getLength());
         for (int i = 0; i < color.getLength(); i++) {
             buffer.setRGB(i,
@@ -77,7 +77,7 @@ public class LobstahLEDBuffer {
         return solid(length, color, 1);
     }
     
-    public static LobstahLEDBuffer stack(int length, LobstahLEDBuffer... layers) {
+    public static LobstahLEDBuffer layer(int length, LobstahLEDBuffer... layers) {
         LobstahLEDBuffer output = new LobstahLEDBuffer(length);
         for (LobstahLEDBuffer layer : layers) {
             for (int i = 0; i < Math.min(length, layer.color.getLength()); i++) {
@@ -147,7 +147,7 @@ public class LobstahLEDBuffer {
         return tile(times * source.length, source);
     }
 
-    public static LobstahLEDBuffer wrappedTranslate(int length, LobstahLEDBuffer source, int offset) {
+    public static LobstahLEDBuffer wrappedShift(int length, LobstahLEDBuffer source, int offset) {
         LobstahLEDBuffer translated = new LobstahLEDBuffer(length);
         for (int i = 0; i < source.length; i++) {
             int j = Math.floorMod(i + offset, length);
@@ -157,11 +157,11 @@ public class LobstahLEDBuffer {
         return translated;
     }
 
-    public static LobstahLEDBuffer wrappedTranslate(LobstahLEDBuffer source, int offset) {
-        return wrappedTranslate(source.length, source, offset);
+    public static LobstahLEDBuffer cycle(LobstahLEDBuffer source, int offset) {
+        return wrappedShift(source.length, source, offset);
     }
 
-    public static LobstahLEDBuffer translate(int length, LobstahLEDBuffer source, int offset) {
+    public static LobstahLEDBuffer shift(int length, LobstahLEDBuffer source, int offset) {
         LobstahLEDBuffer translated = new LobstahLEDBuffer(length);
         for (int i = Math.max(0, -offset); i < Math.min(source.length, length - offset); i++) {
             int j = i + offset;
