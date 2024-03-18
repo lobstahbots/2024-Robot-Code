@@ -16,6 +16,10 @@ import frc.robot.networkalerts.Alert.AlertType;
  * Class to monitor the temperature of some items.
  */
 public class TemperatureMonitor {
+    /**
+     * A monitorable device, likely a motor. Needs to be able to save its disabled state, get
+     * its disabled state, and get its temperature and label.
+     */
     public static interface Monitorable {
         /**
          * Sets the disabled state of the monitorable.
@@ -44,6 +48,12 @@ public class TemperatureMonitor {
     private final HashMap<String, Alert> alerts;
     private final boolean disableAll;
 
+    /**
+     * Create a TemperatureMonitor to monitor some {@link Monitorable}s.
+     * @param motors A list of {@link Monitorable}s to monitor
+     * @param disableAll Whether or not to disable all the motors when just one
+     *      of them overheats.
+     */
     public TemperatureMonitor(List<Monitorable> motors, boolean disableAll) {
         this.motors = motors;
         alerts = new HashMap<>(motors.size(), 1); // Load factor can be 1 because the size will never change
@@ -61,10 +71,19 @@ public class TemperatureMonitor {
         this.disableAll = disableAll;
     }
 
+    /**
+     * Create a TemperatureMonitor to monitor some {@link Monitorable}s,
+     * disabling all of them when one overheats.
+     * @param motors A list of {@link Monitorable}s to monitor
+     */
     public TemperatureMonitor(List<Monitorable> motors) {
         this(motors, true);
     }
 
+    /**
+     * Monitor the {@link Monitorable}s. This method should be called periodically,
+     * probably in the <code>periodic</code> method of a subsystem.
+     */
     public void monitor() {
         boolean safe = true;
         for (Monitorable motor : motors) {
