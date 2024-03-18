@@ -36,14 +36,13 @@ public class IntakeNoteCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    indexerState = IndexerState.NoNote;
     intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putBoolean("Beam Broken", indexer.beamBroken());
-    SmartDashboard.putString("State", indexerState.toString());
     updateIndexerState();
     switch(indexerState) {
       case NoNote:
@@ -52,6 +51,7 @@ public class IntakeNoteCommand extends Command {
         break;
       
       case MovingInIndexer: 
+        intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
         indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);
         break;
       
@@ -65,31 +65,24 @@ public class IntakeNoteCommand extends Command {
         indexer.stopIndexerMotor();
         break;
     }
+
+    SmartDashboard.putBoolean("Flywheel Beam Broken", indexer.flywheelBeamBroken());
+    SmartDashboard.putBoolean("Intake Beam Broken", indexer.intakeBeamBroken());
+    SmartDashboard.putString("State", indexerState.toString());
   }
 
   private void updateIndexerState() {
-    switch (indexerState) {
-      case NoNote:
-        if(indexer.beamBroken()) indexerState = IndexerState.MovingInIndexer;
-          break;
-        
-      case MovingInIndexer:
-        if(!indexer.beamBroken()) indexerState = IndexerState.InShooter;
-        break;
-        
-      case InShooter:
-        if(indexer.beamBroken()) indexerState = IndexerState.InIndexer;
-        break;
-      
-      default: 
-        indexerState = IndexerState.NoNote;
-        break;
-    }
+        if (indexer.intakeBeamBroken() && indexer.flywheelBeamBroken()) indexerState = IndexerState.InIndexer;
+        else if (indexer.intakeBeamBroken()) indexerState = IndexerState.MovingInIndexer;
+        else if (indexer.flywheelBeamBroken()) indexerState = IndexerState.InShooter;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    SmartDashboard.putBoolean("Flywheel Beam Broken", indexer.flywheelBeamBroken());
+    SmartDashboard.putBoolean("Intake Beam Broken", indexer.intakeBeamBroken());
+    SmartDashboard.putString("State", indexerState.toString());
     indexer.stopIndexerMotor();
     intake.stopIntakeMotor();
   }

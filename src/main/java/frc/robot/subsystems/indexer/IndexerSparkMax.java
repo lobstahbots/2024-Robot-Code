@@ -9,6 +9,8 @@ import java.util.Arrays;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.IndexerConstants;
 import stl.tempControl.MonitoredSparkMax;
@@ -16,8 +18,10 @@ import stl.tempControl.TemperatureMonitor;
 
 public class IndexerSparkMax implements IndexerIO {
   private final MonitoredSparkMax indexerMotor;
-  private DigitalInput beamBreak = new DigitalInput(2);
+  private DigitalInput intakeBeamBreak = new DigitalInput(2);
+  private DigitalInput flywheelBeamBreak = new DigitalInput(1);
   private final TemperatureMonitor monitor;
+  private final Debouncer debouncer = new Debouncer(IndexerConstants.DEBOUNCE_TIME, DebounceType.kBoth);
 
   /** Creates a new IndexerSparkMax. */
   public IndexerSparkMax(int indexerMotorID) {
@@ -40,7 +44,8 @@ public class IndexerSparkMax implements IndexerIO {
     inputs.indexerMotorCurrent = indexerMotor.getOutputCurrent();
     inputs.indexerMotorTemperature = indexerMotor.getMotorTemperature();
     inputs.indexerMotorVoltage = indexerMotor.getBusVoltage() * indexerMotor.getAppliedOutput();
-    inputs.beamBroken = !beamBreak.get();
+    inputs.intakeBeamBroken = debouncer.calculate(!intakeBeamBreak.get());
+    inputs.flywheelBeamBroken = debouncer.calculate(!flywheelBeamBreak.get());
   }
 
   public void periodic() {
