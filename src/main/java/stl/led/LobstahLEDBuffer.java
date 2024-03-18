@@ -14,20 +14,20 @@ import edu.wpi.first.wpilibj.util.Color;
  */
 public class LobstahLEDBuffer {
     public final AddressableLEDBuffer color;
-    public final double[] alpha;
+    public final AlphaBuffer alpha;
     public final int length;
 
-    public LobstahLEDBuffer(AddressableLEDBuffer ledBuffer, double[] alpha) {
+    public LobstahLEDBuffer(AddressableLEDBuffer ledBuffer, AlphaBuffer alpha) {
         this.color = ledBuffer;
         this.alpha = alpha;
-        this.length = alpha.length;
-        if (ledBuffer.getLength() != alpha.length) {
+        this.length = alpha.buffer.length;
+        if (ledBuffer.getLength() != alpha.buffer.length) {
             throw new IllegalArgumentException("Length of color and alpha must be the same");
         }
     }
 
     public LobstahLEDBuffer(int[] red, int[] green, int[] blue, double[] alpha) {
-        this(new AddressableLEDBuffer(red.length), alpha);
+        this(new AddressableLEDBuffer(red.length), new AlphaBuffer(alpha));
         if (red.length != green.length || red.length != blue.length) {
             throw new IllegalArgumentException("Length of red, green, and blue must be the same");
         }
@@ -37,8 +37,7 @@ public class LobstahLEDBuffer {
     }
 
     public LobstahLEDBuffer(AddressableLEDBuffer ledBuffer, double alpha) {
-        this(ledBuffer, new double[ledBuffer.getLength()]);
-        Arrays.fill(this.alpha, alpha);
+        this(ledBuffer, new AlphaBuffer(ledBuffer.getLength(), alpha));
     }
 
     public LobstahLEDBuffer(AddressableLEDBuffer ledBuffer) {
@@ -50,16 +49,16 @@ public class LobstahLEDBuffer {
     }
 
     public LobstahLEDBuffer(int length) {
-        this(new AddressableLEDBuffer(length), new double[length]);
+        this(new AddressableLEDBuffer(length), new AlphaBuffer(length));
     }
 
     public AddressableLEDBuffer toAdressableLEDBuffer() {
         AddressableLEDBuffer buffer = new AddressableLEDBuffer(color.getLength());
         for (int i = 0; i < color.getLength(); i++) {
             buffer.setRGB(i,
-                (int) (color.getRed(i) * alpha[i]),
-                (int) (color.getGreen(i) * alpha[i]),
-                (int) (color.getBlue(i) * alpha[i])
+                (int) (color.getRed(i) * alpha.buffer[i]),
+                (int) (color.getGreen(i) * alpha.buffer[i]),
+                (int) (color.getBlue(i) * alpha.buffer[i])
             );
         }
         return buffer;
@@ -82,12 +81,12 @@ public class LobstahLEDBuffer {
         for (LobstahLEDBuffer layer : layers) {
             for (int i = 0; i < Math.min(outputLength, layer.color.getLength()); i++) {
                 output.color.setRGB(i,
-                    (int) (layer.color.getRed(i) * layer.alpha[i] + output.color.getRed(i) * output.alpha[i] * (1 - layer.alpha[i])),
-                    (int) (layer.color.getGreen(i) * layer.alpha[i] + output.color.getGreen(i) * output.alpha[i] * (1 - layer.alpha[i])),
-                    (int) (layer.color.getBlue(i) * layer.alpha[i] + output.color.getBlue(i) * output.alpha[i] * (1 - layer.alpha[i]))
+                    (int) (layer.color.getRed(i) * layer.alpha.buffer[i] + output.color.getRed(i) * output.alpha.buffer[i] * (1 - layer.alpha.buffer[i])),
+                    (int) (layer.color.getGreen(i) * layer.alpha.buffer[i] + output.color.getGreen(i) * output.alpha.buffer[i] * (1 - layer.alpha.buffer[i])),
+                    (int) (layer.color.getBlue(i) * layer.alpha.buffer[i] + output.color.getBlue(i) * output.alpha.buffer[i] * (1 - layer.alpha.buffer[i]))
                 );
 
-                output.alpha[i] = output.alpha[i] + layer.alpha[i] * (1 - output.alpha[i]);
+                output.alpha.buffer[i] = output.alpha.buffer[i] + layer.alpha.buffer[i] * (1 - output.alpha.buffer[i]);
             }
         }
         return output;
@@ -100,7 +99,7 @@ public class LobstahLEDBuffer {
             for (int j = 0; j < layer.length; j++) {
                 if (i >= outputLength) return output;
                 output.color.setLED(i, layer.color.getLED(j));
-                output.alpha[i] = layer.alpha[j];
+                output.alpha.buffer[i] = layer.alpha.buffer[j];
                 i++;
             }
         }
@@ -119,7 +118,7 @@ public class LobstahLEDBuffer {
         LobstahLEDBuffer cropped = new LobstahLEDBuffer(length);
         for (int i = 0; i < Math.min(length, input.length); i++) {
             cropped.color.setLED(i, input.color.getLED(i));
-            cropped.alpha[i] = input.alpha[i];
+            cropped.alpha.buffer[i] = input.alpha.buffer[i];
         }
         return cropped;
     }
@@ -128,7 +127,7 @@ public class LobstahLEDBuffer {
         LobstahLEDBuffer flipped = new LobstahLEDBuffer(input.length);
         for (int i = 0; i < input.length; i++) {
             flipped.color.setLED(i, input.color.getLED(input.length - i - 1));
-            flipped.alpha[i] = input.alpha[input.length - i - 1];
+            flipped.alpha.buffer[i] = input.alpha.buffer[input.length - i - 1];
         }
         return flipped;
     }
@@ -138,7 +137,7 @@ public class LobstahLEDBuffer {
         for (int i = 0; i < length; i++) {
             int j = Math.floorMod(i, source.length);
             tiled.color.setLED(i, source.color.getLED(j));
-            tiled.alpha[i] = source.alpha[j];
+            tiled.alpha.buffer[i] = source.alpha.buffer[j];
         }
         return tiled;
     }
@@ -152,7 +151,7 @@ public class LobstahLEDBuffer {
         for (int i = 0; i < input.length; i++) {
             int j = Math.floorMod(i + offset, outputLength);
             translated.color.setLED(j, input.color.getLED(i));
-            translated.alpha[j] = input.alpha[i];
+            translated.alpha.buffer[j] = input.alpha.buffer[i];
         }
         return translated;
     }
@@ -166,7 +165,7 @@ public class LobstahLEDBuffer {
         for (int i = Math.max(0, -offset); i < Math.min(input.length, outputLength - offset); i++) {
             int j = i + offset;
             translated.color.setLED(j, input.color.getLED(i));
-            translated.alpha[j] = input.alpha[i];
+            translated.alpha.buffer[j] = input.alpha.buffer[i];
         }
         return translated;
     }
