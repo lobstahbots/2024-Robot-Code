@@ -99,7 +99,15 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void testInit() {
-    if (ledsDemo != null && ledsDemo.isAlive()) return;
+    if (ledsDemo != null) {
+      ledsDemo.interrupt();
+      try {
+        ledsDemo.join(30);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      if (ledsDemo.isAlive()) return;
+    }
     ledsDemo = new LEDsDemo(leds);
     ledsDemo.start();
   }

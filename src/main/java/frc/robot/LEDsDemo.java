@@ -18,7 +18,7 @@ public class LEDsDemo extends Thread {
             sleep(5000);
 
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 }
