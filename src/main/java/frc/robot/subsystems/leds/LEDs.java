@@ -1,19 +1,25 @@
+// Adapted from 6328 Mechanical Advantage's 2023 Robot Code
+
 package frc.robot.subsystems.leds;
 
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
 import stl.led.AlphaBuffer;
+import stl.led.AnimationEasing;
 import stl.led.LobstahLEDBuffer;
 
 public class LEDs extends SubsystemBase {
     LEDIO io;
 
     boolean possession = false;
-    
+
     public LEDs(LEDIO io) {
         this.io = io;
+        
+        loadingNotifier.startPeriodic(0.02);
     }
 
     public void setPossession(boolean value) {
@@ -22,12 +28,21 @@ public class LEDs extends SubsystemBase {
     }
 
     public void periodic() {
+        loadingNotifier.stop();
+
         io.setData(LobstahLEDBuffer.layer(LEDConstants.LED_LENGTH,
-            posessionSignal(),
-            posessionIndicator(),
-            inMatchPattern()
-            ).toAdressableLEDBuffer());
+                posessionSignal(),
+                posessionIndicator(),
+                inMatchPattern()).toAdressableLEDBuffer());
+    }
+
+    private final Notifier loadingNotifier = new Notifier(() -> {
+        synchronized (this) {
+            System.out.println("Loading");
+            io.setData(LobstahLEDBuffer.solid(3, Color.kWhite)
+                    .opacity(AnimationEasing.sine(System.currentTimeMillis(), 1000, 0)).toAdressableLEDBuffer());
         }
+    });
     
     Timer possessionSignalTimer = new Timer();
     LobstahLEDBuffer posessionSignal() {
