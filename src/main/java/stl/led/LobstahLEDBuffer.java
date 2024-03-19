@@ -77,6 +77,7 @@ public class LobstahLEDBuffer {
     public static LobstahLEDBuffer layer(int outputLength, LobstahLEDBuffer... layers) {
         LobstahLEDBuffer output = new LobstahLEDBuffer(outputLength);
         for (LobstahLEDBuffer layer : layers) {
+            if (layer == null) continue;
             for (int i = 0; i < Math.min(outputLength, layer.length); i++) {
                 output.color.setRGB(i,
                     (int) (layer.color.getRed(i) * layer.alpha.buffer[i] + output.color.getRed(i) * output.alpha.buffer[i] * (1 - layer.alpha.buffer[i])),
@@ -94,6 +95,7 @@ public class LobstahLEDBuffer {
         LobstahLEDBuffer output = new LobstahLEDBuffer(outputLength);
         int i = 0;
         for (LobstahLEDBuffer segment : segments) {
+            if (segment == null) continue;
             for (int j = 0; j < segment.length; j++) {
                 if (i >= outputLength) return output;
                 output.color.setLED(i, segment.color.getLED(j));
@@ -107,6 +109,7 @@ public class LobstahLEDBuffer {
     public static LobstahLEDBuffer concat(LobstahLEDBuffer... segments) {
         int length = 0;
         for (LobstahLEDBuffer segment : segments) {
+            if (segment == null) continue;
             length += segment.length;
         }
         return concat(length, segments);

@@ -55,6 +55,7 @@ public class AlphaBuffer {
     public static AlphaBuffer layer(int outputLength, AlphaBuffer... layers) {
         double[] result = new double[outputLength];
         for (AlphaBuffer layer : layers) {
+            if (layer == null) continue;
             for (int i = 0; i < Math.min(outputLength, layer.buffer.length); i++) {
                 result[i] = result[i] + layer.buffer[i] * (1 - result[i]);
             }
@@ -66,6 +67,7 @@ public class AlphaBuffer {
         double[] result = new double[outputLength];
         int i = 0;
         for (AlphaBuffer segment : segments) {
+            if (segment == null) continue;
             for (int j = 0; j < segment.buffer.length; j++) {
                 if (i >= outputLength) return new AlphaBuffer(result);
                 result[i] = segment.buffer[j];
@@ -78,6 +80,7 @@ public class AlphaBuffer {
     public static AlphaBuffer concat(AlphaBuffer... segments) {
         int length = 0;
         for (AlphaBuffer segment : segments) {
+            if (segment == null) continue;
             length += segment.buffer.length;
         }
         return concat(length, segments);
