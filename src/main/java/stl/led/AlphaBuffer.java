@@ -19,6 +19,22 @@ public class AlphaBuffer {
         Arrays.fill(buffer, alpha);
     }
 
+    public static AlphaBuffer linear(int length) {
+        double[] result = new double[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = (double) i / (length - 1);
+        }
+        return new AlphaBuffer(result);
+    }
+
+    public static AlphaBuffer sine(int length, double frequency, double phase) {
+        double[] result = new double[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = (1 + Math.sin(2 * Math.PI * frequency * i + phase)) / 2;
+        }
+        return new AlphaBuffer(result);
+    }
+
     public static AlphaBuffer invert(AlphaBuffer a) {
         double[] result = new double[a.buffer.length];
         for (int i = 0; i < a.buffer.length; i++) {
