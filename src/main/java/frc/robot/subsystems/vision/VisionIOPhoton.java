@@ -27,8 +27,8 @@ public class VisionIOPhoton implements VisionIO {
             new ArrayList<PhotonTrackedTarget>(), VisionConstants.POSE_STRATEGY);
     private EstimatedRobotPose estimatedRearPose = new EstimatedRobotPose(new Pose3d(), 0,
             new ArrayList<PhotonTrackedTarget>(), VisionConstants.POSE_STRATEGY);
-    private final Alert frontDisconnectedAlert = new Alert("Front camera has disconnected.", AlertType.ERROR);
-    private final Alert rearDisconnectedAlert = new Alert("Rear camera has disconnected.", AlertType.ERROR);
+    private final Alert frontDisconnectedAlert;
+    private final Alert rearDisconnectedAlert;
 
     public VisionIOPhoton() {
         this.rearCamera = new PhotonCamera("photonvision1");
@@ -37,6 +37,8 @@ public class VisionIOPhoton implements VisionIO {
                 frontCamera, VisionConstants.ROBOT_TO_FRONT_CAMERA);
         this.rearPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, VisionConstants.POSE_STRATEGY, rearCamera,
                 VisionConstants.ROBOT_TO_REAR_CAMERA);
+        frontDisconnectedAlert = new Alert("Front camera has disconnected.", AlertType.ERROR, () -> !frontCamera.isConnected());
+        rearDisconnectedAlert = new Alert("Rear camera has disconnected.", AlertType.ERROR, () -> !rearCamera.isConnected());
     }
 
     public void updateInputs(VisionIOInputs inputs, Pose3d robotPoseMeters) {
@@ -115,10 +117,5 @@ public class VisionIOPhoton implements VisionIO {
 
         return new PoseInformation(estimatedPose.estimatedPose, estimatedPose.timestampSeconds, visibleFiducialIDs,
                 ambiguities, area);
-    }
-
-    public void periodic() {
-        frontDisconnectedAlert.set(!frontCamera.isConnected());
-        rearDisconnectedAlert.set(!rearCamera.isConnected());
     }
 }
