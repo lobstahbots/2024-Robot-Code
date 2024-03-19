@@ -92,7 +92,7 @@ public class LobstahLEDBuffer {
         return output;
     }
 
-    public static LobstahLEDBuffer concat(int outputLength, LobstahLEDBuffer... layers) { // TODO: Implement concat
+    public static LobstahLEDBuffer concat(int outputLength, LobstahLEDBuffer... layers) {
         LobstahLEDBuffer output = new LobstahLEDBuffer(outputLength);
         int i = 0;
         for (LobstahLEDBuffer layer : layers) {
