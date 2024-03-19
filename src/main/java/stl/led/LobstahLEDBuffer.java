@@ -2,8 +2,6 @@
 
 package stl.led;
 
-import java.util.Arrays;
-
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 
@@ -114,58 +112,58 @@ public class LobstahLEDBuffer {
         return concat(length, segments);
     }
 
-    public static LobstahLEDBuffer crop(int length, LobstahLEDBuffer input) {
+    public LobstahLEDBuffer crop(int length) {
         LobstahLEDBuffer cropped = new LobstahLEDBuffer(length);
-        for (int i = 0; i < Math.min(length, input.length); i++) {
-            cropped.color.setLED(i, input.color.getLED(i));
-            cropped.alpha.buffer[i] = input.alpha.buffer[i];
+        for (int i = 0; i < Math.min(length, length); i++) {
+            cropped.color.setLED(i, color.getLED(i));
+            cropped.alpha.buffer[i] = alpha.buffer[i];
         }
         return cropped;
     }
 
-    public static LobstahLEDBuffer flip(LobstahLEDBuffer input) {
-        LobstahLEDBuffer flipped = new LobstahLEDBuffer(input.length);
-        for (int i = 0; i < input.length; i++) {
-            flipped.color.setLED(i, input.color.getLED(input.length - i - 1));
-            flipped.alpha.buffer[i] = input.alpha.buffer[input.length - i - 1];
+    public LobstahLEDBuffer flip() {
+        LobstahLEDBuffer flipped = new LobstahLEDBuffer(length);
+        for (int i = 0; i < length; i++) {
+            flipped.color.setLED(i, color.getLED(length - i - 1));
+            flipped.alpha.buffer[i] = alpha.buffer[length - i - 1];
         }
         return flipped;
     }
 
-    public static LobstahLEDBuffer tile(int length, LobstahLEDBuffer source) {
+    public LobstahLEDBuffer tile(int length) {
         LobstahLEDBuffer tiled = new LobstahLEDBuffer(length);
         for (int i = 0; i < length; i++) {
-            int j = Math.floorMod(i, source.length);
-            tiled.color.setLED(i, source.color.getLED(j));
-            tiled.alpha.buffer[i] = source.alpha.buffer[j];
+            int j = Math.floorMod(i, length);
+            tiled.color.setLED(i, color.getLED(j));
+            tiled.alpha.buffer[i] = alpha.buffer[j];
         }
         return tiled;
     }
 
-    public static LobstahLEDBuffer repeat(int times, LobstahLEDBuffer source) {
-        return tile(times * source.length, source);
+    public LobstahLEDBuffer repeat(int times) {
+        return tile(times * length);
     }
 
-    public static LobstahLEDBuffer wrappedShift(int outputLength, int offset, LobstahLEDBuffer input) {
+    public LobstahLEDBuffer wrappedShift(int outputLength, int offset) {
         LobstahLEDBuffer translated = new LobstahLEDBuffer(outputLength);
-        for (int i = 0; i < input.length; i++) {
+        for (int i = 0; i < length; i++) {
             int j = Math.floorMod(i + offset, outputLength);
-            translated.color.setLED(j, input.color.getLED(i));
-            translated.alpha.buffer[j] = input.alpha.buffer[i];
+            translated.color.setLED(j, color.getLED(i));
+            translated.alpha.buffer[j] = alpha.buffer[i];
         }
         return translated;
     }
 
-    public static LobstahLEDBuffer cycle(int offset, LobstahLEDBuffer input) {
-        return wrappedShift(input.length, offset, input);
+    public LobstahLEDBuffer cycle(int offset) {
+        return wrappedShift(length, offset);
     }
 
-    public static LobstahLEDBuffer shift(int outputLength, int offset, LobstahLEDBuffer input) {
+    public LobstahLEDBuffer shift(int outputLength, int offset) {
         LobstahLEDBuffer translated = new LobstahLEDBuffer(outputLength);
-        for (int i = Math.max(0, -offset); i < Math.min(input.length, outputLength - offset); i++) {
+        for (int i = Math.max(0, -offset); i < Math.min(length, outputLength - offset); i++) {
             int j = i + offset;
-            translated.color.setLED(j, input.color.getLED(i));
-            translated.alpha.buffer[j] = input.alpha.buffer[i];
+            translated.color.setLED(j, color.getLED(i));
+            translated.alpha.buffer[j] = alpha.buffer[i];
         }
         return translated;
     }
@@ -184,29 +182,5 @@ public class LobstahLEDBuffer {
 
     public LobstahLEDBuffer prepend(LobstahLEDBuffer other) {
         return concat(other, this);
-    }
-
-    public LobstahLEDBuffer crop(int length) {
-        return crop(length, this);
-    }
-
-    public LobstahLEDBuffer flip() {
-        return flip(this);
-    }
-
-    public LobstahLEDBuffer tile(int length) {
-        return tile(length, this);
-    }
-
-    public LobstahLEDBuffer repeat(int times) {
-        return repeat(times, this);
-    }
-
-    public LobstahLEDBuffer cycle(int offset) {
-        return cycle(offset, this);
-    }
-
-    public LobstahLEDBuffer shift(int outputLength, int offset) {
-        return shift(outputLength, offset, this);
     }
 }

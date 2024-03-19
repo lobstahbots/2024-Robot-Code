@@ -83,52 +83,52 @@ public class AlphaBuffer {
         return concat(length, segments);
     }
 
-    public static AlphaBuffer crop(int length, AlphaBuffer input) {
+    public AlphaBuffer crop(int length) {
         double[] result = new double[length];
-        for (int i = 0; i < Math.min(length, input.buffer.length); i++) {
-            result[i] = input.buffer[i];
+        for (int i = 0; i < Math.min(length, buffer.length); i++) {
+            result[i] = buffer[i];
         }
         return new AlphaBuffer(result);
     }
 
-    public static AlphaBuffer flip(AlphaBuffer input) {
-        double[] result = new double[input.buffer.length];
-        for (int i = 0; i < input.buffer.length; i++) {
-            result[i] = input.buffer[input.buffer.length - i - 1];
+    public AlphaBuffer flip() {
+        double[] result = new double[buffer.length];
+        for (int i = 0; i < buffer.length; i++) {
+            result[i] = buffer[buffer.length - i - 1];
         }
         return new AlphaBuffer(result);
     }
 
-    public static AlphaBuffer tile(int length, AlphaBuffer source) {
+    public AlphaBuffer tile(int length) {
         double[] result = new double[length];
         for (int i = 0; i < length; i++) {
-            int j = Math.floorMod(i, source.buffer.length);
-            result[i] = source.buffer[j];
+            int j = Math.floorMod(i, buffer.length);
+            result[i] = buffer[j];
         }
         return new AlphaBuffer(result);
     }
 
-    public static AlphaBuffer repeat(int times, AlphaBuffer source) {
-        return tile(times * source.buffer.length, source);
+    public AlphaBuffer repeat(int times) {
+        return tile(times * buffer.length);
     }
 
-    public static AlphaBuffer wrappedShift(int outputLength, int offset, AlphaBuffer input) {
+    public AlphaBuffer wrappedShift(int outputLength, int offset) {
         double[] result = new double[outputLength];
         for (int i = 0; i < outputLength; i++) {
-            result[i] = input.buffer[Math.floorMod(i - offset, input.buffer.length)];
+            result[i] = buffer[Math.floorMod(i - offset, buffer.length)];
         }
         return new AlphaBuffer(result);
     }
 
-    public static AlphaBuffer cycle(int offset, AlphaBuffer input) {
-        return wrappedShift(input.buffer.length, offset, input);
+    public AlphaBuffer cycle(int offset) {
+        return wrappedShift(buffer.length, offset);
     }
 
-    public static AlphaBuffer shift(int outputLength, int offset, AlphaBuffer input) {
+    public AlphaBuffer shift(int outputLength, int offset) {
         double[] result = new double[outputLength];
-        for (int i = Math.max(0, -offset); i < Math.min(input.buffer.length, outputLength - offset); i++) {
+        for (int i = Math.max(0, -offset); i < Math.min(buffer.length, outputLength - offset); i++) {
             int j = i + offset;
-            result[j] = input.buffer[i];
+            result[j] = buffer[i];
         }
         return new AlphaBuffer(result);
     }
@@ -147,29 +147,5 @@ public class AlphaBuffer {
 
     public AlphaBuffer prepend(AlphaBuffer other) {
         return concat(other, this);
-    }
-
-    public AlphaBuffer crop(int length) {
-        return crop(length, this);
-    }
-
-    public AlphaBuffer flip() {
-        return flip(this);
-    }
-
-    public AlphaBuffer tile(int length) {
-        return tile(length, this);
-    }
-
-    public AlphaBuffer repeat(int times) {
-        return repeat(times, this);
-    }
-
-    public AlphaBuffer cycle(int offset) {
-        return cycle(offset, this);
-    }
-
-    public AlphaBuffer shift(int outputLength, int offset) {
-        return shift(outputLength, offset, this);
     }
 }
