@@ -16,4 +16,8 @@ public class AnimationEasing {
         if ((t /= d / 2) < 1) return c / 2 * t * t + b;
         return -c / 2 * ((--t) * (t - 2) - 1) + b;
     }
+
+    public static double sine(double input, double period, double phaseAngle) {
+        return (1 - Math.cos(2 * Math.PI / period * (input - phaseAngle))) / 2;
+    }
 }
