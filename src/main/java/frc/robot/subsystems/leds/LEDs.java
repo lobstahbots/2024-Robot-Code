@@ -46,6 +46,6 @@ public class LEDs extends SubsystemBase {
 
     LobstahLEDBuffer inMatchPattern() {
         return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(255, 69, 118))
-                .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 1.0 / 10, Timer.getFPGATimestamp() * 5));
+                .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 10, Timer.getFPGATimestamp() * 5));
     }
 }

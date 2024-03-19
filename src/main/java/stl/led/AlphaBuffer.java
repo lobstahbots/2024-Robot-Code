@@ -27,10 +27,10 @@ public class AlphaBuffer {
         return new AlphaBuffer(result);
     }
 
-    public static AlphaBuffer sine(int length, double frequency, double phase) {
+    public static AlphaBuffer sine(int length, double period, double phase) {
         double[] result = new double[length];
         for (int i = 0; i < length; i++) {
-            result[i] = (1 + Math.sin(2 * Math.PI * frequency * i - phase)) / 2;
+            result[i] = (1 - Math.cos(2 * Math.PI / period * i - phase)) / 2;
         }
         return new AlphaBuffer(result);
     }
