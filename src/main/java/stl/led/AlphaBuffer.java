@@ -35,10 +35,10 @@ public class AlphaBuffer {
         return new AlphaBuffer(result);
     }
 
-    public static AlphaBuffer invert(AlphaBuffer a) {
-        double[] result = new double[a.buffer.length];
-        for (int i = 0; i < a.buffer.length; i++) {
-            result[i] = 1 - a.buffer[i];
+    public AlphaBuffer invert() {
+        double[] result = new double[buffer.length];
+        for (int i = 0; i < buffer.length; i++) {
+            result[i] = 1 - buffer[i];
         }
         return new AlphaBuffer(result);
     }
@@ -131,5 +131,45 @@ public class AlphaBuffer {
             result[j] = input.buffer[i];
         }
         return new AlphaBuffer(result);
+    }
+
+    public AlphaBuffer multiply(AlphaBuffer other) {
+        return multiply(buffer.length, this, other);
+    }
+
+    public AlphaBuffer layer(AlphaBuffer other) {
+        return layer(buffer.length, this, other);
+    }
+
+    public AlphaBuffer append(AlphaBuffer other) {
+        return concat(this, other);
+    }
+
+    public AlphaBuffer prepend(AlphaBuffer other) {
+        return concat(other, this);
+    }
+
+    public AlphaBuffer crop(int length) {
+        return crop(length, this);
+    }
+
+    public AlphaBuffer flip() {
+        return flip(this);
+    }
+
+    public AlphaBuffer tile(int length) {
+        return tile(length, this);
+    }
+
+    public AlphaBuffer repeat(int times) {
+        return repeat(times, this);
+    }
+
+    public AlphaBuffer cycle(int offset) {
+        return cycle(offset, this);
+    }
+
+    public AlphaBuffer shift(int outputLength, int offset) {
+        return shift(outputLength, offset, this);
     }
 }
