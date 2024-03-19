@@ -111,6 +111,10 @@ public class LobstahLEDBuffer {
         }
         return concat(length, segments);
     }
+    
+    public LobstahLEDBuffer mask(AlphaBuffer mask) {
+        return new LobstahLEDBuffer(color, alpha.multiply(mask));
+    }
 
     public LobstahLEDBuffer crop(int length) {
         LobstahLEDBuffer cropped = new LobstahLEDBuffer(length);
