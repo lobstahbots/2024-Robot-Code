@@ -119,6 +119,10 @@ public class LobstahLEDBuffer {
         return new LobstahLEDBuffer(color, alpha.multiply(mask));
     }
 
+    public LobstahLEDBuffer opacity(double alpha) {
+        return mask(new AlphaBuffer(length, alpha));
+    }
+
     public LobstahLEDBuffer crop(int length) {
         LobstahLEDBuffer cropped = new LobstahLEDBuffer(length);
         for (int i = 0; i < Math.min(length, length); i++) {
