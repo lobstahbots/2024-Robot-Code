@@ -57,6 +57,11 @@ public class Robot extends LoggedRobot {
   // // Logger.getInstance().disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
   //  Logger.start();
 
+    try {
+      Thread.sleep(5000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
