@@ -27,18 +27,21 @@ public class AlphaBuffer {
         return new AlphaBuffer(result);
     }
 
-    public static AlphaBuffer multiply(AlphaBuffer a, AlphaBuffer b) {
-        double[] result = new double[a.buffer.length];
-        for (int i = 0; i < a.buffer.length; i++) {
+    public static AlphaBuffer multiply(int outputLength, AlphaBuffer a, AlphaBuffer b) {
+        double[] result = new double[outputLength];
+        int contentLength = Math.min(outputLength, Math.min(a.buffer.length, b.buffer.length));
+        for (int i = 0; i < contentLength; i++) {
             result[i] = a.buffer[i] * b.buffer[i];
         }
         return new AlphaBuffer(result);
     }
 
-    public static AlphaBuffer layer(AlphaBuffer a, AlphaBuffer b) {
-        double[] result = new double[a.buffer.length];
-        for (int i = 0; i < a.buffer.length; i++) {
-            result[i] = a.buffer[i] + b.buffer[i] * (1 - a.buffer[i]);
+    public static AlphaBuffer layer(int outputLength, AlphaBuffer... layers) {
+        double[] result = new double[outputLength];
+        for (AlphaBuffer layer : layers) {
+            for (int i = 0; i < Math.min(outputLength, layer.buffer.length); i++) {
+                result[i] = result[i] + layer.buffer[i] * (1 - result[i]);
+            }
         }
         return new AlphaBuffer(result);
     }
