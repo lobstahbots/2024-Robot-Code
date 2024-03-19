@@ -53,8 +53,8 @@ public class LobstahLEDBuffer {
     }
 
     public AddressableLEDBuffer toAdressableLEDBuffer() {
-        AddressableLEDBuffer buffer = new AddressableLEDBuffer(color.getLength());
-        for (int i = 0; i < color.getLength(); i++) {
+        AddressableLEDBuffer buffer = new AddressableLEDBuffer(length);
+        for (int i = 0; i < length; i++) {
             buffer.setRGB(i,
                 (int) (color.getRed(i) * alpha.buffer[i]),
                 (int) (color.getGreen(i) * alpha.buffer[i]),
@@ -79,7 +79,7 @@ public class LobstahLEDBuffer {
     public static LobstahLEDBuffer layer(int outputLength, LobstahLEDBuffer... layers) {
         LobstahLEDBuffer output = new LobstahLEDBuffer(outputLength);
         for (LobstahLEDBuffer layer : layers) {
-            for (int i = 0; i < Math.min(outputLength, layer.color.getLength()); i++) {
+            for (int i = 0; i < Math.min(outputLength, layer.length); i++) {
                 output.color.setRGB(i,
                     (int) (layer.color.getRed(i) * layer.alpha.buffer[i] + output.color.getRed(i) * output.alpha.buffer[i] * (1 - layer.alpha.buffer[i])),
                     (int) (layer.color.getGreen(i) * layer.alpha.buffer[i] + output.color.getGreen(i) * output.alpha.buffer[i] * (1 - layer.alpha.buffer[i])),
