@@ -5,21 +5,12 @@
 package frc.robot;
 
 
-import java.io.File;
-
-import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-import org.littletonrobotics.junction.wpilog.WPILOGReader;
 
-import com.pathplanner.lib.pathfinding.Pathfinding;
-
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.SimConstants;
+import frc.robot.Constants.LEDConstants;
+import frc.robot.subsystems.leds.LEDs;
+import frc.robot.subsystems.leds.LEDsReal;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -28,9 +19,9 @@ import frc.robot.Constants.SimConstants;
  * project.
  */
 public class Robot extends LoggedRobot {
-  private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+  private final LEDs leds = new LEDs(new LEDsReal(LEDConstants.LED_PORT, LEDConstants.LED_LENGTH));
+  private LEDsDemo ledsDemo = null;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -38,36 +29,34 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
-    Pathfinding.setPathfinder(new LocalADStarAK());
-    // Record metadata
-    Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
-    Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
-    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-    Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
-    Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-    Logger.recordMetadata("Lobstah Bots", "2024 Robot Code");
+  //   // Record metadata
+  //   Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+  //   Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+  //   Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+  //   Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+  //   Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+  //   Logger.recordMetadata("Lobstah Bots", "2024 Robot Code");
 
-    File log = new File (Filesystem.getOperatingDirectory(), "log");
-    String logPath = log.getAbsolutePath();
+  //   File log = new File (Filesystem.getOperatingDirectory(), "log");
+  //   String logPath = log.getAbsolutePath();
 
-    if (Robot.isReal()) {
-      Logger.addDataReceiver(new WPILOGWriter(logPath)); // Save outputs to a new log
-      Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-  } else {
-    if(SimConstants.REPLAY) {
-      String replayPath = logPath + "\\Log_24-02-22_02-19-32.wpilog";
-      Logger.setReplaySource(new WPILOGReader(replayPath));
-      Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(replayPath, "_replay")));
-    } else {
-      setUseTiming(false); // Run as fast as possible
-      Logger.addDataReceiver(new WPILOGWriter(logPath, 0.02)); // Save outputs to a new log
-    }
-  }
+  //   if (Robot.isReal()) {
+  //     Logger.addDataReceiver(new WPILOGWriter(logPath)); // Save outputs to a new log
+  //     Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+  // } else {
+  //   if(SimConstants.REPLAY) {
+  //     String replayPath = logPath + "\\Log_24-02-22_02-19-32.wpilog";
+  //     Logger.setReplaySource(new WPILOGReader(replayPath));
+  //     Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(replayPath, "_replay")));
+  //   } else {
+  //     setUseTiming(false); // Run as fast as possible
+  //     Logger.addDataReceiver(new WPILOGWriter(logPath, 0.02)); // Save outputs to a new log
+  //   }
+  // }
   
-  // Logger.getInstance().disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
-   Logger.start();
+  // // Logger.getInstance().disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
+  //  Logger.start();
 
-    m_robotContainer = new RobotContainer();
   }
 
   /**
@@ -95,29 +84,14 @@ public class Robot extends LoggedRobot {
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-  }
+  public void autonomousInit() {}
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {}
 
   @Override
-  public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
-  }
+  public void teleopInit() {}
 
   /** This function is called periodically during operator control. */
   @Override
@@ -125,8 +99,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void testInit() {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
+    if (ledsDemo != null && ledsDemo.isAlive()) return;
+    ledsDemo = new LEDsDemo(leds);
+    ledsDemo.start();
   }
 
   /** This function is called periodically during test mode. */
