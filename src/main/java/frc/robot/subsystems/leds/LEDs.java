@@ -11,9 +11,7 @@ public class LEDs extends SubsystemBase {
     LEDIO io;
 
     boolean possession = false;
-
-    Timer possessionSignalTimer = new Timer();
-
+    
     public LEDs(LEDIO io) {
         this.io = io;
     }
@@ -28,9 +26,10 @@ public class LEDs extends SubsystemBase {
             posessionSignal(),
             posessionIndicator(),
             inMatchPattern()
-        ).toAdressableLEDBuffer());
-    }
-
+            ).toAdressableLEDBuffer());
+        }
+    
+    Timer possessionSignalTimer = new Timer();
     LobstahLEDBuffer posessionSignal() {
         double t = possessionSignalTimer.get();
         if (t>= 1 || !possession) return null;
