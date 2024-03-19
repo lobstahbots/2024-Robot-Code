@@ -44,7 +44,7 @@ public class LobstahLEDBuffer {
         this(ledBuffer, 1);
     }
 
-    public LobstahLEDBuffer(int length, double alpha) {
+    protected LobstahLEDBuffer(int length, double alpha) {
         this(new AddressableLEDBuffer(length), alpha);
     }
 
