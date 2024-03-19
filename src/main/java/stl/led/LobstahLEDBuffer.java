@@ -92,26 +92,26 @@ public class LobstahLEDBuffer {
         return output;
     }
 
-    public static LobstahLEDBuffer concat(int outputLength, LobstahLEDBuffer... layers) {
+    public static LobstahLEDBuffer concat(int outputLength, LobstahLEDBuffer... segments) {
         LobstahLEDBuffer output = new LobstahLEDBuffer(outputLength);
         int i = 0;
-        for (LobstahLEDBuffer layer : layers) {
-            for (int j = 0; j < layer.length; j++) {
+        for (LobstahLEDBuffer segment : segments) {
+            for (int j = 0; j < segment.length; j++) {
                 if (i >= outputLength) return output;
-                output.color.setLED(i, layer.color.getLED(j));
-                output.alpha.buffer[i] = layer.alpha.buffer[j];
+                output.color.setLED(i, segment.color.getLED(j));
+                output.alpha.buffer[i] = segment.alpha.buffer[j];
                 i++;
             }
         }
         return output;
     }
 
-    public static LobstahLEDBuffer concat(LobstahLEDBuffer... layers) {
+    public static LobstahLEDBuffer concat(LobstahLEDBuffer... segments) {
         int length = 0;
-        for (LobstahLEDBuffer layer : layers) {
-            length += layer.length;
+        for (LobstahLEDBuffer segment : segments) {
+            length += segment.length;
         }
-        return concat(length, layers);
+        return concat(length, segments);
     }
 
     public static LobstahLEDBuffer crop(int length, LobstahLEDBuffer input) {
