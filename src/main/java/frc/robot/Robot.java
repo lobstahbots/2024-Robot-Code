@@ -102,7 +102,7 @@ public class Robot extends LoggedRobot {
             canAlert.set(true);
             canAlert.setText(String.format("CAN error: %d receive errors, %d transmit errors, %d%% utilization",
                     canStatus.receiveErrorCount, canStatus.transmitErrorCount, canStatus.percentBusUtilization));
-        }
+        } else canAlert.set(false);
     }
 
     /** This function is called once each time the robot enters Disabled mode. */
