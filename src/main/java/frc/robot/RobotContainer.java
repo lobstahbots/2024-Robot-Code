@@ -285,7 +285,7 @@ public class RobotContainer {
                 new AutoQuestion<>("Starting Center Line Note?",
                         Map.of("Midline Left", 0, "Midline Center Left", 1, "Midline Center", 2, "Midline Center Right",
                                 3, "Midline Right (Source Side)", 4)),
-                new AutoQuestion<>("Starting Center Line Note?",
+                new AutoQuestion<>("Ending Center Line Note?",
                         Map.of("-Midline Left", 0, "-Midline Center Left", 1, "-Midline Center", 2,
                                 "-Midline Center Right", 3, "-Midline Right (Source Side)", 4))),
                 autoFactory::getWingAndMidlineAuto);
