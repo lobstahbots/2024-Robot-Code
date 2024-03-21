@@ -259,13 +259,13 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     Poses estimatedPoses = photonVision.getEstimatedPose(getPose());
     if (estimatedPoses.frontPose().isPresent() && estimatedPoses.frontStdev().isPresent()) {
         if(!hasSeenTag) {
-          resetPose(estimatedPoses.frontPose().get());
+          resetPose(new Pose2d(estimatedPoses.frontPose().get().getX(), estimatedPoses.frontPose().get().getY(), getGyroAngle()));
           hasSeenTag = true;
         }
         swerveOdometry.addVisionMeasurement(estimatedPoses.frontPose().get(), photonVision.getFrontTimestamp(), estimatedPoses.frontStdev().get());
      } if (estimatedPoses.rearPose().isPresent() && estimatedPoses.rearStdev().isPresent()) {
         if(!hasSeenTag) {
-            resetPose(estimatedPoses.rearPose().get());
+            resetPose(new Pose2d(estimatedPoses.rearPose().get().getX(), estimatedPoses.rearPose().get().getY(), getGyroAngle()));
             hasSeenTag = true;
           } 
         swerveOdometry.addVisionMeasurement(estimatedPoses.rearPose().get(), photonVision.getRearTimestamp(), estimatedPoses.rearStdev().get());
