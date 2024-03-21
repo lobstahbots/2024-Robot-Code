@@ -335,6 +335,8 @@ public class RobotContainer {
                                                                 "-Midline Center Right", 3,
                                                                 "-Midline Right (Source Side)", 4))),
                                 autoFactory::getWingAndMidlineAuto);
+
+                autoChooser.addRoutine("Signature 246 Lobstah Roll Auto", List.of(), autoFactory::getLobstahRollAuto);
         }
 
         public void setIdleMode(IdleMode idleMode, NeutralModeValue shooterIdleMode) {

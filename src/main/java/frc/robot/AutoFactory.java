@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -20,6 +21,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -48,6 +50,7 @@ import frc.robot.subsystems.shooter.NoteVisualizer;
 import frc.robot.subsystems.shooter.Shooter;
 import stl.sysId.CharacterizableSubsystem;
 import stl.trajectory.AlliancePoseMirror;
+import java.util.function.*;
 
 public class AutoFactory {
     private final Supplier<List<Object>> responses;
@@ -352,6 +355,30 @@ public class AutoFactory {
 
         return autoCommand;
 
+    }
+
+    public Command getLobstahRollAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Signature Lobstah Roll");
+
+        Consumer<ChassisSpeeds> driveRobotRelativeButSpin = (ChassisSpeeds speeds) -> {
+            speeds.omegaRadiansPerSecond = 1;
+            driveBase.driveRobotRelative(speeds);
+        };
+
+        return new PathfindThenFollowPathHolonomic(
+            path,
+            PathConstants.CONSTRAINTS,
+            driveBase::getPose,
+            driveBase::getRobotRelativeSpeeds,
+            driveRobotRelativeButSpin,
+            new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
+                new PIDConstants(0.1, 0.0, 0), // Translation PID constants
+                new PIDConstants(0.1, 0.0, 0), // Rotation PID constants
+                4.5, // Max module speed, in m/s
+                0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                new ReplanningConfig(true, false) // Default path replanning config. See the API for the options
+            ),
+            () -> DriverStation.getAlliance().get() == DriverStation.Alliance.Red, driveBase);
     }
 
     public enum CharacterizationRoutine {
