@@ -228,7 +228,7 @@ public class AutoFactory {
     /* Automatically aim and shoot note at speaker. */
     public Command aimAndShoot() {
         return autoAimOnce().andThen(
-                new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
                         .alongWith(new WaitCommand(2)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(autoAimHold()))
@@ -239,20 +239,22 @@ public class AutoFactory {
     public Command getTwoNote() {
         return aimOnce(() -> Rotation2d.fromDegrees(40))
                 .andThen(
-                        new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                        new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                                .alongWith(new WaitCommand(2)
+                                        .andThen(
+                                                new SpinIndexerCommand(indexer,
+                                                        IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
+                                .alongWith(new RotatePivotCommand(pivot, 40)))
+                .withTimeout(5)
+                .andThen(aimOnce(() -> new Rotation2d(0)))
+                .andThen(new SwerveDriveCommand(driveBase, -0.25, 0, 0, true).withTimeout(1.5)
+                        .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
+                                .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))))
+                .andThen(aimOnce(() -> Rotation2d.fromDegrees(18)).andThen(
+                        new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
                                 .alongWith(new WaitCommand(2).andThen(
                                         new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
-                                .alongWith(new RotatePivotCommand(pivot, 40)))
-                .withTimeout(5).andThen(new RotatePivotCommand(pivot, 0).withTimeout(1))
-                .andThen(new SwerveDriveCommand(driveBase, -1, 0, 0, false).withTimeout(1)
-                        .alongWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
-                                .raceWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)
-                                        .withTimeout(1))))
-                .andThen(aimOnce(() -> Rotation2d.fromDegrees(40)).andThen(
-                        new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
-                                .alongWith(new WaitCommand(2).andThen(
-                                        new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
-                                .alongWith(new RotatePivotCommand(pivot, 40)))
+                                .alongWith(new RotatePivotCommand(pivot, 18)))
                         .withTimeout(5));
     }
 
@@ -264,8 +266,11 @@ public class AutoFactory {
     /* Hardcoded one-note auto. (BSU) */
     public Command getScoreAuto() {
         return aimOnce(() -> Rotation2d.fromDegrees(40)).andThen(
-                new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
-                        .alongWith(new WaitCommand(2)
+                new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                        .alongWith(new WaitCommand(2).until(() -> shooter
+                                        .getLowerFlywheelVelocityRPS() > shooter.getSetpoint() * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
+                                        && shooter
+                                                .getUpperFlywheelVelocityRPS() > shooter.getSetpoint() * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(new RotatePivotCommand(pivot, 40)))
                 .withTimeout(5);
@@ -275,29 +280,31 @@ public class AutoFactory {
     public Command getScoreAndDriveAuto() {
         return aimOnce(() -> Rotation2d.fromDegrees(40))
                 .andThen(
-                        new SpinShooterCommand(shooter, -ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                        new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
                                 .alongWith(new WaitCommand(2).andThen(
                                         new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                                 .alongWith(new RotatePivotCommand(pivot, 40)))
-                .withTimeout(5).andThen(new SwerveDriveCommand(driveBase, -1, 0, 0, false).withTimeout(1));
+                .withTimeout(5).andThen(new SwerveDriveCommand(driveBase, -1, 0, 0, true).withTimeout(1));
     }
 
     /* Pickup and score one note. */
     public Command pickupAndScore(Pose2d notePoseBlue, Pose2d scoringPose) {
         Pose2d targetPose = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d();
-        Logger.recordOutput(notePoseBlue.toString(), new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()));
-        Command pickupAndScoreCommand = getPathFindToPoseCommand(new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()))
+        Command pickupAndScoreCommand = aimOnce(() -> new Rotation2d(0)).andThen(getPathFindToPoseCommand(
+                notePoseBlue
+                        .plus(new Transform2d(-FieldConstants.PICKUP_OFFSET, 0, new Rotation2d())))
                 .raceWith(new RotatePivotCommand(pivot, 0))
                 .andThen(new SwerveDriveStopCommand(driveBase))
                 .andThen(getPathFindToPoseCommand(
                         notePoseBlue)
-                        .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)))
+                        .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED))
+                        .raceWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                 .andThen(getPathFindToPoseCommand(() -> scoringPose)
                         .onlyWhile(() -> notePoseBlue.getX() > scoringPose.getX()))
                 .andThen(autoAimOnce()
                         .alongWith(
                                 new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false)))
-                .andThen(aimAndShoot());
+                .andThen(aimAndShoot()));
         return pickupAndScoreCommand;
     }
 

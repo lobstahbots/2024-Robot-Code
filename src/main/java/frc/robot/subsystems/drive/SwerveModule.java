@@ -95,11 +95,6 @@ public class SwerveModule {
   }
 
   /** Sets whether brake mode is enabled. */
-  public void setBrakingMode(IdleMode mode) {
-    io.setDriveBrakeMode(mode);
-    io.setTurnBrakeMode(mode);
-  }
-
   public void setIdleMode(IdleMode mode) {
     io.setDriveIdleMode(mode);
     io.setTurnIdleMode(mode);

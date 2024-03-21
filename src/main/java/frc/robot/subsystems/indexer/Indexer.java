@@ -36,15 +36,25 @@ public class Indexer extends SubsystemBase {
   * returns status of the beam break sensor
   * @return true if beam is broken, false if beam is not broken
   */
-  public boolean beamBroken() {
-    return inputs.beamBroken;
-  }  
+  public boolean intakeBeamBroken() {
+    return inputs.intakeBeamBroken;
+  } 
+  
+  /**
+  * returns status of the beam break sensor
+  * @return true if beam is broken, false if beam is not broken
+  */
+  public boolean flywheelBeamBroken() {
+    return inputs.flywheelBeamBroken;
+  } 
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
     Logger.processInputs("Indexer", inputs);
-    SmartDashboard.putBoolean("Beam Broken", inputs.beamBroken);
+    SmartDashboard.putBoolean("Intake Beam Broken", inputs.intakeBeamBroken);
+    SmartDashboard.putBoolean("Flywheel Beam Broken", inputs.flywheelBeamBroken);
     io.periodic();
   }
 }

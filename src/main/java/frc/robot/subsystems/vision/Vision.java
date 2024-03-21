@@ -18,6 +18,7 @@ public class Vision extends SubsystemBase {
     private final VisionIO io;
     private final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
     private Pose2d robotPose = new Pose2d();
+    private boolean hasSeenTag = false;
     
     public Vision(VisionIO io) {
        this.io = io;
@@ -36,8 +37,9 @@ public class Vision extends SubsystemBase {
 
         Pose2d frontPose = inputs.estimatedFrontPose.toPose2d();
         double frontAmbiguity = Arrays.stream(inputs.frontAmbiguities).average().orElse(1);
-        if (inputs.visibleFrontFiducialIDs.length > 0 && frontAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD) && frontPose.minus(odometryPose).getTranslation().getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
+        if (inputs.visibleFrontFiducialIDs.length > 0 && (!hasSeenTag || frontAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD) && frontPose.minus(odometryPose).getTranslation().getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD)) {
             resolvedFrontPose = frontPose;
+            hasSeenTag = true;
             frontStdev = VisionConstants.BASE_STDEV.times(
                 Math.pow(frontAmbiguity, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with ambiguity
                 * Math.exp(1/inputs.visibleFrontFiducialIDs.length) * Math.pow(inputs.visibleFrontFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
@@ -47,8 +49,9 @@ public class Vision extends SubsystemBase {
 
         Pose2d rearPose = inputs.estimatedRearPose.toPose2d();
         double rearAmbiguity = Arrays.stream(inputs.rearAmbiguities).average().orElse(1);
-        if (inputs.visibleRearFiducialIDs.length > 0 && rearAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD) && rearPose.minus(odometryPose).getTranslation().getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
+        if (inputs.visibleRearFiducialIDs.length > 0 && (!hasSeenTag || rearAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD) && rearPose.minus(odometryPose).getTranslation().getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD)) {
             resolvedRearPose = rearPose;
+            hasSeenTag = true;
             rearStdev = VisionConstants.BASE_STDEV.times(
                 Math.pow(rearAmbiguity, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with ambiguity
                 * Math.exp(1/inputs.visibleRearFiducialIDs.length) * Math.pow(inputs.visibleRearFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags

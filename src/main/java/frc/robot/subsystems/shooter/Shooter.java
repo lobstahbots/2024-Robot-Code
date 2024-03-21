@@ -20,6 +20,7 @@ public class Shooter extends SubsystemBase {
    * @param io The {@link ShooterIO} used to construct the Intake.
    */
     private ShooterIO io;
+    private double desiredSpeed = 0;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
      private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(
     ShooterConstants.KS, ShooterConstants.KV, ShooterConstants.KA
@@ -47,19 +48,32 @@ public class Shooter extends SubsystemBase {
    * @param shooterMotorSpeed
    */
   public void setShooterSpeed(double upperShooterMotorSpeed, double lowerShooterMotorSpeed) {
+    lowerShooterMotorSpeed *= 100;
+    upperShooterMotorSpeed *= 100;
+    desiredSpeed = upperShooterMotorSpeed;
     lowerController.setGoal(lowerShooterMotorSpeed);
     upperController.setGoal(upperShooterMotorSpeed);
+    resetControllerError(upperShooterMotorSpeed, lowerShooterMotorSpeed);
     double pidOutputLower = lowerController.calculate(inputs.lowerShooterMotorVelocity, lowerShooterMotorSpeed);
     double pidOutputUpper = upperController.calculate(inputs.upperShooterMotorVelocity, upperShooterMotorSpeed);
     double feedforwardOutputUpper = feedforward.calculate(upperController.getSetpoint().velocity);
     double feedforwardOutputLower = feedforward.calculate(lowerController.getSetpoint().velocity);
-    io.setShooterSpeed(pidOutputUpper + feedforwardOutputUpper, pidOutputLower + feedforwardOutputLower);
+    double outputUpper = pidOutputUpper + feedforwardOutputUpper;
+    double outputLower = pidOutputLower + feedforwardOutputLower;
+    outputLower = Math.abs(outputLower) * Math.signum(lowerShooterMotorSpeed);
+    outputUpper = Math.abs(outputUpper) * Math.signum(upperShooterMotorSpeed);
+    io.setShooterSpeed(outputUpper, outputLower);
   }
 
+  public void resetControllerError(double upperSpeed, double lowerSpeed) {
+    upperController.reset(upperSpeed);
+    lowerController.reset(lowerSpeed);
+  }
 
-  /** Stops the intake motor. */
+  /** Stops the shooter motor. */
   public void stopMotor() {
     io.stopMotor();
+    desiredSpeed = 0;
   }
 
   public void setIdleMode(NeutralModeValue shooterIdleMode) {
@@ -72,6 +86,10 @@ public class Shooter extends SubsystemBase {
 
   public double getUpperFlywheelVelocityRPS() {
     return inputs.upperShooterMotorVelocity;
+  }
+
+  public double getSetpoint() {
+    return desiredSpeed;
   }
 
   @Override

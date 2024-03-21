@@ -70,9 +70,7 @@ public class TemperatureMonitor {
                 disabled = true;
                 alerts.get(motor.getLabel()).set(true);
             }
-            if (disabled) {
-                motor.setDisabled(true);
-            }
+            motor.setDisabled(disabled);
         }
         if (safe) {
             disabled = false;
