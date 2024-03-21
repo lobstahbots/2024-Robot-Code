@@ -272,8 +272,21 @@ public final class Constants {
     public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
     static {
-      shotAngleMap.put(0.1, 40.0);
-      shotAngleMap.put(8.0, 10.0);
+      shotAngleMap.put(1.04, 40.0);
+      shotAngleMap.put(1.25, 37.0);
+      shotAngleMap.put(1.5, 31.0);
+      shotAngleMap.put(1.75, 27.0);
+      shotAngleMap.put(2.0, 25.0);
+      shotAngleMap.put(2.25, 22.5);
+      shotAngleMap.put(2.5, 20.5);
+      shotAngleMap.put(2.75, 18.25);
+      shotAngleMap.put(2.94, 17.15);
+      shotAngleMap.put(3.15, 15.65);
+      shotAngleMap.put(3.55, 13.75);
+      shotAngleMap.put(3.75, 13.1);
+      shotAngleMap.put(4.0, 12.75);
+      shotAngleMap.put(4.25, 11.8);
+      shotAngleMap.put(4.5, 10.6);
     }
   }
 
@@ -339,10 +352,8 @@ public final class Constants {
         new Pose3d(8.258, 4.109, 0, new Rotation3d()), new Pose3d(8.258, 2.432, 0, new Rotation3d()),
         new Pose3d(8.258, 0.756, 0, new Rotation3d()) };
     public static final double PICKUP_OFFSET = 1;
-    public static final double WING_LINE_X_METERS = 5.8217054;
-    public static final Pose2d[] SHOOTING_POSES = new Pose2d[] {
-        new Pose2d(WING_LINE_X_METERS, 7.004, new Rotation2d()),
-        new Pose2d(WING_LINE_X_METERS, 0.756, new Rotation2d()) };
+    public static final double WING_LINE_X_METERS = 5.8217054 - 1;
+    public static final Pose2d[] SHOOTING_POSES = new Pose2d[]{new Pose2d(WING_LINE_X_METERS, 7.004, new Rotation2d()), new Pose2d(WING_LINE_X_METERS, 0.756, new Rotation2d())};
   }
 
   public static class AlertConstants {
