@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.IndexerConstants.IndexerState;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 
@@ -23,20 +24,19 @@ public class IntakeNoteCommand extends Command {
   /** Creates a new IntakeNoteCommand. */
   public Intake intake;
   public Indexer indexer;
-  public IndexerState indexerState;
 
   public IntakeNoteCommand(Indexer indexer, Intake intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.indexer = indexer;
-    this.indexerState = IndexerState.NoNote;
+    indexer.setIndexerState(IndexerState.NoNote);
     addRequirements(indexer, intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(indexerState == IndexerState.InIndexer) indexerState = IndexerState.NoNote;
+    indexer.setIndexerState(IndexerState.NoNote);
     intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
   }
 
@@ -44,7 +44,7 @@ public class IntakeNoteCommand extends Command {
   @Override
   public void execute() {
     updateIndexerState();
-    switch(indexerState) {
+    switch(indexer.getIndexerState()) {
       case NoNote:
         intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
         indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);
@@ -68,31 +68,31 @@ public class IntakeNoteCommand extends Command {
 
     SmartDashboard.putBoolean("Flywheel Beam Broken", indexer.flywheelBeamBroken());
     SmartDashboard.putBoolean("Intake Beam Broken", indexer.intakeBeamBroken());
-    SmartDashboard.putString("State", indexerState.toString());
+    SmartDashboard.putString("State", indexer.getIndexerState().toString());
   }
 
   private void updateIndexerState() {
         // if (indexer.intakeBeamBroken() && indexer.flywheelBeamBroken()) indexerState = IndexerState.InIndexer;
         // else if (indexer.intakeBeamBroken()) indexerState = IndexerState.MovingInIndexer;
         // else if (indexer.flywheelBeamBroken()) indexerState = IndexerState.InShooter;
-        switch (indexerState) {
+        switch (indexer.getIndexerState()) {
           case NoNote:
-            if(indexer.intakeBeamBroken()) indexerState = IndexerState.MovingInIndexer;
+            if(indexer.intakeBeamBroken()) indexer.setIndexerState(IndexerState.MovingInIndexer);
               break;
             
           case MovingInIndexer:
-            if(!indexer.intakeBeamBroken()) indexerState = IndexerState.InShooter;
+            if(!indexer.intakeBeamBroken()) indexer.setIndexerState(IndexerState.InShooter);
             break;
             
           case InShooter:
-            if(indexer.intakeBeamBroken()) indexerState = IndexerState.InIndexer;
+            if(indexer.intakeBeamBroken()) indexer.setIndexerState(IndexerState.InIndexer);
             break;
           
           case InIndexer:
             break;
 
           default: 
-            indexerState = IndexerState.NoNote;
+            indexer.setIndexerState(IndexerState.NoNote);
             break;
         }
   }
@@ -102,7 +102,7 @@ public class IntakeNoteCommand extends Command {
   public void end(boolean interrupted) {
     SmartDashboard.putBoolean("Flywheel Beam Broken", indexer.flywheelBeamBroken());
     SmartDashboard.putBoolean("Intake Beam Broken", indexer.intakeBeamBroken());
-    SmartDashboard.putString("State", indexerState.toString());
+    SmartDashboard.putString("State", indexer.getIndexerState().toString());
     indexer.stopIndexerMotor();
     intake.stopIntakeMotor();
   }
@@ -110,10 +110,7 @@ public class IntakeNoteCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return indexerState == IndexerState.InIndexer;
+    return indexer.getIndexerState() == IndexerState.InIndexer;
   }
 
-  enum IndexerState {
-    NoNote, MovingInIndexer, InShooter, InIndexer
-  }
 }
