@@ -300,11 +300,9 @@ public class AutoFactory {
                         notePoseBlue)
                         .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED))
                         .raceWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
-                .andThen(getPathFindToPoseCommand(() -> scoringPose)
-                        .onlyWhile(() -> notePoseBlue.getX() > scoringPose.getX()))
-                .andThen(autoAimOnce()
-                        .alongWith(
-                                new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false)))
+                // .andThen(getPathFindToPoseCommand(() -> scoringPose)
+                //         .onlyWhile(() -> notePoseBlue.getX() > scoringPose.getX()))
+                .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false, true))
                 .andThen(aimAndShoot()));
         return pickupAndScoreCommand;
     }

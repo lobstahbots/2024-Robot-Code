@@ -160,7 +160,7 @@ public final class Constants {
     public static final double KA = 0.1;
     public static final double KV = 0.1;
 
-    public static final double DRIVING_ENCODER_POSITION_CONVERSION_FACTOR = RobotConstants.WHEEL_DIAMETER * Math.PI;
+    public static final double DRIVING_ENCODER_POSITION_CONVERSION_FACTOR = 1;
     public static final double DRIVING_ENCODER_VELOCITY_CONVERSION_FACTOR = DRIVING_ENCODER_POSITION_CONVERSION_FACTOR
         / 60.0;
     public static final double TURNING_ENCODER_POSITION_CONVERSION_FACTOR = (2 * Math.PI);
@@ -196,8 +196,8 @@ public final class Constants {
   }
 
   public static class ShooterConstants {
-    public static final double SHOOTER_SPEED = 1;
-    public static final double UNSHOOTER_SPEED = -0.5;
+    public static final double SHOOTER_SPEED = -1;
+    public static final double UNSHOOTER_SPEED = 0.5;
     public static final double SPIN_UP_SPEED = 0;
     public static final double AMP_SPEED = 0.175;
     public static final int UPPER_SHOOTER_ID = 5;
@@ -272,8 +272,9 @@ public final class Constants {
     public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
     static {
-      shotAngleMap.put(0.1, 40.0);
-      shotAngleMap.put(8.0, 10.0);
+      shotAngleMap.put(1.0, 40.0);
+      shotAngleMap.put(3.0, 20.0);
+      shotAngleMap.put(6.0, 10.0);
     }
   }
 
@@ -312,7 +313,10 @@ public final class Constants {
     public static final int INDEXER_MOTOR_ID = 44;
     public static final double FAST_INDEXER_MOTOR_SPEED = -0.9;
     public static final double SLOW_INDEXER_MOTOR_SPEED = 1;
-    public static final double DEBOUNCE_TIME = 0.1;
+    public static final double DEBOUNCE_TIME = 0;
+    public enum IndexerState {
+      NoNote, MovingInIndexer, InShooter, InIndexer
+    }
   }
 
   public static class TempConstants {
