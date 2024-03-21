@@ -290,9 +290,8 @@ public class AutoFactory {
     /* Pickup and score one note. */
     public Command pickupAndScore(Pose2d notePoseBlue, Pose2d scoringPose) {
         Pose2d targetPose = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d();
-        Command pickupAndScoreCommand = aimOnce(() -> new Rotation2d(0)).andThen(getPathFindToPoseCommand(
-                notePoseBlue
-                        .plus(new Transform2d(-FieldConstants.PICKUP_OFFSET, 0, new Rotation2d())))
+        Logger.recordOutput(notePoseBlue.toString(), new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()));
+        Command pickupAndScoreCommand = getPathFindToPoseCommand(new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()))
                 .raceWith(new RotatePivotCommand(pivot, 0))
                 .andThen(new SwerveDriveStopCommand(driveBase))
                 .andThen(getPathFindToPoseCommand(
@@ -304,7 +303,7 @@ public class AutoFactory {
                 .andThen(autoAimOnce()
                         .alongWith(
                                 new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false)))
-                .andThen(aimAndShoot()));
+                .andThen(aimAndShoot());
         return pickupAndScoreCommand;
     }
 

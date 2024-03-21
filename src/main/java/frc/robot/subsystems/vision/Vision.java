@@ -19,14 +19,16 @@ public class Vision extends SubsystemBase {
     private final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
     private Pose2d robotPose = new Pose2d();
     private boolean hasSeenTag = false;
-    
+
     public Vision(VisionIO io) {
-       this.io = io;
+        this.io = io;
     }
 
     /**
      * Get the estimated pose from both cameras.
-     * @param odometryPose The current pose returned by the robot odometry to filter the vision estimate in comparison to.
+     * 
+     * @param odometryPose The current pose returned by the robot odometry to filter
+     *                     the vision estimate in comparison to.
      * @return The estimated pose.
      */
     public Poses getEstimatedPose(Pose2d odometryPose) {
@@ -37,49 +39,62 @@ public class Vision extends SubsystemBase {
 
         Pose2d frontPose = inputs.estimatedFrontPose.toPose2d();
         double frontAmbiguity = Arrays.stream(inputs.frontAmbiguities).average().orElse(1);
-        if (inputs.visibleFrontFiducialIDs.length > 0 && (!hasSeenTag || frontAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD) && frontPose.minus(odometryPose).getTranslation().getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD)) {
+        if (inputs.visibleFrontFiducialIDs.length > 0
+                && (!hasSeenTag || frontAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD)
+                        && frontPose.minus(odometryPose).getTranslation()
+                                .getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD)) {
             resolvedFrontPose = frontPose;
             hasSeenTag = true;
-            frontStdev = VisionConstants.BASE_STDEV.times(
-                Math.pow(frontAmbiguity, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with ambiguity
-                * Math.exp(1/inputs.visibleFrontFiducialIDs.length) * Math.pow(inputs.visibleFrontFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
-                * Math.pow(inputs.frontTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE) * Math.log(2) / Math.log(inputs.frontTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
-            );
+            frontStdev = VisionConstants.BASE_STDEV
+                    .times(Math.pow(frontAmbiguity, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with ambiguity
+                            * Math.exp(1 / inputs.visibleFrontFiducialIDs.length)
+                            * Math.pow(inputs.visibleFrontFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
+                            * Math.pow(inputs.frontTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE)
+                            * Math.log(2) / Math.log(inputs.frontTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
+                    );
         }
 
         Pose2d rearPose = inputs.estimatedRearPose.toPose2d();
         double rearAmbiguity = Arrays.stream(inputs.rearAmbiguities).average().orElse(1);
-        if (inputs.visibleRearFiducialIDs.length > 0 && (!hasSeenTag || rearAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD) && rearPose.minus(odometryPose).getTranslation().getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD)) {
+        if (inputs.visibleRearFiducialIDs.length > 0
+                && (!hasSeenTag || rearAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD)
+                        && rearPose.minus(odometryPose).getTranslation()
+                                .getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD)) {
             resolvedRearPose = rearPose;
             hasSeenTag = true;
-            rearStdev = VisionConstants.BASE_STDEV.times(
-                Math.pow(rearAmbiguity, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with ambiguity
-                * Math.exp(1/inputs.visibleRearFiducialIDs.length) * Math.pow(inputs.visibleRearFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
-                * Math.pow(inputs.rearTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE) * Math.log(2) / Math.log(inputs.rearTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
+            rearStdev = VisionConstants.BASE_STDEV.times(Math.pow(rearAmbiguity, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with ambiguity
+                    * Math.exp(1 / inputs.visibleRearFiducialIDs.length)
+                    * Math.pow(inputs.visibleRearFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
+                    * Math.pow(inputs.rearTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE) * Math.log(2)
+                    / Math.log(inputs.rearTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
             );
         }
 
-        return new Poses(Optional.ofNullable(resolvedFrontPose), Optional.ofNullable(resolvedRearPose), Optional.ofNullable(frontStdev), Optional.ofNullable(rearStdev));
+        return new Poses(Optional.ofNullable(resolvedFrontPose), Optional.ofNullable(resolvedRearPose),
+                Optional.ofNullable(frontStdev), Optional.ofNullable(rearStdev));
     }
 
     /**
      * Get the timestamp of the front pose capture.
+     * 
      * @return The latest timestamp.
      */
     public double getFrontTimestamp() {
-        return inputs.estimatedFrontPoseTimestamp ;
+        return inputs.estimatedFrontPoseTimestamp;
     }
 
     /**
      * Get the timestamp of the rear pose capture.
+     * 
      * @return The latest timestamp.
      */
     public double getRearTimestamp() {
-        return inputs.estimatedRearPoseTimestamp ;
+        return inputs.estimatedRearPoseTimestamp;
     }
 
     /**
      * Get the tracked targets from the front camera.
+     * 
      * @return The tracked targets.
      */
 
@@ -89,6 +104,7 @@ public class Vision extends SubsystemBase {
 
     /**
      * Get the tracked targets from the rear camera.
+     * 
      * @return The tracked targets.
      */
     public List<PhotonTrackedTarget> getRearTargets() {
@@ -97,6 +113,7 @@ public class Vision extends SubsystemBase {
 
     /**
      * Get the fiducial IDs of the targets in the front camera.
+     * 
      * @return A list of the IDs.
      */
     public int[] getFrontFiducialIDs() {
@@ -105,6 +122,7 @@ public class Vision extends SubsystemBase {
 
     /**
      * Get the fiducial IDs of the targets in the rear camera.
+     * 
      * @return A list of the IDs.
      */
     public int[] getRearFiducialIDs() {
@@ -114,9 +132,11 @@ public class Vision extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs, new Pose3d(robotPose));
         Logger.processInputs("PhotonVision", inputs);
+        io.periodic();
     }
 
-    public record Poses(Optional<Pose2d> frontPose, Optional<Pose2d> rearPose, Optional<Vector<N3>> frontStdev, Optional<Vector<N3>> rearStdev) {};
+    public record Poses(Optional<Pose2d> frontPose, Optional<Pose2d> rearPose, Optional<Vector<N3>> frontStdev,
+            Optional<Vector<N3>> rearStdev) {};
 
     public void update(Pose2d robotPose) {
         this.robotPose = robotPose;

@@ -352,10 +352,8 @@ public final class Constants {
         new Pose3d(8.258, 4.109, 0, new Rotation3d()), new Pose3d(8.258, 2.432, 0, new Rotation3d()),
         new Pose3d(8.258, 0.756, 0, new Rotation3d()) };
     public static final double PICKUP_OFFSET = 1;
-    public static final double WING_LINE_X_METERS = 5.8217054;
-    public static final Pose2d[] SHOOTING_POSES = new Pose2d[] {
-        new Pose2d(WING_LINE_X_METERS, 7.004, new Rotation2d()),
-        new Pose2d(WING_LINE_X_METERS, 0.756, new Rotation2d()) };
+    public static final double WING_LINE_X_METERS = 5.8217054 - 1;
+    public static final Pose2d[] SHOOTING_POSES = new Pose2d[]{new Pose2d(WING_LINE_X_METERS, 7.004, new Rotation2d()), new Pose2d(WING_LINE_X_METERS, 0.756, new Rotation2d())};
   }
 
   public static class AlertConstants {
