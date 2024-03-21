@@ -56,6 +56,7 @@ import java.util.Map;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -257,11 +258,11 @@ public class RobotContainer {
                                                 .alongWith(new SpinIndexerCommand(indexer,
                                                                 IndexerConstants.FAST_INDEXER_MOTOR_SPEED))
                                                 .alongWith(new RotatePivotCommand(pivot, 0)));
-                intakeButton.onTrue(
-                                new IntakeNoteCommand(indexer, intake).alongWith(new RotatePivotCommand(pivot, 0)));
+                intakeButton.whileTrue(
+                                new IntakeNoteCommand(indexer, intake).alongWith(new RotatePivotCommand(pivot, 0)).finallyDo(() -> driverJoystick.setRumble(RumbleType.kBothRumble, 1)).repeatedly().withTimeout(10));
                 indexButton.whileTrue(new PeriodicConditionalCommand(
                                 new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
-                                new SpinIndexerCommand(indexer, 0),
+                                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                                 () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
                                                 * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
                                                 && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
