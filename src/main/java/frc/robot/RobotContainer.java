@@ -85,6 +85,9 @@ public class RobotContainer {
         private final JoystickButton intakeButton = new JoystickButton(driverJoystick,
                         DriverIOConstants.INTAKE_BUTTON_ID);
 
+        // Driver shooter
+        private final JoystickButton driverIndexButton = new JoystickButton(driverJoystick, DriverIOConstants.INDEX_BUTTON);
+
         // Operator intake override
         private final POVButton intakeOverrideButton = new POVButton(driverJoystick,
                         OperatorIOConstants.INTAKE_OVERRIDE_POV_ANGLE);
@@ -261,6 +264,13 @@ public class RobotContainer {
                 intakeButton.whileTrue(
                                 new IntakeNoteCommand(indexer, intake).alongWith(new RotatePivotCommand(pivot, 0)).finallyDo(() -> driverJoystick.setRumble(RumbleType.kBothRumble, 1)).repeatedly().withTimeout(10));
                 indexButton.whileTrue(new PeriodicConditionalCommand(
+                                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                                () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
+                                                * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
+                                                && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
+                                                                * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR));
+                driverIndexButton.whileTrue(new PeriodicConditionalCommand(
                                 new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                                 new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                                 () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()

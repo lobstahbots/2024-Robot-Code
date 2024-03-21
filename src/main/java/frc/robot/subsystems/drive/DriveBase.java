@@ -19,6 +19,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -145,7 +146,7 @@ public class DriveBase extends CharacterizableSubsystem {
 public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
   ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
   Logger.recordOutput("Unoptimized:", DriveConstants.KINEMATICS.toSwerveModuleStates(discreteSpeeds));
-  swerveSetpoint = setpointGenerator.generateSetpoint(DriveConstants.MODULE_LIMITS, new SwerveSetpoint(discreteSpeeds, DriveConstants.KINEMATICS.toSwerveModuleStates(discreteSpeeds)), discreteSpeeds, SimConstants.LOOP_TIME);
+  swerveSetpoint = setpointGenerator.generateSetpoint(DriveConstants.MODULE_LIMITS, new SwerveSetpoint(chassisSpeeds, DriveConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds)), discreteSpeeds, SimConstants.LOOP_TIME);
   SwerveDriveKinematics.desaturateWheelSpeeds(swerveSetpoint.moduleStates, DriveConstants.MAX_DRIVE_SPEED);
   setModuleStates(swerveSetpoint.moduleStates);
 }
@@ -245,6 +246,11 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
   @Override
   public void periodic() {
 
+  if(!hasSeenTag) {
+    resetPose(new Pose2d(1.06, 5.47, new Rotation2d()));
+    hasSeenTag = true;
+    visionLessOdometry.resetPosition(new Rotation2d(), getPositions(), new Pose2d(1.06, 5.47, new Rotation2d()));
+  }
     if (Robot.isSimulation()) {
       var twist = DriveConstants.KINEMATICS.toTwist2d(getPositions());
       simRotation = gyroInputs.yawPosition.plus(Rotation2d.fromDegrees(twist.dtheta));
@@ -253,21 +259,27 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
       visionLessOdometry.update(simRotation, getPositions());
       photonVision.update(getPose());
     } else {
-      swerveOdometry.update(gyroInputs.yawPosition, getPositions());
+      swerveOdometry.updateWithTime(Timer.getFPGATimestamp(), gyroInputs.yawPosition, getPositions());
+      visionLessOdometry.updateWithTime(Timer.getFPGATimestamp(), gyroInputs.yawPosition, getPositions());
     }
     SmartDashboard.putBoolean("Has seen tag", hasSeenTag);
     Poses estimatedPoses = photonVision.getEstimatedPose(getPose());
     if (estimatedPoses.frontPose().isPresent() && estimatedPoses.frontStdev().isPresent()) {
         if(!hasSeenTag) {
-          resetPose(new Pose2d(estimatedPoses.frontPose().get().getX(), estimatedPoses.frontPose().get().getY(), getGyroAngle()));
-          hasSeenTag = true;
+          // resetPose(new Pose2d(estimatedPoses.frontPose().get().getX(), estimatedPoses.frontPose().get().getY(), getGyroAngle()));
+          // resetPose(new Pose2d(1.06, 5.47, new Rotation2d()));
+          // hasSeenTag = true;
         }
+        Logger.recordOutput("FrontPose", estimatedPoses.frontPose().get());
+        Logger.recordOutput("FrontStdev", estimatedPoses.frontStdev().toString());
         swerveOdometry.addVisionMeasurement(estimatedPoses.frontPose().get(), photonVision.getFrontTimestamp(), estimatedPoses.frontStdev().get());
      } if (estimatedPoses.rearPose().isPresent() && estimatedPoses.rearStdev().isPresent()) {
         if(!hasSeenTag) {
-            resetPose(new Pose2d(estimatedPoses.rearPose().get().getX(), estimatedPoses.rearPose().get().getY(), getGyroAngle()));
-            hasSeenTag = true;
+            // resetPose(new Pose2d(estimatedPoses.rearPose().get().getX(), estimatedPoses.rearPose().get().getY(), getGyroAngle()));
+            // hasSeenTag = true;
           } 
+        Logger.recordOutput("RearPose", estimatedPoses.rearPose().get());
+        Logger.recordOutput("RearStdev", estimatedPoses.rearStdev().toString());
         swerveOdometry.addVisionMeasurement(estimatedPoses.rearPose().get(), photonVision.getRearTimestamp(), estimatedPoses.rearStdev().get());
      }
      field.setRobotPose(getPose());

@@ -63,6 +63,7 @@ public final class Constants {
       public static final int ALIGN_TO_SOURCE_BUTTON_ID = 2;
       public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 3;
       public static final int INTAKE_BUTTON_ID = 5;
+      public static final int INDEX_BUTTON = 7;
     }
     public static class OperatorIOConstants {
       public static final int OPERATOR_CONTROLLER_PORT = 1;
@@ -92,7 +93,7 @@ public final class Constants {
 
   public static class DriveConstants {
     public static final double MAX_ACCELERATION = 3;
-    public static final double MAX_DRIVE_SPEED = 4;
+    public static final double MAX_DRIVE_SPEED = 10;
     public static final double MAX_ANGULAR_SPEED = MAX_DRIVE_SPEED / RobotConstants.RADIUS;
     public static final double SLOWDOWN_PERCENT = 0.5;
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
@@ -114,7 +115,7 @@ public final class Constants {
     public static final double PATH_MAX_ACCEL = 3;
     public static final double PATH_MAX_VELOCITY = 3;
 
-    public static final double TURN_KP = 1;
+    public static final double TURN_KP = 2;
     public static final double TURN_KI = 0;
     public static final double TURN_KD = 0;
 
@@ -179,7 +180,7 @@ public final class Constants {
 
     public static final double TURN_PID_MIN_OUTPUT = -2 * Math.PI;
     public static final double TURN_PID_MAX_OUTPUT = 2 * Math.PI;
-    public static final double TURN_PID_P = 1;
+    public static final double TURN_PID_P = 2;
     public static final double TURN_PID_I = 0;
     public static final double TURN_PID_D = 0;
     public static final double TURN_PID_FF = 0;
@@ -199,7 +200,7 @@ public final class Constants {
     public static final double SHOOTER_SPEED = -1;
     public static final double UNSHOOTER_SPEED = 0.5;
     public static final double SPIN_UP_SPEED = 0;
-    public static final double AMP_SPEED = 0.175;
+    public static final double AMP_SPEED = -0.175;
     public static final int UPPER_SHOOTER_ID = 5;
     public static final int LOWER_SHOOTER_ID = 32;
     public static final double CURRENT_LIMIT = 40;
@@ -267,7 +268,7 @@ public final class Constants {
     public static final double MAX_PIVOT_ERROR = 5;
     public static final double AMP_ANGLE_SETPOINT = 115;
     public static final double SOURCE_PICKUP_ANGLE_SETPOINT = 115;
-    public static final double SUBWOOFER_ANGLE_SETPOINT = 40;
+    public static final double SUBWOOFER_ANGLE_SETPOINT = 38;
     public static final double GROUND_PICKUP_ANGLE = 0;
     public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
@@ -313,7 +314,7 @@ public final class Constants {
     public static final int INDEXER_MOTOR_ID = 44;
     public static final double FAST_INDEXER_MOTOR_SPEED = -0.9;
     public static final double SLOW_INDEXER_MOTOR_SPEED = 1;
-    public static final double DEBOUNCE_TIME = 0;
+    public static final double DEBOUNCE_TIME = 0.1;
     public enum IndexerState {
       NoNote, MovingInIndexer, InShooter, InIndexer
     }
