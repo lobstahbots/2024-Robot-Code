@@ -18,7 +18,6 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
@@ -72,11 +71,11 @@ public class AutoFactory {
                 driveBase::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 driveBase::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
-                        new PIDConstants(0.1, 0.0, 0), // Translation PID constants
+                        new PIDConstants(0.5, 0.0, 0), // Translation PID constants
                         new PIDConstants(0.1, 0.0, 0), // Rotation PID constants
                         4.5, // Max module speed, in m/s
                         0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-                        new ReplanningConfig(true, true) // Default path replanning config. See the API for the options
+                        new ReplanningConfig(true, false) // Default path replanning config. See the API for the options
                 ),
                 () -> {
                     return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
@@ -286,9 +285,8 @@ public class AutoFactory {
     /* Pickup and score one note. */
     public Command pickupAndScore(Pose2d notePoseBlue, Pose2d scoringPose) {
         Pose2d targetPose = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d();
-        Command pickupAndScoreCommand = getPathFindToPoseCommand(
-                notePoseBlue
-                        .plus(new Transform2d(-FieldConstants.PICKUP_OFFSET, 0, new Rotation2d())))
+        Logger.recordOutput(notePoseBlue.toString(), new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()));
+        Command pickupAndScoreCommand = getPathFindToPoseCommand(new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()))
                 .raceWith(new RotatePivotCommand(pivot, 0))
                 .andThen(new SwerveDriveStopCommand(driveBase))
                 .andThen(getPathFindToPoseCommand(
