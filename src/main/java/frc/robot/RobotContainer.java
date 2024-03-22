@@ -98,8 +98,10 @@ public class RobotContainer {
         // Indexer
         private final JoystickButton outtakeButton = new JoystickButton(operatorJoystick,
                         OperatorIOConstants.OUTTAKE_BUTTON_ID);
-        private final JoystickButton indexButton = new JoystickButton(operatorJoystick,
+        private final JoystickButton operatorIndexButton = new JoystickButton(operatorJoystick,
                         OperatorIOConstants.INDEXER_BUTTON_ID);
+        private final JoystickButton driveIndexButton = new JoystickButton(driverJoystick,
+                        DriverIOConstants.INDEXER_BUTTON_ID);
 
         // Arm setpoints
         private final POVButton subwooferButton = new POVButton(operatorJoystick,
@@ -259,8 +261,17 @@ public class RobotContainer {
                                                                 IndexerConstants.FAST_INDEXER_MOTOR_SPEED))
                                                 .alongWith(new RotatePivotCommand(pivot, 0)));
                 intakeButton.whileTrue(
-                                new IntakeNoteCommand(indexer, intake).alongWith(new RotatePivotCommand(pivot, 0)).finallyDo(() -> driverJoystick.setRumble(RumbleType.kBothRumble, 1)).repeatedly().withTimeout(10));
-                indexButton.whileTrue(new PeriodicConditionalCommand(
+                                new IntakeNoteCommand(indexer, intake).alongWith(new RotatePivotCommand(pivot, 0))
+                                                .finallyDo(() -> driverJoystick.setRumble(RumbleType.kBothRumble, 1))
+                                                .repeatedly().withTimeout(10));
+                driveIndexButton.whileTrue(new PeriodicConditionalCommand(
+                                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                                () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
+                                                * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
+                                                && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
+                                                                * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR));
+                operatorIndexButton.whileTrue(new PeriodicConditionalCommand(
                                 new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                                 new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                                 () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
