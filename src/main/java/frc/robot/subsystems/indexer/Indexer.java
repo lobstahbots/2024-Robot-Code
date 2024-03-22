@@ -8,12 +8,14 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IndexerConstants.IndexerState;
 
 public class Indexer extends SubsystemBase {
   /** Creates a new indexer. */
 
   private IndexerIO io;
   private final IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
+  private IndexerState indexerState = IndexerState.NoNote;
 
   public Indexer(IndexerIO io) {
     this.io = io;
@@ -48,6 +50,14 @@ public class Indexer extends SubsystemBase {
     return inputs.flywheelBeamBroken;
   } 
 
+  public void setIndexerState(IndexerState newState) {
+    indexerState = newState;
+  }
+
+  public IndexerState getIndexerState() {
+    return indexerState;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -55,6 +65,7 @@ public class Indexer extends SubsystemBase {
     Logger.processInputs("Indexer", inputs);
     SmartDashboard.putBoolean("Intake Beam Broken", inputs.intakeBeamBroken);
     SmartDashboard.putBoolean("Flywheel Beam Broken", inputs.flywheelBeamBroken);
+    SmartDashboard.putString("State", indexerState.toString());
     io.periodic();
   }
 }

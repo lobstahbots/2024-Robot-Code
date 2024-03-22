@@ -63,6 +63,7 @@ public final class Constants {
       public static final int ALIGN_TO_SOURCE_BUTTON_ID = 2;
       public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 3;
       public static final int INTAKE_BUTTON_ID = 5;
+      public static final int INDEXER_BUTTON_ID = 7;
     }
     public static class OperatorIOConstants {
       public static final int OPERATOR_CONTROLLER_PORT = 1;
@@ -160,7 +161,7 @@ public final class Constants {
     public static final double KA = 0.1;
     public static final double KV = 0.1;
 
-    public static final double DRIVING_ENCODER_POSITION_CONVERSION_FACTOR = RobotConstants.WHEEL_DIAMETER * Math.PI;
+    public static final double DRIVING_ENCODER_POSITION_CONVERSION_FACTOR = 1;
     public static final double DRIVING_ENCODER_VELOCITY_CONVERSION_FACTOR = DRIVING_ENCODER_POSITION_CONVERSION_FACTOR
         / 60.0;
     public static final double TURNING_ENCODER_POSITION_CONVERSION_FACTOR = (2 * Math.PI);
@@ -196,8 +197,8 @@ public final class Constants {
   }
 
   public static class ShooterConstants {
-    public static final double SHOOTER_SPEED = 1;
-    public static final double UNSHOOTER_SPEED = -0.5;
+    public static final double SHOOTER_SPEED = -1;
+    public static final double UNSHOOTER_SPEED = 0.5;
     public static final double SPIN_UP_SPEED = 0;
     public static final double AMP_SPEED = 0.175;
     public static final int UPPER_SHOOTER_ID = 5;
@@ -325,7 +326,10 @@ public final class Constants {
     public static final int INDEXER_MOTOR_ID = 44;
     public static final double FAST_INDEXER_MOTOR_SPEED = -0.9;
     public static final double SLOW_INDEXER_MOTOR_SPEED = 1;
-    public static final double DEBOUNCE_TIME = 0.1;
+    public static final double DEBOUNCE_TIME = 0;
+    public enum IndexerState {
+      NoNote, MovingInIndexer, InShooter, InIndexer
+    }
   }
 
   public static class TempConstants {

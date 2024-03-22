@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.subsystems.drive.DriveBase;
-import stl.math.LobstahMath;
 
 public class TurnToAngleCommand extends Command {
   public final DriveBase driveBase;
@@ -70,7 +69,7 @@ public class TurnToAngleCommand extends Command {
    * Gets the error between current gyro angle and the desired angle.
    */
   private double getError() {
-    return driveBase.getGyroAngle().getRadians() - LobstahMath.flipRotation(desiredRotation.get()).getRadians();
+    return driveBase.getGyroAngle().getRadians() - desiredRotation.get().getRadians();
   }
 
   @Override
@@ -80,9 +79,9 @@ public class TurnToAngleCommand extends Command {
 
   @Override
   public void execute() {
-    Logger.recordOutput("Desired angle", new Pose2d(driveBase.getPose().getTranslation(), LobstahMath.flipRotation(desiredRotation.get())));
-    pidController.setSetpoint(LobstahMath.flipRotation(desiredRotation.get()).getRadians());
-    double turnOutput = pidController.calculate(driveBase.getGyroAngle().getRadians(), LobstahMath.flipRotation(desiredRotation.get()).getRadians());
+    Logger.recordOutput("Desired angle", new Pose2d(driveBase.getPose().getTranslation(), desiredRotation.get()));
+    pidController.setSetpoint(desiredRotation.get().getRadians());
+    double turnOutput = pidController.calculate(driveBase.getGyroAngle().getRadians(), desiredRotation.get().getRadians());
     if (fieldCentric.getAsBoolean()) {
       double linearMagnitude = MathUtil.applyDeadband(
           Math.hypot(strafeXSupplier.getAsDouble(), strafeYSupplier.getAsDouble()), IOConstants.JOYSTICK_DEADBAND);
@@ -111,6 +110,7 @@ public class TurnToAngleCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.println("end? " + end + "and... " + MathUtil.applyDeadband(getError(), DriveConstants.TURN_DEADBAND));
     return end && MathUtil.applyDeadband(getError(), DriveConstants.TURN_DEADBAND) == 0;
   }
 }

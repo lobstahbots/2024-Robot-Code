@@ -30,16 +30,17 @@ public class TurnToPointCommand extends TurnToAngleCommand {
   }
 
   /**
-   * Creates a TurnToPointCommand to turn to face a certain point.
+  * Creates a TurnToPointCommand to turn to face a certain point.
    * @param robotPoseSupplier A supplier of the current robot position
    * @param desiredPose The desired point we want to turn to
    * @param driveBase The subsystem to control
-   * @param strafeXSupplier Supplier for the X component of the robot translation.
-   * @param strafeYSupplier Supplier for the Y component of the robot translation.
+   * @param strafeX The X component of the robot translation.
+   * @param strafeY The Y component of the robot translation.
    * @param fieldCentric Whether the robot drives field centric. Does not affect rotation.
    */
-  public TurnToPointCommand(DriveBase driveBase, Supplier<Pose2d> robotPoseSupplier, Pose2d desiredPose, DoubleSupplier strafeXSupplier, DoubleSupplier strafeYSupplier, BooleanSupplier fieldCentric) {
-    this(driveBase, robotPoseSupplier, desiredPose, strafeXSupplier, strafeYSupplier, fieldCentric, false);
+  public TurnToPointCommand(DriveBase driveBase, Supplier<Pose2d> robotPoseSupplier, Pose2d desiredPose, double strafeX, double strafeY, boolean fieldCentric) {
+    super(driveBase, () -> robotPoseSupplier.get().getTranslation().minus(AlliancePoseMirror.mirrorPose2d(desiredPose).getTranslation()).getAngle(), () -> strafeX, () -> strafeY, () -> fieldCentric);
+    Logger.recordOutput("Pose", (desiredPose));
   }
 
   /**
@@ -51,8 +52,8 @@ public class TurnToPointCommand extends TurnToAngleCommand {
    * @param strafeY The Y component of the robot translation.
    * @param fieldCentric Whether the robot drives field centric. Does not affect rotation.
    */
-  public TurnToPointCommand(DriveBase driveBase, Supplier<Pose2d> robotPoseSupplier, Pose2d desiredPose, double strafeX, double strafeY, boolean fieldCentric) {
-    super(driveBase, () -> robotPoseSupplier.get().getTranslation().minus(AlliancePoseMirror.mirrorPose2d(desiredPose).getTranslation()).getAngle(), () -> strafeX, () -> strafeY, () -> fieldCentric, true);
+  public TurnToPointCommand(DriveBase driveBase, Supplier<Pose2d> robotPoseSupplier, Pose2d desiredPose, double strafeX, double strafeY, boolean fieldCentric, boolean end) {
+    super(driveBase, () -> robotPoseSupplier.get().getTranslation().minus(AlliancePoseMirror.mirrorPose2d(desiredPose).getTranslation()).getAngle(), () -> strafeX, () -> strafeY, () -> fieldCentric, end);
     Logger.recordOutput("Pose", (desiredPose));
   }
 }

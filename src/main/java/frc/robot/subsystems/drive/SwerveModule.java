@@ -107,7 +107,7 @@ public class SwerveModule {
 
   /** Returns the current drive position of the module in meters. */
   public double getPositionMeters() {
-    return inputs.drivePosition.getRadians() * RobotConstants.WHEEL_DIAMETER / 2;
+    return inputs.drivePosition.getRotations() *  Math.PI * RobotConstants.WHEEL_DIAMETER / RobotConstants.DRIVE_GEAR_RATIO;
   }
 
   /** Returns the current drive velocity of the module in meters per second. */
