@@ -273,7 +273,7 @@ public final class Constants {
     public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
     static {
-      shotAngleMap.put(1.04, 40.0);
+      shotAngleMap.put(1.00, 40.0);
       shotAngleMap.put(1.25, 37.0);
       shotAngleMap.put(1.5, 31.0);
       shotAngleMap.put(1.75, 27.0);
@@ -326,7 +326,7 @@ public final class Constants {
     public static final int INDEXER_MOTOR_ID = 44;
     public static final double FAST_INDEXER_MOTOR_SPEED = -0.9;
     public static final double SLOW_INDEXER_MOTOR_SPEED = 1;
-    public static final double DEBOUNCE_TIME = 0;
+    public static final double DEBOUNCE_TIME = 0.05;
     public enum IndexerState {
       NoNote, MovingInIndexer, InShooter, InIndexer
     }
