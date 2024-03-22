@@ -26,8 +26,8 @@ public class ShooterIOTalonFX implements ShooterIO {
   public ShooterIOTalonFX(int upperShooterMotorID, int lowerShooterMotorID) {
     this.upperShooterMotor = new MonitoredTalonFX(upperShooterMotorID, "Upper shooter motor");
     this.lowerShooterMotor = new MonitoredTalonFX(lowerShooterMotorID, "Lower shooter motor");
-    this.upperShooterMotor.setInverted(true);
-    this.lowerShooterMotor.setInverted(true);
+    this.upperShooterMotor.setInverted(false );
+    this.lowerShooterMotor.setInverted(false);
     this.upperShooterMotor.setNeutralMode(NeutralModeValue.Coast);
     this.lowerShooterMotor.setNeutralMode(NeutralModeValue.Coast);
     this.upperShooterMotor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(ShooterConstants.CURRENT_LIMIT));
