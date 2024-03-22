@@ -24,6 +24,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.PivotConstants;
@@ -72,11 +73,11 @@ public class AutoFactory {
                 driveBase::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 driveBase::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
-                        new PIDConstants(0.1, 0.0, 0), // Translation PID constants
-                        new PIDConstants(0.1, 0.0, 0), // Rotation PID constants
-                        4.5, // Max module speed, in m/s
+                        new PIDConstants(0.05, 0.0, 0), // Translation PID constants
+                        new PIDConstants(1, 0.0, 0), // Rotation PID constants
+                        1, // Max module speed, in m/s
                         0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-                        new ReplanningConfig(true, true) // Default path replanning config. See the API for the options
+                        new ReplanningConfig(true, false) // Default path replanning config. See the API for the options
                 ),
                 () -> {
                     return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
@@ -248,7 +249,7 @@ public class AutoFactory {
                                 .alongWith(new RotatePivotCommand(pivot, 40)))
                 .withTimeout(5)
                 .andThen(aimOnce(() -> new Rotation2d(0)))
-                .andThen(new SwerveDriveCommand(driveBase, -0.25, 0, 0, true).withTimeout(1.5)
+                .andThen(new SwerveDriveCommand(driveBase, 0.25, 0, 0, true).withTimeout(0.75)
                         .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
                                 .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))))
                 .andThen(aimOnce(() -> Rotation2d.fromDegrees(18)).andThen(

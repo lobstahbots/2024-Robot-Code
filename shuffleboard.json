@@ -320,6 +320,19 @@
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
+          },
+          "11,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Indexer motor",
+              "_title": "Indexer motor",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
@@ -377,6 +390,103 @@
               "imageHeight": -1
             }
           },
+          "0,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Alerts",
+              "_source0": "network_table:///SmartDashboard/Alerts",
+              "_title": "SmartDashboard/Alerts",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,2": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/State",
+              "_title": "SmartDashboard/State",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Has Note",
+              "_title": "/SmartDashboard/Has Note",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "7,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///AdvantageKit/Indexer/IntakeBeamBroken",
+              "_title": "AdvantageKit/Indexer/IntakeBeamBroken",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "9,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///AdvantageKit/Indexer/FlywheelBeamBroken",
+              "_title": "AdvantageKit/Indexer/FlywheelBeamBroken",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "3,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/X",
+              "_title": "/SmartDashboard/X",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "2,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Y",
+              "_title": "/SmartDashboard/Y",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
           "4,3": {
             "size": [
               3,
@@ -384,8 +494,8 @@
             ],
             "content": {
               "_type": "Camera Stream",
-              "_source0": "camera_server://photonvision2_Port_1183_Input_MJPEG_Server",
-              "_title": "photonvision2_Port_1183_Input_MJPEG_Server",
+              "_source0": "camera_server://photonvision2_Port_1190_Output_MJPEG_Server",
+              "_title": "photonvision2_Port_1190_Output_MJPEG_Server",
               "_glyph": 148,
               "_showGlyph": false,
               "Crosshair/Show crosshair": true,
