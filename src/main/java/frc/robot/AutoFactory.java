@@ -301,7 +301,7 @@ public class AutoFactory {
                 // .andThen(getPathFindToPoseCommand(() -> scoringPose)
                 //         .onlyWhile(() -> notePoseBlue.getX() > scoringPose.getX()))
                 .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false, true))
-                .andThen(aimAndShoot()));
+                .andThen(aimAndShoot());
         return pickupAndScoreCommand;
     }
 

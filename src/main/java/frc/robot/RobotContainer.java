@@ -5,7 +5,6 @@
 package frc.robot;
 
 import frc.robot.AutoFactory.CharacterizationRoutine;
-import frc.robot.Constants.AlertConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -29,8 +28,6 @@ import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.TurnToPointCommand;
-import frc.robot.networkalerts.Alert;
-import frc.robot.networkalerts.Alert.AlertType;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -58,10 +55,8 @@ import java.util.List;
 import java.util.Map;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -98,13 +93,13 @@ public class RobotContainer {
     private final JoystickButton unshooterButton = new JoystickButton(operatorJoystick,
             OperatorIOConstants.UNSHOOTER_BUTTON_ID);
 
-        // Indexer
-        private final JoystickButton outtakeButton = new JoystickButton(operatorJoystick,
-                        OperatorIOConstants.OUTTAKE_BUTTON_ID);
-        private final JoystickButton operatorIndexButton = new JoystickButton(operatorJoystick,
-                        OperatorIOConstants.INDEXER_BUTTON_ID);
-        private final JoystickButton driveIndexButton = new JoystickButton(driverJoystick,
-                        DriverIOConstants.INDEXER_BUTTON_ID);
+    // Indexer
+    private final JoystickButton outtakeButton = new JoystickButton(operatorJoystick,
+            OperatorIOConstants.OUTTAKE_BUTTON_ID);
+    private final JoystickButton operatorIndexButton = new JoystickButton(operatorJoystick,
+            OperatorIOConstants.INDEXER_BUTTON_ID);
+    private final JoystickButton driveIndexButton = new JoystickButton(driverJoystick,
+            DriverIOConstants.INDEXER_BUTTON_ID);
 
     // Arm setpoints
     private final POVButton subwooferButton = new POVButton(operatorJoystick, OperatorIOConstants.SUBWOOFER_POV_ANGLE); // UP
@@ -119,22 +114,6 @@ public class RobotContainer {
     private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
             () -> Commands.none());
     private final AutoFactory autoFactory;
-
-    private final Alert endgameAlert1 = new Alert(
-            String.format("Endgame started - %d seconds remaining", AlertConstants.ENDGAME_ALERT_1_TIME),
-            AlertType.INFO,
-            () -> DriverStation.isTeleop() && AlertConstants.ENDGAME_ALERT_2_TIME < DriverStation.getMatchTime()
-                    && DriverStation.getMatchTime() < AlertConstants.ENDGAME_ALERT_1_TIME);
-    private final Alert endgameAlert2 = new Alert(
-            String.format("%d seconds remaining", AlertConstants.ENDGAME_ALERT_2_TIME), AlertType.INFO,
-            () -> DriverStation.isTeleop() && AlertConstants.ENDGAME_ALERT_2_TIME < DriverStation.getMatchTime());
-    private final Alert lowBatteryAlert = new Alert(
-            String.format("Low battery voltage - below %f volts", AlertConstants.LOW_BATTERY_VOLTAGE),
-            AlertType.WARNING, () -> RobotController.getBatteryVoltage() < AlertConstants.LOW_BATTERY_VOLTAGE);
-    private final Alert driverControllerDisconnectedAlert = new Alert("Driver controller disconnected", AlertType.ERROR,
-            this::getDriverDisconnected);
-    private final Alert operatorControllerDisconnectedAlert = new Alert("Operator controller disconnected",
-            AlertType.ERROR, this::getOperatorDisconnected);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -200,109 +179,6 @@ public class RobotContainer {
         return autoChooser.getCommand();
     }
 
-        public void configureButtonBindings() {
-                alignToAmpButton
-                                .whileTrue(new PeriodicConditionalCommand(
-                                                new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT)
-                                                                .alongWith(new SpinShooterCommand(shooter,
-                                                                                ShooterConstants.AMP_SPEED,
-                                                                                ShooterConstants.AMP_SPEED)),
-                                                autoFactory.getPathFindToPoseCommand(
-                                                                FieldConstants.BLUE_ALLIANCE_AMP_POSE2D)
-                                                                .andThen(new TurnToAngleCommand(driveBase,
-                                                                                () -> FieldConstants.BLUE_ALLIANCE_AMP_POSE2D
-                                                                                                .getRotation(),
-                                                                                () -> 0,
-                                                                                () -> 0,
-                                                                                () -> DriveConstants.FIELD_CENTRIC,
-                                                                                true)
-                                                                                .alongWith(new RotatePivotCommand(pivot,
-                                                                                                PivotConstants.AMP_ANGLE_SETPOINT))
-                                                                                .raceWith(
-                                                                                                new SpinShooterCommand(
-                                                                                                                shooter,
-                                                                                                                ShooterConstants.AMP_SPEED,
-                                                                                                                ShooterConstants.AMP_SPEED))),
-                                                autoFactory.isWithinTarget(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D,
-                                                                PathConstants.AMP_ALIGN_DEADBAND)));
-                alignToSourceButton
-                                .whileTrue(new PeriodicConditionalCommand(
-                                                new RotatePivotCommand(pivot,
-                                                                PivotConstants.SOURCE_PICKUP_ANGLE_SETPOINT)
-                                                                .alongWith(new SpinShooterCommand(shooter,
-                                                                                ShooterConstants.UNSHOOTER_SPEED,
-                                                                                ShooterConstants.UNSHOOTER_SPEED)),
-                                                autoFactory.getPathFindToPoseCommand(
-                                                                FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D)
-                                                                .andThen(new TurnToAngleCommand(driveBase,
-                                                                                () -> FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D
-                                                                                                .getRotation(),
-                                                                                () -> 0,
-                                                                                () -> 0,
-                                                                                () -> DriveConstants.FIELD_CENTRIC,
-                                                                                true)
-                                                                                .alongWith(new RotatePivotCommand(pivot,
-                                                                                                PivotConstants.SOURCE_PICKUP_ANGLE_SETPOINT))
-                                                                                .raceWith(new SpinShooterCommand(
-                                                                                                shooter,
-                                                                                                ShooterConstants.UNSHOOTER_SPEED,
-                                                                                                ShooterConstants.UNSHOOTER_SPEED))),
-                                                autoFactory.isWithinTarget(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D,
-                                                                PathConstants.SOURCE_ALIGN_DEADBAND)));
-                alignToSpeakerButton
-                                .whileTrue(new TurnToPointCommand(driveBase, driveBase::getPose,
-                                                FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
-                                                () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
-                                                () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
-                                                () -> DriveConstants.FIELD_CENTRIC, false)
-                                                .alongWith(autoFactory.autoAimHold()));
-                intakeOverrideButton.whileTrue(
-                                new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
-                                                .alongWith(new SpinIndexerCommand(indexer,
-                                                                IndexerConstants.FAST_INDEXER_MOTOR_SPEED))
-                                                .alongWith(new RotatePivotCommand(pivot, 0)));
-                intakeButton.whileTrue(
-                                new IntakeNoteCommand(indexer, intake).alongWith(new RotatePivotCommand(pivot, 0))
-                                                .finallyDo(() -> driverJoystick.setRumble(RumbleType.kBothRumble, 1))
-                                                .repeatedly().withTimeout(10));
-                driveIndexButton.whileTrue(new PeriodicConditionalCommand(
-                                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
-                                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
-                                () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
-                                                * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
-                                                && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
-                                                                * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR));
-                operatorIndexButton.whileTrue(new PeriodicConditionalCommand(
-                                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
-                                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
-                                () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
-                                                * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
-                                                && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
-                                                                * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR));
-                shooterButton
-                                .whileTrue(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED,
-                                                ShooterConstants.SHOOTER_SPEED));
-                unshooterButton.whileTrue(
-                                new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED,
-                                                ShooterConstants.UNSHOOTER_SPEED));
-                ampButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT)
-                                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.AMP_SPEED,
-                                                ShooterConstants.AMP_SPEED)));
-                outtakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.OUTTAKE_SPEED)
-                                .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.SLOW_INDEXER_MOTOR_SPEED)));
-                subwooferButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.SUBWOOFER_ANGLE_SETPOINT)
-                                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED,
-                                                ShooterConstants.SHOOTER_SPEED)));
-                wingButton.whileTrue(new RotatePivotCommand(pivot, 15)
-                                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED,
-                                                ShooterConstants.SHOOTER_SPEED)));
-                podiumButton.whileTrue(new RotatePivotCommand(pivot, 20)
-                                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED,
-                                                ShooterConstants.SHOOTER_SPEED)));
-                sourceButton.whileTrue(new RotatePivotCommand(pivot, 108).alongWith(
-                                new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED,
-                                                ShooterConstants.UNSHOOTER_SPEED)));
-        }
     public void configureButtonBindings() {
         alignToAmpButton.whileTrue(new PeriodicConditionalCommand(
                 new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT).alongWith(
@@ -336,10 +212,18 @@ public class RobotContainer {
         intakeOverrideButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
                 .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))
                 .alongWith(new RotatePivotCommand(pivot, 0)));
-        intakeButton.onTrue(new IntakeNoteCommand(indexer, intake).alongWith(new RotatePivotCommand(pivot, 0)));
-        indexButton.whileTrue(new PeriodicConditionalCommand(
+        intakeButton.whileTrue(new IntakeNoteCommand(indexer, intake).alongWith(new RotatePivotCommand(pivot, 0))
+                .finallyDo(() -> driverJoystick.setRumble(RumbleType.kBothRumble, 1)).repeatedly().withTimeout(10));
+        driveIndexButton.whileTrue(new PeriodicConditionalCommand(
                 new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
-                new SpinIndexerCommand(indexer, 0),
+                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
+                        * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
+                        && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
+                                * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR));
+        operatorIndexButton.whileTrue(new PeriodicConditionalCommand(
+                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                 () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
                         * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
                         && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
@@ -362,15 +246,16 @@ public class RobotContainer {
                 new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED)));
     }
 
-    public boolean getOperatorDisconnected() {
-        return !operatorJoystick.isConnected();
+    public boolean getOperatorConnected() {
+        return operatorJoystick.isConnected();
     }
 
-    public boolean getDriverDisconnected() {
-        return !driverJoystick.isConnected();
+    public boolean getDriverConnected() {
+        return driverJoystick.isConnected();
     }
 
     public void smartDashSetup() {
+
         autoChooser.addRoutine("Characterize",
                 List.of(new AutoQuestion<>("Which Subsystem?", Map.of("DriveBase", driveBase, "Pivot", pivot)),
                         new AutoQuestion<>("Which Routine",
@@ -391,7 +276,7 @@ public class RobotContainer {
                 new AutoQuestion<>("Starting Center Line Note?",
                         Map.of("Midline Left", 0, "Midline Center Left", 1, "Midline Center", 2, "Midline Center Right",
                                 3, "Midline Right (Source Side)", 4)),
-                new AutoQuestion<>("Ending Center Line Note?",
+                new AutoQuestion<>("Starting Center Line Note?",
                         Map.of("-Midline Left", 0, "-Midline Center Left", 1, "-Midline Center", 2,
                                 "-Midline Center Right", 3, "-Midline Right (Source Side)", 4))),
                 autoFactory::getWingAndMidlineAuto);
