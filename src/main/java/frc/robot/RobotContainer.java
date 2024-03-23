@@ -71,7 +71,7 @@ public class RobotContainer {
     private final DriveBase driveBase;
     private final Pivot pivot;
     private final Shooter shooter;
-    private final Indexer indexer = new Indexer(new IndexerSparkMax(IndexerConstants.INDEXER_MOTOR_ID), leds);
+    private final Indexer indexer = new Indexer(new IndexerSparkMax(IndexerConstants.INDEXER_MOTOR_ID));
     private final Intake intake = new Intake(new IntakeIOSparkMax(IntakeConstants.INTAKE_MOTOR_ID));
     private final Joystick driverJoystick = new Joystick(DriverIOConstants.DRIVER_CONTROLLER_PORT);
     private final Joystick operatorJoystick = new Joystick(OperatorIOConstants.OPERATOR_CONTROLLER_PORT);
@@ -247,7 +247,7 @@ public class RobotContainer {
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
         wingButton.whileTrue(new RotatePivotCommand(pivot, 15).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
-        podiumButton.whileTrue(new RotatePivotCommand(pivot, 21).alongWith(
+        podiumButton.whileTrue(new RotatePivotCommand(pivot, 23).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
         sourceButton.whileTrue(new RotatePivotCommand(pivot, 108).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED)));
