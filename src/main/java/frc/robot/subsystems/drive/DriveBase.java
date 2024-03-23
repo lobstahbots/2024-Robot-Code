@@ -261,17 +261,16 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     Poses estimatedPoses = photonVision.getEstimatedPose(getPose());
     if (estimatedPoses.frontPose().isPresent() && estimatedPoses.frontStdev().isPresent()) {
         if(!hasSeenTag) {
-          // resetPose(new Pose2d(estimatedPoses.frontPose().get().getX(), estimatedPoses.frontPose().get().getY(), getGyroAngle()));
-          // resetPose(new Pose2d(1.06, 5.47, new Rotation2d()));
-          // hasSeenTag = true;
+           resetPose(new Pose2d(estimatedPoses.frontPose().get().getX(), estimatedPoses.frontPose().get().getY(), getGyroAngle()));
+           hasSeenTag = true;
         }
         Logger.recordOutput("FrontPose", estimatedPoses.frontPose().get());
         Logger.recordOutput("FrontStdev", estimatedPoses.frontStdev().toString());
         swerveOdometry.addVisionMeasurement(estimatedPoses.frontPose().get(), photonVision.getFrontTimestamp(), estimatedPoses.frontStdev().get());
      } if (estimatedPoses.rearPose().isPresent() && estimatedPoses.rearStdev().isPresent()) {
         if(!hasSeenTag) {
-            // resetPose(new Pose2d(estimatedPoses.rearPose().get().getX(), estimatedPoses.rearPose().get().getY(), getGyroAngle()));
-            // hasSeenTag = true;
+            resetPose(new Pose2d(estimatedPoses.rearPose().get().getX(), estimatedPoses.rearPose().get().getY(), getGyroAngle()));
+            hasSeenTag = true;
           } 
         Logger.recordOutput("RearPose", estimatedPoses.rearPose().get());
         Logger.recordOutput("RearStdev", estimatedPoses.rearStdev().toString());

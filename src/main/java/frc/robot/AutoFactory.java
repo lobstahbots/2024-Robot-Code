@@ -248,7 +248,7 @@ public class AutoFactory {
                                 .alongWith(new RotatePivotCommand(pivot, 40)))
                 .withTimeout(5)
                 .andThen(aimOnce(() -> new Rotation2d(0)))
-                .andThen(new SwerveDriveCommand(driveBase, 0.2, 0, 0, true).withTimeout(2)
+                .andThen(new SwerveDriveCommand(driveBase, 0.2, 0, 0, true).withTimeout(1.5)
                         .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
                                 .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))))
                 .andThen(aimOnce(() -> Rotation2d.fromDegrees(21)).andThen(
@@ -257,6 +257,17 @@ public class AutoFactory {
                                         new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                                 .alongWith(new RotatePivotCommand(pivot, 21)))
                         .withTimeout(5));
+    }
+
+    public Command getInitialPose() {
+        int startingIndex = (int) responses.get().get(0);
+        if(startingIndex == 0) {
+            return new InstantCommand(() -> driveBase.resetPose(AlliancePoseMirror.mirrorPose2d(new Pose2d(0.61, 6.47, driveBase.getGyroAngle()))));
+        } else if (startingIndex == 1) {
+            return new InstantCommand(() -> driveBase.resetPose(AlliancePoseMirror.mirrorPose2d(new Pose2d(1.07, 5.46, driveBase.getGyroAngle()))));
+        } else {
+            return new InstantCommand(() -> driveBase.resetPose(AlliancePoseMirror.mirrorPose2d(new Pose2d(0.51, 4.47, driveBase.getGyroAngle()))));
+        }
     }
 
     /* Hardcoded drive-back auto. (BSU) */

@@ -67,13 +67,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class RobotContainer {
+    private final LEDs leds = new LEDs(new LEDsReal(LEDConstants.LED_PORT, LEDConstants.LED_LENGTH));
     private final DriveBase driveBase;
     private final Pivot pivot;
     private final Shooter shooter;
-    private final Indexer indexer = new Indexer(new IndexerSparkMax(IndexerConstants.INDEXER_MOTOR_ID));;
+    private final Indexer indexer = new Indexer(new IndexerSparkMax(IndexerConstants.INDEXER_MOTOR_ID), leds);
     private final Intake intake = new Intake(new IntakeIOSparkMax(IntakeConstants.INTAKE_MOTOR_ID));
-  private final LEDs leds = new LEDs(new LEDsReal(LEDConstants.LED_PORT, LEDConstants.LED_LENGTH));
-
     private final Joystick driverJoystick = new Joystick(DriverIOConstants.DRIVER_CONTROLLER_PORT);
     private final Joystick operatorJoystick = new Joystick(OperatorIOConstants.OPERATOR_CONTROLLER_PORT);
 
@@ -273,6 +272,7 @@ public class RobotContainer {
                                         CharacterizationRoutine.DYNAMIC_BACKWARD))),
                 autoFactory::getCharacterizationRoutine);
 
+        // autoChooser.addRoutine("Drive", List.of(new AutoQuestion<>("Starting Pose?", Map.of("Angled Amp Side", 0, "Subwoofer Center", 1, "Angled Source Side", 2))), autoFactory::getDriveAuto);
         autoChooser.addRoutine("Drive", List.of(), autoFactory::getDriveAuto);
         autoChooser.addRoutine("Score Preload", List.of(), autoFactory::getScoreAuto);
         autoChooser.addRoutine("Score Preload And Drive", List.of(), autoFactory::getScoreAndDriveAuto);

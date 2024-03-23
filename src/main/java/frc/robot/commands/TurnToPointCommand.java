@@ -12,6 +12,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.subsystems.drive.DriveBase;
+import stl.math.LobstahMath;
 import stl.trajectory.AlliancePoseMirror;
 
 public class TurnToPointCommand extends TurnToAngleCommand {
@@ -25,7 +26,7 @@ public class TurnToPointCommand extends TurnToAngleCommand {
    * @param fieldCentric Whether the robot drives field centric. Does not affect rotation.
    */
   public TurnToPointCommand(DriveBase driveBase, Supplier<Pose2d> robotPoseSupplier, Pose2d desiredPose, DoubleSupplier strafeXSupplier, DoubleSupplier strafeYSupplier, BooleanSupplier fieldCentric, boolean end) {
-    super(driveBase, () -> robotPoseSupplier.get().getTranslation().minus(AlliancePoseMirror.mirrorPose2d(desiredPose).getTranslation()).getAngle(), strafeXSupplier, strafeYSupplier, fieldCentric, end);
+    super(driveBase, () -> LobstahMath.flipRotation(robotPoseSupplier.get().getTranslation().minus(AlliancePoseMirror.mirrorPose2d(desiredPose).getTranslation()).getAngle()), strafeXSupplier, strafeYSupplier, fieldCentric, end);
     Logger.recordOutput("Pose", (desiredPose));
   }
 
@@ -39,7 +40,7 @@ public class TurnToPointCommand extends TurnToAngleCommand {
    * @param fieldCentric Whether the robot drives field centric. Does not affect rotation.
    */
   public TurnToPointCommand(DriveBase driveBase, Supplier<Pose2d> robotPoseSupplier, Pose2d desiredPose, double strafeX, double strafeY, boolean fieldCentric) {
-    super(driveBase, () -> robotPoseSupplier.get().getTranslation().minus(AlliancePoseMirror.mirrorPose2d(desiredPose).getTranslation()).getAngle(), () -> strafeX, () -> strafeY, () -> fieldCentric);
+    super(driveBase, () -> LobstahMath.flipRotation(robotPoseSupplier.get().getTranslation().minus(AlliancePoseMirror.mirrorPose2d(desiredPose).getTranslation()).getAngle()), () -> strafeX, () -> strafeY, () -> fieldCentric);
     Logger.recordOutput("Pose", (desiredPose));
   }
 
@@ -53,7 +54,7 @@ public class TurnToPointCommand extends TurnToAngleCommand {
    * @param fieldCentric Whether the robot drives field centric. Does not affect rotation.
    */
   public TurnToPointCommand(DriveBase driveBase, Supplier<Pose2d> robotPoseSupplier, Pose2d desiredPose, double strafeX, double strafeY, boolean fieldCentric, boolean end) {
-    super(driveBase, () -> robotPoseSupplier.get().getTranslation().minus(AlliancePoseMirror.mirrorPose2d(desiredPose).getTranslation()).getAngle(), () -> strafeX, () -> strafeY, () -> fieldCentric, end);
+    super(driveBase, () -> LobstahMath.flipRotation(robotPoseSupplier.get().getTranslation().minus(AlliancePoseMirror.mirrorPose2d(desiredPose).getTranslation()).getAngle()), () -> strafeX, () -> strafeY, () -> fieldCentric, end);
     Logger.recordOutput("Pose", (desiredPose));
   }
 }
