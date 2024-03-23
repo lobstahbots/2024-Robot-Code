@@ -39,11 +39,11 @@ public class LEDs extends SubsystemBase {
         loadingNotifier.startPeriodic(0.02);
     }
 
-    private void setFMSState(ConnectionState value) { connectionState = value; }
+    public void setFMSState(ConnectionState value) { connectionState = value; }
 
-    private void setAlliance(DriverStation.Alliance value) { alliance = value; }
+    public void setAlliance(DriverStation.Alliance value) { alliance = value; }
 
-    private void setRobotMode(RobotMode value) { 
+    public void setRobotMode(RobotMode value) { 
         if (value == RobotMode.DISABLED && robotMode == RobotMode.AUTONOMOUS
                 && connectionState == ConnectionState.FMS) {
             triggerTeleopCountdown();
@@ -76,46 +76,45 @@ public class LEDs extends SubsystemBase {
 
     public void setLowBattery(boolean value) { lowBattery = value; }
 
-    public void triggerTeleopCountdown() { }
+    private void triggerTeleopCountdown() { }
 
-    public void triggerEndgameSignal() { }
+    private void triggerEndgameSignal() { }
 
     public void periodic() {
         loadingNotifier.stop();
 
-        if (!DriverStation.isDSAttached()) {
-            setFMSState(ConnectionState.DISCONNECTED);
-        } else if (DriverStation.isFMSAttached()) {
-            setFMSState(ConnectionState.FMS);
-            if(DriverStation.getAlliance().isPresent()) {
-                setAlliance(DriverStation.getAlliance().get());
-            }
-        } else {
-            setFMSState(ConnectionState.DS_ONLY);
-        }
+        // if (!DriverStation.isDSAttached()) {
+        //     setFMSState(ConnectionState.DISCONNECTED);
+        // } else if (DriverStation.isFMSAttached()) {
+        //     setFMSState(ConnectionState.FMS);
+        //     if(DriverStation.getAlliance().isPresent()) {
+        //         setAlliance(DriverStation.getAlliance().get());
+        //     }
+        // } else {
+        //     setFMSState(ConnectionState.DS_ONLY);
+        // }
 
-        if (DriverStation.isEStopped()) {
-            setRobotMode(RobotMode.ESTOPPED);
-        } else if (DriverStation.isAutonomousEnabled()) {
-            setRobotMode(RobotMode.AUTONOMOUS);
-        } else if (DriverStation.isTeleopEnabled()) {
-            setRobotMode(RobotMode.TELEOP);
-        } else {
-            setRobotMode(RobotMode.DISABLED);
-        }
+        // if (DriverStation.isEStopped()) {
+        //     setRobotMode(RobotMode.ESTOPPED);
+        // } else if (DriverStation.isAutonomousEnabled()) {
+        //     setRobotMode(RobotMode.AUTONOMOUS);
+        // } else if (DriverStation.isTeleopEnabled()) {
+        //     setRobotMode(RobotMode.TELEOP);
+        // } else {
+        //     setRobotMode(RobotMode.DISABLED);
+        // }
 
         io.setData(LobstahLEDBuffer.layer(LEDConstants.LED_LENGTH,
-                userSignal(),
-                posessionSignal(),
-                posessionIndicator(),
+                robotMode == RobotMode.DISABLED ? disabledStandby.get() : null,
                 robotMode == RobotMode.AUTONOMOUS ? autonomous() : null,
-                robotMode == RobotMode.DISABLED ? disabledStandby.get() : null
+                posessionIndicator(),
+                posessionSignal(),
+                userSignal()
             ).toAdressableLEDBuffer());
     }
 
     private final Notifier loadingNotifier = new Notifier(() -> {
         synchronized (this) {
-            System.out.println("Loading");
             io.setData(LobstahLEDBuffer.solid(3, Color.kWhite)
                     .opacity(AnimationEasing.sine(System.currentTimeMillis(), 1000, 0)).toAdressableLEDBuffer());
         }
@@ -132,8 +131,7 @@ public class LEDs extends SubsystemBase {
 
     LobstahLEDBuffer posessionIndicator() {
         if (!possession) return null;
-        return LobstahLEDBuffer.solid(5, new Color(77, 255, 79))
-            .wrappedShift(LEDConstants.LED_LENGTH, -5);
+        return LobstahLEDBuffer.solid(5, new Color(77, 255, 79));
     }
 
     static class DisabledStandby {
@@ -147,10 +145,12 @@ public class LEDs extends SubsystemBase {
 
         LobstahLEDBuffer get() {
             if (timer.advanceIfElapsed(0.2)) generateHeights();
-            int height1 = (int) (prevHeight1 + (nextHeight1 - prevHeight1) * timer.get());
-            int height2 = (int) (prevHeight2 + (nextHeight2 - prevHeight2) * timer.get());
-            return LobstahLEDBuffer.solid(height1, new Color(255, 25, 25))
-                    .layerAbove(LobstahLEDBuffer.solid(height2, new Color(255, 69, 118)));
+            double time = Math.min(timer.get() * 5, 1);
+            int height1 = (int) (prevHeight1 + (nextHeight1 - prevHeight1) * time);
+            int height2 = (int) (prevHeight2 + (nextHeight2 - prevHeight2) * time);
+            return LobstahLEDBuffer.layer(LEDConstants.LED_LENGTH,
+                    LobstahLEDBuffer.solid(height1, new Color(255, 25, 25)),
+                    LobstahLEDBuffer.solid(height2, new Color(255, 69, 118)));
         }
 
         void generateHeights() {
@@ -167,12 +167,12 @@ public class LEDs extends SubsystemBase {
                 .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 10, Timer.getFPGATimestamp() * 10))
                 .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(255, 30, 180))
                         .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 5, 7)))
-                .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(255, 25, 25)));
+                .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(100, 25, 25)));
     }
 
     LobstahLEDBuffer userSignal() {
         if (userSignal == false) return null;
-        if (Timer.getFPGATimestamp() % 0.2 < 0.1) {
+        if (Timer.getFPGATimestamp() % 0.1 < 0.05) {
             return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, Color.kWhite);
         } else {
             return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, Color.kBlack, 0.8);
