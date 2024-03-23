@@ -248,7 +248,7 @@ public class RobotContainer {
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
         wingButton.whileTrue(new RotatePivotCommand(pivot, 15).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
-        podiumButton.whileTrue(new RotatePivotCommand(pivot, 20).alongWith(
+        podiumButton.whileTrue(new RotatePivotCommand(pivot, 21).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
         sourceButton.whileTrue(new RotatePivotCommand(pivot, 108).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED)));
