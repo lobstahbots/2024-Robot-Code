@@ -274,20 +274,20 @@ public final class Constants {
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
     static {
       shotAngleMap.put(1.04, 40.0);
-      shotAngleMap.put(1.25, 37.0);
-      shotAngleMap.put(1.5, 31.0);
-      shotAngleMap.put(1.75, 27.0);
-      shotAngleMap.put(2.0, 25.0);
-      shotAngleMap.put(2.25, 22.5);
-      shotAngleMap.put(2.5, 20.5);
-      shotAngleMap.put(2.75, 18.25);
-      shotAngleMap.put(2.94, 17.15);
-      shotAngleMap.put(3.15, 15.65);
-      shotAngleMap.put(3.55, 13.75);
-      shotAngleMap.put(3.75, 13.1);
-      shotAngleMap.put(4.0, 12.75);
-      shotAngleMap.put(4.25, 11.8);
-      shotAngleMap.put(4.5, 10.6);
+      shotAngleMap.put(1.25, 38.0);
+      shotAngleMap.put(1.5, 33.0);
+      shotAngleMap.put(1.75, 29.0);
+      shotAngleMap.put(2.0, 27.0);
+      shotAngleMap.put(2.25, 24.5);
+      shotAngleMap.put(2.5, 22.5);
+      shotAngleMap.put(2.75, 20.25);
+      shotAngleMap.put(2.94, 19.15);
+      shotAngleMap.put(3.15, 17.65);
+      shotAngleMap.put(3.55, 15.75);
+      shotAngleMap.put(3.75, 15.1);
+      shotAngleMap.put(4.0, 14.75);
+      shotAngleMap.put(4.25, 13.8);
+      shotAngleMap.put(4.5, 12.6);
     }
   }
 

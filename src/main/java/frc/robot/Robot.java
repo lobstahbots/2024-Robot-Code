@@ -76,7 +76,14 @@ public class Robot extends LoggedRobot {
         DataLogManager.start();
         URCL.start();
         Logger.start();
-    
+
+        // PortForwarder.add(5801, "photonvision1.local", 5800);
+        // PortForwarder.add(5802, "photonvision2.local", 5800);
+        // PortForwarder.add(1183, "10.2.46.11", 1183);
+        // PortForwarder.add(1184, "10.2.46.11", 1184);
+        // PortForwarder.add(1189, "10.2.46.12", 1189);
+        // PortForwarder.add(1190, "10.2.46.12", 1190);
+
         // Logger.getInstance().disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
 
         m_robotContainer = new RobotContainer();
