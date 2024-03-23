@@ -200,7 +200,7 @@ public final class Constants {
     public static final double SHOOTER_SPEED = -1;
     public static final double UNSHOOTER_SPEED = 0.5;
     public static final double SPIN_UP_SPEED = 0;
-    public static final double AMP_SPEED = 0.175;
+    public static final double AMP_SPEED = -0.175;
     public static final int UPPER_SHOOTER_ID = 5;
     public static final int LOWER_SHOOTER_ID = 32;
     public static final double CURRENT_LIMIT = 40;
