@@ -61,6 +61,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class RobotContainer {
     private final DriveBase driveBase;
@@ -212,7 +213,7 @@ public class RobotContainer {
         intakeOverrideButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
                 .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))
                 .alongWith(new RotatePivotCommand(pivot, 0)));
-        intakeButton.whileTrue(new IntakeNoteCommand(indexer, intake).alongWith(new RotatePivotCommand(pivot, 0))
+        intakeButton.whileTrue(new IntakeNoteCommand(indexer, intake).alongWith(new RotatePivotCommand(pivot, 0)).alongWith(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake)))
                 .finallyDo(() -> driverJoystick.setRumble(RumbleType.kBothRumble, 1)).repeatedly().withTimeout(10));
         driveIndexButton.whileTrue(new PeriodicConditionalCommand(
                 new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
