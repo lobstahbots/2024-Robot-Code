@@ -72,13 +72,11 @@ public class LEDs extends SubsystemBase {
 
         if (!DriverStation.isDSAttached()) {
             fmsState = FMSState.DISCONNECTED;
-        } else if (DriverStation.isFMSAttached()) {
-            if (DriverStation.getAlliance().ge == DriverStation.Alliance.Red) {
+        } else if (DriverStation.isFMSAttached() && DriverStation.getAlliance().isPresent()) {
+            if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
                 fmsState = FMSState.RED;
-            } else if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+            } else if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
                 fmsState = FMSState.BLUE;
-            } else {
-                fmsState = FMSState.DS_ONLY;
             }
         } else {
             fmsState = FMSState.DS_ONLY;
