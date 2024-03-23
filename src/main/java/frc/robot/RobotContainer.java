@@ -88,9 +88,12 @@ public class RobotContainer {
     // Driver intake
     private final JoystickButton intakeButton = new JoystickButton(driverJoystick, DriverIOConstants.INTAKE_BUTTON_ID);
 
-    // Operator intake override
-    private final POVButton intakeOverrideButton = new POVButton(driverJoystick,
-            OperatorIOConstants.INTAKE_OVERRIDE_POV_ANGLE);
+        // Driver shooter
+        private final JoystickButton driverIndexButton = new JoystickButton(driverJoystick, DriverIOConstants.INDEXER_BUTTON_ID);
+
+        // Operator intake override
+        private final POVButton intakeOverrideButton = new POVButton(driverJoystick,
+                        OperatorIOConstants.INTAKE_OVERRIDE_POV_ANGLE);
 
     // Flywheel
     private final JoystickButton shooterButton = new JoystickButton(operatorJoystick,

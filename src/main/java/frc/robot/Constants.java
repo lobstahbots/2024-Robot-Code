@@ -93,7 +93,7 @@ public final class Constants {
 
   public static class DriveConstants {
     public static final double MAX_ACCELERATION = 3;
-    public static final double MAX_DRIVE_SPEED = 4;
+    public static final double MAX_DRIVE_SPEED = 10;
     public static final double MAX_ANGULAR_SPEED = MAX_DRIVE_SPEED / RobotConstants.RADIUS;
     public static final double SLOWDOWN_PERCENT = 0.5;
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
@@ -115,7 +115,7 @@ public final class Constants {
     public static final double PATH_MAX_ACCEL = 3;
     public static final double PATH_MAX_VELOCITY = 3;
 
-    public static final double TURN_KP = 1;
+    public static final double TURN_KP = 2;
     public static final double TURN_KI = 0;
     public static final double TURN_KD = 0;
 
@@ -180,7 +180,7 @@ public final class Constants {
 
     public static final double TURN_PID_MIN_OUTPUT = -2 * Math.PI;
     public static final double TURN_PID_MAX_OUTPUT = 2 * Math.PI;
-    public static final double TURN_PID_P = 1;
+    public static final double TURN_PID_P = 2;
     public static final double TURN_PID_I = 0;
     public static final double TURN_PID_D = 0;
     public static final double TURN_PID_FF = 0;
@@ -273,7 +273,7 @@ public final class Constants {
     public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
     static {
-      shotAngleMap.put(1.00, 40.0);
+      shotAngleMap.put(1.04, 40.0);
       shotAngleMap.put(1.25, 37.0);
       shotAngleMap.put(1.5, 31.0);
       shotAngleMap.put(1.75, 27.0);
