@@ -365,4 +365,9 @@ public final class Constants {
     public static final int ENDGAME_ALERT_1_TIME = 45;
     public static final int ENDGAME_ALERT_2_TIME = 30;
   }
+
+  public static class LEDConstants {
+    public static final int LED_PORT = 0;
+    public static final int LED_LENGTH = 60;
+  }
 }
