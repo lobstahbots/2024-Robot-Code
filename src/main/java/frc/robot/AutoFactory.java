@@ -297,7 +297,7 @@ public class AutoFactory {
                                 .alongWith(new WaitCommand(2).andThen(
                                         new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                                 .alongWith(new RotatePivotCommand(pivot, 40)))
-                .withTimeout(5).andThen(new SwerveDriveCommand(driveBase, -1, 0, 0, true).withTimeout(1));
+                .withTimeout(5).andThen(new SwerveDriveCommand(driveBase, 0.5, 0, 0, false).withTimeout(3));
     }
 
     /* Pickup and score one note. */
