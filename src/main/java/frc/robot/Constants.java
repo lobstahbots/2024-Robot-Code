@@ -298,7 +298,7 @@ public final class Constants {
     public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(Units.inchesToMeters(-13.193037),
         Units.inchesToMeters(-9.543), Units.inchesToMeters(7.820),
         new Rotation3d(0, Units.degreesToRadians(-35), Units.degreesToRadians(180)));
-    public static final double POSE_CONFIDENCE_FILTER_THRESHOLD = 0.2;
+    public static final double POSE_CONFIDENCE_FILTER_THRESHOLD = 0.4;
     public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 5;
     public static final int CAMERA_RES_WIDTH = 1280;
     public static final int CAMERA_RES_HEIGHT = 960;
@@ -318,7 +318,7 @@ public final class Constants {
     // See https://www.desmos.com/calculator/i5z7ddbjy4
 
     public static final double AMBIGUITY_TO_STDEV_EXP = 1;
-    public static final Vector<N3> BASE_STDEV = VecBuilder.fill(0.1, 0.1, 0.2); // x, y, angle
+    public static final Vector<N3> BASE_STDEV = VecBuilder.fill(0.1, 0.1, 1000.0); // x, y, angle
   }
 
   public static class IndexerConstants {
