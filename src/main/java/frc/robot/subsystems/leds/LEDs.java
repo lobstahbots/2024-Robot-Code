@@ -170,9 +170,9 @@ public class LEDs extends SubsystemBase {
             int height1 = (int) (prevHeight1 + (nextHeight1 - prevHeight1) * time);
             int height2 = (int) (prevHeight2 + (nextHeight2 - prevHeight2) * time);
             return LobstahLEDBuffer.layer(LEDConstants.LED_LENGTH,
-                    LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(255, 25, 25), 0.4 * height1 / 20),
-                    LobstahLEDBuffer.solid(height1, new Color(255, 69, 118)),
-                    LobstahLEDBuffer.solid(height2, new Color(255, 25, 25)));
+                    LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, color1, 0.4 * height1 / 20),
+                    LobstahLEDBuffer.solid(height2, color2),
+                    LobstahLEDBuffer.solid(height1, color1));
         }
 
         void generateHeights() {
