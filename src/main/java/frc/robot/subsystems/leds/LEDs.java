@@ -170,7 +170,7 @@ public class LEDs extends SubsystemBase {
             int height1 = (int) (prevHeight1 + (nextHeight1 - prevHeight1) * time);
             int height2 = (int) (prevHeight2 + (nextHeight2 - prevHeight2) * time);
             return LobstahLEDBuffer.layer(LEDConstants.LED_LENGTH,
-                    LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, color1, 0.4 * height1 / 20),
+                    LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, color1, 0.75 * height1 / 20),
                     LobstahLEDBuffer.solid(height2, color2),
                     LobstahLEDBuffer.solid(height1, color1));
         }
@@ -187,7 +187,7 @@ public class LEDs extends SubsystemBase {
         if (connectionState == ConnectionState.DS_ONLY) {
             return disabledStandby.get(new Color(255, 25, 25), new Color(160, 170,255));
         } else if (alliance == Alliance.Red) {
-            return disabledStandby.get(new Color(255, 25, 25), new Color(255, 69, 118));
+            return disabledStandby.get(new Color(255, 25, 25), new Color(255, 69, 70));
         } else  {
             return disabledStandby.get(new Color(25, 25, 255), new Color(160, 170,255));
         }
