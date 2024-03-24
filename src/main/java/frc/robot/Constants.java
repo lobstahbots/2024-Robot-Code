@@ -78,6 +78,7 @@ public final class Constants {
       public static final int WING_POV_ANGLE = 90;
       public static final int PODIUM_POV_ANGLE = 270;
       public static final int INTAKE_OVERRIDE_POV_ANGLE = 180; 
+      public static final int USER_SIGNAL_BUTTON_ID = 7;
     }
   }
 

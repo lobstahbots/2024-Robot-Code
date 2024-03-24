@@ -118,6 +118,8 @@ public class RobotContainer {
     private final JoystickButton sourceButton = new JoystickButton(operatorJoystick,
             OperatorIOConstants.SOURCE_BUTTON_ID); // DOWN
 
+    private final JoystickButton userSignalButton = new JoystickButton(operatorJoystick, OperatorIOConstants.USER_SIGNAL_BUTTON_ID);
+
     private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
             () -> Commands.none());
     private final AutoFactory autoFactory;
@@ -251,6 +253,8 @@ public class RobotContainer {
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
         sourceButton.whileTrue(new RotatePivotCommand(pivot, 108).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED)));
+        userSignalButton.onTrue(new InstantCommand(() -> leds.setUserSignal(true)).ignoringDisable(true))
+                .onFalse(new InstantCommand(() -> leds.setUserSignal(false)).ignoringDisable(true));
     }
 
     public boolean getOperatorConnected() {
