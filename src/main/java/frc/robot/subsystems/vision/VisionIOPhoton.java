@@ -46,8 +46,8 @@ public class VisionIOPhoton implements VisionIO {
 
             inputs.bestEstimatedFrontPose = estimatedFrontPose.bestEstimatedPose;
             inputs.altEstimatedFrontPose = estimatedFrontPose.alternateEstimatedPose;
-            inputs.bestFrontAmbiguity = estimatedFrontPose.bestAmbiguity;
-            inputs.altFrontAmbiguity = estimatedFrontPose.altAmbiguity;
+            inputs.bestFrontAmbiguity = estimatedFrontPose.bestReprojError;
+            inputs.altFrontAmbiguity = estimatedFrontPose.altReprojError;
             inputs.estimatedFrontPoseTimestamp = estimatedFrontPose.timestampSeconds;
             inputs.visibleFrontFiducialIDs = estimatedFrontPose.fiducialIDsUsed;
             inputs.frontAmbiguities = estimatedFrontPose.ambiguities;
@@ -60,8 +60,8 @@ public class VisionIOPhoton implements VisionIO {
 
             inputs.bestEstimatedRearPose = estimatedRearPose.bestEstimatedPose;
             inputs.altEstimatedRearPose = estimatedRearPose.alternateEstimatedPose;
-            inputs.bestFrontAmbiguity = estimatedRearPose.bestAmbiguity;
-            inputs.altF
+            inputs.bestRearAmbiguity = estimatedRearPose.bestReprojError;
+            inputs.altRearAmbiguity = estimatedRearPose.altReprojError;
             inputs.estimatedRearPoseTimestamp = estimatedRearPose.timestampSeconds;
             inputs.visibleRearFiducialIDs = estimatedRearPose.fiducialIDsUsed;
             inputs.rearAmbiguities = estimatedRearPose.ambiguities;

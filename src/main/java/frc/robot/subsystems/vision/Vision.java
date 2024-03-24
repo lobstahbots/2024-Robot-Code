@@ -37,7 +37,10 @@ public class Vision extends SubsystemBase {
         Vector<N3> frontStdev = null;
         Vector<N3> rearStdev = null;
 
-        Pose2d frontPose = inputs.estimatedFrontPose.toPose2d();
+        Pose2d bestPose = inputs.bestEstimatedFrontPose.toPose2d();
+        Pose2d altPose = inputs.altEstimatedFrontPose.toPose2d();
+
+        if(inputs.bestFrontAmbiguity != inputs.altFrontAmbiguity && inputs.bestFrontAmbiguity)
         double frontAmbiguity = Arrays.stream(inputs.frontAmbiguities).average().orElse(1);
         if (inputs.visibleFrontFiducialIDs.length > 0
                 && (!hasSeenTag || (frontAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD)

@@ -39,10 +39,10 @@ public class EstimatedRobotPose {
     public final Pose3d alternateEstimatedPose;
 
      /** Ambiguity of the best pose */
-    public final double bestAmbiguity;
+    public final double bestReprojError;
 
     /** Ambiguity of the alternate pose */
-    public final double altAmbiguity;
+    public final double altReprojError;
 
     /** The estimated time the frame used to derive the robot pose was taken */
     public final double timestampSeconds;
@@ -59,6 +59,8 @@ public class EstimatedRobotPose {
 
     public final double totalArea;
 
+    public final double multiTagAmbiguity;
+
     /**
      * Constructs an EstimatedRobotPose
      *
@@ -68,8 +70,9 @@ public class EstimatedRobotPose {
     public EstimatedRobotPose(
             Pose3d bestEstimatedPose,
             Pose3d alternateEstimatedPose,
-            double bestAmbiguity,
-            double altAmbiguity,
+            double bestReprojErr,
+            double altReprojErr,
+            double ambiguity,
             double timestampSeconds,
             List<PhotonTrackedTarget> targetsUsed,
             PoseStrategy strategy) {
@@ -89,13 +92,14 @@ public class EstimatedRobotPose {
                 }
         this.bestEstimatedPose = bestEstimatedPose;
         this.alternateEstimatedPose = alternateEstimatedPose;
-        this.bestAmbiguity = bestAmbiguity;
-        this.altAmbiguity = altAmbiguity;
+        this.bestReprojError = bestReprojErr;
+        this.altReprojError = altReprojErr;
         this.timestampSeconds = timestampSeconds;
         this.targetsUsed = targetsUsed;
         this.strategy = strategy;
         this.ambiguities = ambiguities;
         this.fiducialIDsUsed = visibleFiducialIDs;
         this.totalArea = area;
+        this.multiTagAmbiguity = ambiguity;
     }
 }
