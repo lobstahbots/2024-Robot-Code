@@ -87,13 +87,6 @@ public class RobotContainer {
     // Driver intake
     private final JoystickButton intakeButton = new JoystickButton(driverJoystick, DriverIOConstants.INTAKE_BUTTON_ID);
 
-        // Driver shooter
-        private final JoystickButton driverIndexButton = new JoystickButton(driverJoystick, DriverIOConstants.INDEXER_BUTTON_ID);
-
-        // Operator intake override
-        private final POVButton intakeOverrideButton = new POVButton(driverJoystick,
-                        OperatorIOConstants.INTAKE_OVERRIDE_POV_ANGLE);
-
     // Flywheel
     private final JoystickButton shooterButton = new JoystickButton(operatorJoystick,
             OperatorIOConstants.SHOOTER_BUTTON_ID);
@@ -112,6 +105,7 @@ public class RobotContainer {
     private final POVButton subwooferButton = new POVButton(operatorJoystick, OperatorIOConstants.SUBWOOFER_POV_ANGLE); // UP
     private final POVButton wingButton = new POVButton(operatorJoystick, OperatorIOConstants.WING_POV_ANGLE); // RIGHT
     private final POVButton podiumButton = new POVButton(operatorJoystick, OperatorIOConstants.PODIUM_POV_ANGLE); // LEFT
+    private final POVButton passButton = new POVButton(driverJoystick, OperatorIOConstants.PASS_POV_ANGLE); // DOWN
 
     // Arm and flywheel setpoints
     private final JoystickButton ampButton = new JoystickButton(operatorJoystick, OperatorIOConstants.AMP_BUTTON_ID);
@@ -218,9 +212,6 @@ public class RobotContainer {
                 () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS), () -> DriveConstants.FIELD_CENTRIC,
                 false).alongWith(autoFactory.autoAimHold()));
-        intakeOverrideButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
-                .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))
-                .alongWith(new RotatePivotCommand(pivot, 0)));
         intakeButton.whileTrue(new IntakeNoteCommand(indexer, intake).alongWith(new RotatePivotCommand(pivot, 0)).alongWith(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake)))
                 .finallyDo(() -> driverJoystick.setRumble(RumbleType.kBothRumble, 1)).repeatedly().withTimeout(10));
         driveIndexButton.whileTrue(new PeriodicConditionalCommand(
@@ -251,6 +242,7 @@ public class RobotContainer {
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
         podiumButton.whileTrue(new RotatePivotCommand(pivot, 23).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
+        passButton.whileTrue(new RotatePivotCommand(pivot, 40).alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED)));
         sourceButton.whileTrue(new RotatePivotCommand(pivot, 108).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED)));
         userSignalButton.onTrue(new InstantCommand(() -> leds.setUserSignal(true)).ignoringDisable(true))

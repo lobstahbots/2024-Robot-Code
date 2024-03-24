@@ -77,7 +77,7 @@ public final class Constants {
       public static final int SUBWOOFER_POV_ANGLE = 0;
       public static final int WING_POV_ANGLE = 90;
       public static final int PODIUM_POV_ANGLE = 270;
-      public static final int INTAKE_OVERRIDE_POV_ANGLE = 180; 
+      public static final int PASS_POV_ANGLE = 180;
       public static final int USER_SIGNAL_BUTTON_ID = 7;
     }
   }
@@ -201,6 +201,7 @@ public final class Constants {
     public static final double SHOOTER_SPEED = -1;
     public static final double UNSHOOTER_SPEED = 0.5;
     public static final double SPIN_UP_SPEED = 0;
+    public static final double PASS_SPEED = -0.6;
     public static final double AMP_SPEED = -0.175;
     public static final int UPPER_SHOOTER_ID = 5;
     public static final int LOWER_SHOOTER_ID = 32;
