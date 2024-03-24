@@ -144,7 +144,10 @@ public class LEDs extends SubsystemBase {
         }
 
         LobstahLEDBuffer get() {
-            if (timer.advanceIfElapsed(0.2)) generateHeights();
+            if (timer.hasElapsed(0.2)) {
+                timer.restart();
+                generateHeights();
+            }
             double time = Math.min(timer.get() * 5, 1);
             int height1 = (int) (prevHeight1 + (nextHeight1 - prevHeight1) * time);
             int height2 = (int) (prevHeight2 + (nextHeight2 - prevHeight2) * time);
