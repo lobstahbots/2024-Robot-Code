@@ -175,7 +175,7 @@ public class LEDs extends SubsystemBase {
         return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(255, 69, 118), 0.5)
                 .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 10, Timer.getFPGATimestamp() * 10))
                 .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(255, 30, 180))
-                        .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 5, 7)))
+                        .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 5, Timer.getFPGATimestamp() * 7)))
                 .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(100, 25, 25)));
     }
 
