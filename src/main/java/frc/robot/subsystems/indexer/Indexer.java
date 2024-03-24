@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IndexerConstants.IndexerState;
+import frc.robot.subsystems.leds.LEDs;
 
 public class Indexer extends SubsystemBase {
   /** Creates a new indexer. */
@@ -66,6 +67,7 @@ public class Indexer extends SubsystemBase {
     SmartDashboard.putBoolean("Intake Beam Broken", inputs.intakeBeamBroken);
     SmartDashboard.putBoolean("Flywheel Beam Broken", inputs.flywheelBeamBroken);
     SmartDashboard.putString("State", indexerState.toString());
+    LEDs.getInstance().setPossession(inputs.intakeBeamBroken);
     io.periodic();
   }
 }
