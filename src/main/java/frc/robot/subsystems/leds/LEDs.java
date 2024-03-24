@@ -170,7 +170,7 @@ public class LEDs extends SubsystemBase {
             int height1 = (int) (prevHeight1 + (nextHeight1 - prevHeight1) * time);
             int height2 = (int) (prevHeight2 + (nextHeight2 - prevHeight2) * time);
             return LobstahLEDBuffer.layer(LEDConstants.LED_LENGTH,
-                    LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, color1, 0.65 * height2 / 20),
+                    LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, color1, 0.5),
                     LobstahLEDBuffer.solid(height2, color2),
                     LobstahLEDBuffer.solid(height1, color1));
         }
@@ -184,13 +184,20 @@ public class LEDs extends SubsystemBase {
     }
     DisabledStandby disabledStandby = new DisabledStandby();
     LobstahLEDBuffer disabledStandby() {
-        if (connectionState == ConnectionState.DS_ONLY) {
+        if (connectionState == ConnectionState.DISCONNECTED) {
+            return disconnected();
+        } else if (connectionState == ConnectionState.DS_ONLY) {
             return disabledStandby.get(new Color(255, 25, 25), new Color(25, 25,255));
         } else if (alliance == Alliance.Red) {
             return disabledStandby.get(new Color(255, 25, 25), new Color(255, 69, 70));
         } else  {
             return disabledStandby.get(new Color(25, 25, 255), new Color(160, 170,255));
         }
+    }
+
+    LobstahLEDBuffer disconnected() {
+        return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, Color.kWhite)
+                .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 10, AnimationEasing.sine(Timer.getFPGATimestamp() % 1, 10, 0)));
     }
 
     LobstahLEDBuffer autonomous() {
