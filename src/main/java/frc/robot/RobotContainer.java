@@ -105,7 +105,7 @@ public class RobotContainer {
     private final POVButton subwooferButton = new POVButton(operatorJoystick, OperatorIOConstants.SUBWOOFER_POV_ANGLE); // UP
     private final POVButton wingButton = new POVButton(operatorJoystick, OperatorIOConstants.WING_POV_ANGLE); // RIGHT
     private final POVButton podiumButton = new POVButton(operatorJoystick, OperatorIOConstants.PODIUM_POV_ANGLE); // LEFT
-    private final POVButton passButton = new POVButton(driverJoystick, OperatorIOConstants.PASS_POV_ANGLE); // DOWN
+    private final POVButton passButton = new POVButton(operatorJoystick, OperatorIOConstants.PASS_POV_ANGLE); // DOWN
 
     // Arm and flywheel setpoints
     private final JoystickButton ampButton = new JoystickButton(operatorJoystick, OperatorIOConstants.AMP_BUTTON_ID);
