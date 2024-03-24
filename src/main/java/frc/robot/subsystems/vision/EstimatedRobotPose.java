@@ -53,6 +53,12 @@ public class EstimatedRobotPose {
     /** The strategy actually used to produce this pose */
     public final PoseStrategy strategy;
 
+    public final int[] fiducialIDsUsed;
+    
+    public final double[] ambiguities;
+
+    public final double totalArea;
+
     /**
      * Constructs an EstimatedRobotPose
      *
@@ -67,6 +73,20 @@ public class EstimatedRobotPose {
             double timestampSeconds,
             List<PhotonTrackedTarget> targetsUsed,
             PoseStrategy strategy) {
+                var targetsSeen = targetsUsed.size();
+                var visibleFiducialIDs = new int[targetsSeen];
+                var ambiguities = new double[targetsSeen];
+        
+                double area = 0;
+                
+                for (int i = 0; i < targetsSeen; i++) {
+                    var target = targetsUsed.get(i);
+                    visibleFiducialIDs[i] = target.getFiducialId();
+                    ambiguities[i] = target.getPoseAmbiguity();
+                    area += target.getArea() / 100; // Area is returned in percent but we want fraction
+                    // See
+                    // https://docs.photonvision.org/en/latest/docs/programming/photonlib/getting-target-data.html#getting-data-from-a-target
+                }
         this.bestEstimatedPose = bestEstimatedPose;
         this.alternateEstimatedPose = alternateEstimatedPose;
         this.bestAmbiguity = bestAmbiguity;
@@ -74,5 +94,8 @@ public class EstimatedRobotPose {
         this.timestampSeconds = timestampSeconds;
         this.targetsUsed = targetsUsed;
         this.strategy = strategy;
+        this.ambiguities = ambiguities;
+        this.fiducialIDsUsed = visibleFiducialIDs;
+        this.totalArea = area;
     }
 }

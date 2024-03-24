@@ -598,6 +598,7 @@ public class PhotonPoseEstimator {
                                         .transformBy(target.getBestCameraToTarget().inverse())
                                         .transformBy(robotToCamera.inverse()),
                                 new Pose3d(),
+                                1, 0,
                                 result.getTimestampSeconds(),
                                 result.getTargets(),
                                 PoseStrategy.AVERAGE_BEST_TARGETS));
@@ -634,6 +635,7 @@ public class PhotonPoseEstimator {
                 new EstimatedRobotPose(
                         new Pose3d(transform, rotation),
                         new Pose3d(),
+                        1, 0, 
                         result.getTimestampSeconds(),
                         result.getTargets(),
                         PoseStrategy.AVERAGE_BEST_TARGETS));
