@@ -13,7 +13,19 @@ import stl.led.AnimationEasing;
 import stl.led.LobstahLEDBuffer;
 
 public class LEDs extends SubsystemBase {
+    private static LEDs instance = null;
+    public static LEDs getInstance() { return instance; }
+
     LEDIO io;
+    
+    public LEDs(LEDIO io) {
+        if (instance != null) throw new IllegalStateException("LEDs already initialized");
+        instance = this;
+
+        this.io = io;
+        
+        loadingNotifier.startPeriodic(0.02);
+    }
 
     public enum ConnectionState { DISCONNECTED, DS_ONLY, FMS }
     ConnectionState connectionState = ConnectionState.DISCONNECTED;
@@ -32,12 +44,6 @@ public class LEDs extends SubsystemBase {
     boolean tipped = false;
     boolean coastMode = false;
     boolean lowBattery = false;
-
-    public LEDs(LEDIO io) {
-        this.io = io;
-        
-        loadingNotifier.startPeriodic(0.02);
-    }
 
     private void setFMSState(ConnectionState value) { connectionState = value; }
 
