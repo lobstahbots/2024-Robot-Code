@@ -116,7 +116,8 @@ public class LEDs extends SubsystemBase {
     private final Notifier loadingNotifier = new Notifier(() -> {
         synchronized (this) {
             io.setData(LobstahLEDBuffer.solid(3, Color.kWhite)
-                    .opacity(AnimationEasing.sine(System.currentTimeMillis(), 1000, 0)).toAdressableLEDBuffer());
+                    .opacity(AnimationEasing.sine(System.currentTimeMillis(), 1000, 0)).crop(LEDConstants.LED_LENGTH)
+                    .toAdressableLEDBuffer());
         }
     });
     
