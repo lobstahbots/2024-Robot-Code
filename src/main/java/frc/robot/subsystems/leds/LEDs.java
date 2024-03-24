@@ -109,6 +109,7 @@ public class LEDs extends SubsystemBase {
                 robotMode == RobotMode.AUTONOMOUS ? autonomous() : null,
                 posessionIndicator(),
                 posessionSignal(),
+                shooterReadyIndicator(),
                 userSignal()
             ).toAdressableLEDBuffer());
     }
@@ -137,6 +138,11 @@ public class LEDs extends SubsystemBase {
                 .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(160, 170,255))
                         .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 10, Timer.getFPGATimestamp() * 10 + 3)))
                 .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(255, 25, 25), 0.25));
+    }
+
+    LobstahLEDBuffer shooterReadyIndicator() {
+        if (!shooterReady) return null;
+        return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(77, 255, 79));
     }
 
     static class DisabledStandby {
