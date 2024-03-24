@@ -13,6 +13,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.subsystems.leds.LEDs;
 
 
 public class Shooter extends SubsystemBase {
@@ -97,5 +98,7 @@ public class Shooter extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
     io.periodic();
+    LEDs.getInstance().setShooterReady(getLowerFlywheelVelocityRPS() > getSetpoint()
+            * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR);
   }
 }
