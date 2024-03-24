@@ -40,9 +40,9 @@ public class Vision extends SubsystemBase {
         Pose2d frontPose = inputs.estimatedFrontPose.toPose2d();
         double frontAmbiguity = Arrays.stream(inputs.frontAmbiguities).average().orElse(1);
         if (inputs.visibleFrontFiducialIDs.length > 0
-                && (!hasSeenTag || frontAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD)
+                && (!hasSeenTag || (frontAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD)
                         && frontPose.minus(odometryPose).getTranslation()
-                                .getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD)) {
+                                .getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD))) {
             resolvedFrontPose = frontPose;
             hasSeenTag = true;
             frontStdev = VisionConstants.BASE_STDEV

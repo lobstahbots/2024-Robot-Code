@@ -299,7 +299,7 @@ public final class Constants {
         Units.inchesToMeters(-9.543), Units.inchesToMeters(7.820),
         new Rotation3d(0, Units.degreesToRadians(-35), Units.degreesToRadians(180)));
     public static final double POSE_CONFIDENCE_FILTER_THRESHOLD = 0.2;
-    public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 0.5;
+    public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 5;
     public static final int CAMERA_RES_WIDTH = 1280;
     public static final int CAMERA_RES_HEIGHT = 960;
     public static final int CAMERA_FOV_DEG = 70;

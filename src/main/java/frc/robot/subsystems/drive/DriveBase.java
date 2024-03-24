@@ -90,6 +90,7 @@ public class DriveBase extends CharacterizableSubsystem {
    */
   public void resetPose(Pose2d pose) {
     swerveOdometry.resetPosition(gyroInputs.yawPosition, getPositions(), pose);
+    visionLessOdometry.resetPosition(gyroInputs.yawPosition, getPositions(), pose);
   }
 
   /**
