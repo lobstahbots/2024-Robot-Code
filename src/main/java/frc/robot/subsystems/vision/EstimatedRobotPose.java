@@ -38,6 +38,12 @@ public class EstimatedRobotPose {
     /** The alternate estimated pose */
     public final Pose3d alternateEstimatedPose;
 
+     /** Ambiguity of the best pose */
+    public final double bestAmbiguity;
+
+    /** Ambiguity of the alternate pose */
+    public final double altAmbiguity;
+
     /** The estimated time the frame used to derive the robot pose was taken */
     public final double timestampSeconds;
 
@@ -54,13 +60,17 @@ public class EstimatedRobotPose {
      * @param timestampSeconds timestamp of the estimate
      */
     public EstimatedRobotPose(
-            Pose3d estimatedPose,
+            Pose3d bestEstimatedPose,
             Pose3d alternateEstimatedPose,
+            double bestAmbiguity,
+            double altAmbiguity,
             double timestampSeconds,
             List<PhotonTrackedTarget> targetsUsed,
             PoseStrategy strategy) {
-        this.bestEstimatedPose = estimatedPose;
+        this.bestEstimatedPose = bestEstimatedPose;
         this.alternateEstimatedPose = alternateEstimatedPose;
+        this.bestAmbiguity = bestAmbiguity;
+        this.altAmbiguity = altAmbiguity;
         this.timestampSeconds = timestampSeconds;
         this.targetsUsed = targetsUsed;
         this.strategy = strategy;
