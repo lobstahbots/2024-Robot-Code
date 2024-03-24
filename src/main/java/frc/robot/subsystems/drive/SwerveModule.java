@@ -8,7 +8,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -78,7 +77,6 @@ public class SwerveModule {
    * @param desiredState A {@link SwerveModuleState} with desired speed and angle.
    */
   public SwerveModuleState setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
-
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState,
       inputs.turnPosition);
       io.setTurnVoltage(
@@ -97,19 +95,19 @@ public class SwerveModule {
   }
 
   /** Sets whether brake mode is enabled. */
-  public void setBrakingMode(IdleMode mode) {
-    io.setDriveBrakeMode(mode);
-    io.setTurnBrakeMode(mode);
+  public void setIdleMode(IdleMode mode) {
+    io.setDriveIdleMode(mode);
+    io.setTurnIdleMode(mode);
   }
 
   /** Returns the current turn angle of the module. */
   public Rotation2d getAngle() {
-    return new Rotation2d(MathUtil.angleModulus(inputs.turnPosition.getRadians()));
+    return new Rotation2d(inputs.turnPosition.getRadians());
   }
 
   /** Returns the current drive position of the module in meters. */
   public double getPositionMeters() {
-    return inputs.drivePosition.getRadians() * RobotConstants.WHEEL_DIAMETER / 2;
+    return inputs.drivePosition.getRotations() *  Math.PI * RobotConstants.WHEEL_DIAMETER / RobotConstants.DRIVE_GEAR_RATIO;
   }
 
   /** Returns the current drive velocity of the module in meters per second. */

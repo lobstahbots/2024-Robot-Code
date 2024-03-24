@@ -4,56 +4,101 @@
 
 package frc.robot.subsystems.shooter;
 
+import org.littletonrobotics.junction.Logger;
+
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import stl.tempControl.MonitoredSparkMax;
-import stl.tempControl.TemperatureMonitor;
+import frc.robot.Constants.ShooterConstants;
+import frc.robot.subsystems.leds.LEDs;
 
-import java.util.Arrays;
-
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Shooter extends SubsystemBase {
-  private final MonitoredSparkMax upperShooterMotor;
-  private final MonitoredSparkMax lowerShooterMotor;
-  private final TemperatureMonitor monitor;
-
-  /**
-   * Creates a new Shooter subsystem.
-   * @param upperShooterMotorID The CAN ID of the upper shooter motor
-   * @param lowerShooterMotorID The CAN ID of the lower shooter motor
+  /** Creates a new Shooter.
+   * @param io The {@link ShooterIO} used to construct the Intake.
    */
-  public Shooter(int upperShooterMotorID, int lowerShooterMotorID) {
-    this.upperShooterMotor = new MonitoredSparkMax(upperShooterMotorID, MotorType.kBrushless, "Upper shooter motor");
-    this.lowerShooterMotor = new MonitoredSparkMax(lowerShooterMotorID, MotorType.kBrushless, "Lower shooter motor");
-    this.upperShooterMotor.setInverted(true);
-    this.lowerShooterMotor.setInverted(false);
-    this.upperShooterMotor.setIdleMode(IdleMode.kBrake);
-    this.lowerShooterMotor.setIdleMode(IdleMode.kBrake);
-    this.upperShooterMotor.setSmartCurrentLimit(40);
-    this.lowerShooterMotor.setSmartCurrentLimit(40);
+    private ShooterIO io;
+    private double desiredSpeed = 0;
+    private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
+     private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(
+    ShooterConstants.KS, ShooterConstants.KV, ShooterConstants.KA
+  );
+  private final ProfiledPIDController upperController = new ProfiledPIDController(
+    ShooterConstants.PID_P,
+    ShooterConstants.PID_I,
+    ShooterConstants.PID_D,
+    new TrapezoidProfile.Constraints(ShooterConstants.MAX_VELOCITY, ShooterConstants.MAX_ACCELERATION)
+  );
+  private final ProfiledPIDController lowerController = new ProfiledPIDController(
+    ShooterConstants.PID_P,
+    ShooterConstants.PID_I,
+    ShooterConstants.PID_D,
+    new TrapezoidProfile.Constraints(ShooterConstants.MAX_VELOCITY, ShooterConstants.MAX_ACCELERATION)
+  );
 
-    monitor = new TemperatureMonitor(Arrays.asList(upperShooterMotor, lowerShooterMotor));
+  public Shooter(ShooterIO io) {
+    this.io = io;
+    upperController.setTolerance(ShooterConstants.PID_TOLERANCE);
+    lowerController.setTolerance(ShooterConstants.PID_TOLERANCE);
+  }
+  /**
+   * Sets the intake motor speed to the given speed
+   * @param shooterMotorSpeed
+   */
+  public void setShooterSpeed(double upperShooterMotorSpeed, double lowerShooterMotorSpeed) {
+    lowerShooterMotorSpeed *= 100;
+    upperShooterMotorSpeed *= 100;
+    desiredSpeed = upperShooterMotorSpeed;
+    lowerController.setGoal(lowerShooterMotorSpeed);
+    upperController.setGoal(upperShooterMotorSpeed);
+    resetControllerError(upperShooterMotorSpeed, lowerShooterMotorSpeed);
+    double pidOutputLower = lowerController.calculate(inputs.lowerShooterMotorVelocity, lowerShooterMotorSpeed);
+    double pidOutputUpper = upperController.calculate(inputs.upperShooterMotorVelocity, upperShooterMotorSpeed);
+    double feedforwardOutputUpper = feedforward.calculate(upperController.getSetpoint().velocity);
+    double feedforwardOutputLower = feedforward.calculate(lowerController.getSetpoint().velocity);
+    double outputUpper = pidOutputUpper + feedforwardOutputUpper;
+    double outputLower = pidOutputLower + feedforwardOutputLower;
+    outputLower = Math.abs(outputLower) * Math.signum(lowerShooterMotorSpeed);
+    outputUpper = Math.abs(outputUpper) * Math.signum(upperShooterMotorSpeed);
+    io.setShooterSpeed(outputUpper, outputLower);
   }
 
-  /**
-   * Spins the shooter motors at the given speed.
-   * @param shooterSpeed The speed to set the shooter to.
-   */
-  public void setShooterSpeed(double upperShooterSpeed, double lowerShooterSpeed) {
-    upperShooterMotor.set(upperShooterSpeed);
-    lowerShooterMotor.set(lowerShooterSpeed);
+  public void resetControllerError(double upperSpeed, double lowerSpeed) {
+    upperController.reset(upperSpeed);
+    lowerController.reset(lowerSpeed);
   }
 
-  /**
-   * Stops the shooter motors.
-   */
+  /** Stops the shooter motor. */
   public void stopMotor() {
-    upperShooterMotor.stopMotor();
-    lowerShooterMotor.stopMotor();
+    io.stopMotor();
+    desiredSpeed = 0;
   }
 
+  public void setIdleMode(NeutralModeValue shooterIdleMode) {
+    io.setIdleMode(shooterIdleMode);
+  }
+
+  public double getLowerFlywheelVelocityRPS() {
+    return inputs.lowerShooterMotorVelocity;
+  }
+
+  public double getUpperFlywheelVelocityRPS() {
+    return inputs.upperShooterMotorVelocity;
+  }
+
+  public double getSetpoint() {
+    return desiredSpeed;
+  }
+
+  @Override
   public void periodic() {
-    monitor.monitor();
+    io.updateInputs(inputs);
+    Logger.processInputs("Shooter", inputs);
+    io.periodic();
+    LEDs.getInstance().setShooterReady(getLowerFlywheelVelocityRPS() > getSetpoint()
+            * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR);
   }
 }

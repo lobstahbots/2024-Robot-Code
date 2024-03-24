@@ -7,20 +7,17 @@ package frc.robot.subsystems.drive;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.Constants.SwerveConstants;
 
 /** Add your docs here. */
-public class NavXGyro implements GyroIO {
+public class GyroIONavX implements GyroIO {
     private final AHRS gyro = new AHRS();
 
-    public NavXGyro(){
+    public GyroIONavX(){
         gyro.zeroYaw();
     }
 
     public Rotation2d getYaw() {
-        return (SwerveConstants.invertGyro)
-            ? Rotation2d.fromDegrees(360 - (gyro.getYaw() % 360))
-            : Rotation2d.fromDegrees(gyro.getYaw() % 360);
+        return Rotation2d.fromDegrees(gyro.getYaw());
       }
 
     public Rotation2d getPitch() {

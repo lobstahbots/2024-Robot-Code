@@ -72,4 +72,9 @@ public class SwerveDriveCommand extends Command {
   public boolean isFinished() {
     return false;
   }
+
+  @Override
+  public void end(boolean interrupted) {
+    driveBase.stopMotors();
+  }
 }

@@ -6,33 +6,34 @@ package frc.robot.subsystems.pivot;
 
 import java.util.Arrays;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.PivotConstants;
 import stl.tempControl.MonitoredSparkMax;
 import stl.tempControl.TemperatureMonitor;
 
-public class PivotSparkMax implements PivotIO {
+public class PivotIOSparkMax implements PivotIO {
   private final MonitoredSparkMax leftMotor;
   private final MonitoredSparkMax rightMotor;
-  private final AbsoluteEncoder encoder;
+  private final DutyCycleEncoder encoder;
   private final TemperatureMonitor monitor;
 
   /** Creates a new PivotSparkMax. 
    * 
    * @param leftMotorID The CAN ID of the left motor.
    * @param rightMotorID The CAN ID of the right motor.
+   * @param pivotEncoderChannel The channel for the arm encoder to plug into the RIO.
    */
-  public PivotSparkMax(int leftMotorID, int rightMotorID) {
+  public PivotIOSparkMax(int leftMotorID, int rightMotorID, int pivotEncoderChannel) {
     this.leftMotor = new MonitoredSparkMax(leftMotorID, MotorType.kBrushless, "Left pivot motor");
     this.rightMotor = new MonitoredSparkMax(rightMotorID, MotorType.kBrushless, "Right pivot motor");
     
-    this.encoder = leftMotor.getAbsoluteEncoder(Type.kDutyCycle);
+    this.encoder = new DutyCycleEncoder(new DigitalInput(pivotEncoderChannel));
 
     leftMotor.setIdleMode(IdleMode.kBrake);
     rightMotor.setIdleMode(IdleMode.kBrake);
@@ -68,14 +69,18 @@ public class PivotSparkMax implements PivotIO {
   }
 
   public void updateInputs(PivotIOInputs inputs) {
-    inputs.position = Rotation2d.fromRotations(encoder.getPosition());
-    inputs.velocity = Rotation2d.fromRotations(encoder.getVelocity());
+    inputs.position = Rotation2d.fromRotations(encoder.getAbsolutePosition()).minus(Rotation2d.fromDegrees(PivotConstants.PIVOT_OFFSET_DEGREES));
 
     inputs.motorLeftAppliedVolts = leftMotor.getAppliedOutput() * leftMotor.getBusVoltage();
     inputs.motorLeftCurrentAmps = leftMotor.getOutputCurrent();
 
     inputs.motorRightAppliedVolts = rightMotor.getAppliedOutput() * rightMotor.getBusVoltage();
     inputs.motorRightCurrentAmps = rightMotor.getOutputCurrent();
+  }
+
+  public void setIdleMode(IdleMode idleMode) {
+    leftMotor.setIdleMode(idleMode);
+    rightMotor.setIdleMode(idleMode);
   }
 
   public void periodic() {

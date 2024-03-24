@@ -127,7 +127,7 @@ public class SwerveSetpointGenerator {
      * @param dt The loop time.
      * @return A Setpoint object that satisfies all of the KinematicLimits while converging to desiredState quickly.
      */
-    public SwerveSetpoint generateSetpoint(SwerveKinematicLimits limits, final SwerveSetpoint prevSetpoint, ChassisSpeeds desiredState, double dt) {
+    public SwerveSetpoint generateSetpoint(SwerveKinematicLimits limits, SwerveSetpoint prevSetpoint, ChassisSpeeds desiredState, double dt) {
         final Translation2d[] modules = moduleLocations;
 
         SwerveModuleState[] desiredModuleState = kinematics.toSwerveModuleStates(desiredState);
