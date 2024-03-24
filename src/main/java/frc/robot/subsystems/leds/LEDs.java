@@ -46,11 +46,11 @@ public class LEDs extends SubsystemBase {
     boolean coastMode = false;
     boolean lowBattery = false;
 
-    private void setFMSState(ConnectionState value) { connectionState = value; }
+    public void setFMSState(ConnectionState value) { connectionState = value; }
 
-    private void setAlliance(DriverStation.Alliance value) { alliance = value; }
+    public void setAlliance(DriverStation.Alliance value) { alliance = value; }
 
-    private void setRobotMode(RobotMode value) { 
+    public void setRobotMode(RobotMode value) { 
         if (value == RobotMode.DISABLED && robotMode == RobotMode.AUTONOMOUS
                 && connectionState == ConnectionState.FMS) {
             triggerTeleopCountdown();
@@ -83,33 +83,33 @@ public class LEDs extends SubsystemBase {
 
     public void setLowBattery(boolean value) { lowBattery = value; }
 
-    private void triggerTeleopCountdown() { }
+    public void triggerTeleopCountdown() { }
 
-    private void triggerEndgameSignal() { }
+    public void triggerEndgameSignal() { }
 
     public void periodic() {
         loadingNotifier.stop();
 
-        if (!DriverStation.isDSAttached()) {
-            setFMSState(ConnectionState.DISCONNECTED);
-        } else if (DriverStation.isFMSAttached()) {
-            setFMSState(ConnectionState.FMS);
-            if(DriverStation.getAlliance().isPresent()) {
-                setAlliance(DriverStation.getAlliance().get());
-            }
-        } else {
-            setFMSState(ConnectionState.DS_ONLY);
-        }
+        // if (!DriverStation.isDSAttached()) {
+        //     setFMSState(ConnectionState.DISCONNECTED);
+        // } else if (DriverStation.isFMSAttached()) {
+        //     setFMSState(ConnectionState.FMS);
+        //     if(DriverStation.getAlliance().isPresent()) {
+        //         setAlliance(DriverStation.getAlliance().get());
+        //     }
+        // } else {
+        //     setFMSState(ConnectionState.DS_ONLY);
+        // }
 
-        if (DriverStation.isEStopped()) {
-            setRobotMode(RobotMode.ESTOPPED);
-        } else if (DriverStation.isAutonomousEnabled()) {
-            setRobotMode(RobotMode.AUTONOMOUS);
-        } else if (DriverStation.isTeleopEnabled()) {
-            setRobotMode(RobotMode.TELEOP);
-        } else {
-            setRobotMode(RobotMode.DISABLED);
-        }
+        // if (DriverStation.isEStopped()) {
+        //     setRobotMode(RobotMode.ESTOPPED);
+        // } else if (DriverStation.isAutonomousEnabled()) {
+        //     setRobotMode(RobotMode.AUTONOMOUS);
+        // } else if (DriverStation.isTeleopEnabled()) {
+        //     setRobotMode(RobotMode.TELEOP);
+        // } else {
+        //     setRobotMode(RobotMode.DISABLED);
+        // }
 
         io.setData(LobstahLEDBuffer.layer(LEDConstants.LED_LENGTH,
                 robotMode == RobotMode.DISABLED ? disabledStandby() : null,
