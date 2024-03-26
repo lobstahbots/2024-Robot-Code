@@ -45,6 +45,7 @@ public class IndexerSparkMax implements IndexerIO {
     inputs.indexerMotorTemperature = indexerMotor.getMotorTemperature();
     inputs.indexerMotorVoltage = indexerMotor.getBusVoltage() * indexerMotor.getAppliedOutput();
     inputs.intakeBeamBroken = debouncer.calculate(!intakeBeamBreak.get());
+    inputs.intakeBeamBrokenRaw = !intakeBeamBreak.get();
     inputs.flywheelBeamBroken = debouncer.calculate(!flywheelBeamBreak.get());
   }
 
