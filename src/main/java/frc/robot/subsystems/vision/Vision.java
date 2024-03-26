@@ -11,6 +11,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
+import stl.math.LobstahMath;
 
 public class Vision extends SubsystemBase {
     private final VisionIO io;
@@ -43,15 +44,14 @@ public class Vision extends SubsystemBase {
         Logger.recordOutput("Alt Front Pose", inputs.altEstimatedFrontPose);
 
         if (inputs.visibleFrontFiducialIDs.length > 0) {
-            if (inputs.frontAmbiguity < VisionConstants.AMBIGUITY_DIFF_THRESHOLD
-                    && inputs.altEstimatedFrontPose.minus(new Pose3d(odometryPose)).getTranslation().toTranslation2d()
-                            .getNorm() < inputs.bestEstimatedFrontPose.minus(new Pose3d(odometryPose)).getTranslation()
-                                    .toTranslation2d().getNorm()) {
+            if (inputs.frontAmbiguity < VisionConstants.AMBIGUITY_DIFF_THRESHOLD && LobstahMath
+                    .getDistBetweenPoses(inputs.altEstimatedFrontPose.toPose2d(), odometryPose) < LobstahMath
+                            .getDistBetweenPoses(inputs.bestEstimatedFrontPose.toPose2d(), odometryPose)) {
                 resolvedFrontPose = inputs.altEstimatedFrontPose;
                 resolvedFrontReprojErr = inputs.altFrontReprojErr;
             }
-            if (!hasSeenTag || resolvedFrontPose.toPose2d().minus(odometryPose).getTranslation()
-                    .getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
+            if (!hasSeenTag || LobstahMath.getDistBetweenPoses(resolvedFrontPose.toPose2d(),
+                    odometryPose) < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
                 hasSeenTag = true;
                 frontStdev = VisionConstants.BASE_STDEV
                         .times(Math.pow(resolvedFrontReprojErr, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with reprojection error
@@ -65,15 +65,14 @@ public class Vision extends SubsystemBase {
         }
 
         if (inputs.visibleRearFiducialIDs.length > 0) {
-            if (inputs.rearAmbiguity < VisionConstants.AMBIGUITY_DIFF_THRESHOLD
-                    && inputs.altEstimatedRearPose.minus(new Pose3d(odometryPose)).getTranslation().toTranslation2d()
-                            .getNorm() < inputs.bestEstimatedFrontPose.minus(new Pose3d(odometryPose)).getTranslation()
-                                    .toTranslation2d().getNorm()) {
+            if (inputs.rearAmbiguity < VisionConstants.AMBIGUITY_DIFF_THRESHOLD && LobstahMath
+                    .getDistBetweenPoses(inputs.altEstimatedRearPose.toPose2d(), odometryPose) < LobstahMath
+                            .getDistBetweenPoses(inputs.bestEstimatedRearPose.toPose2d(), odometryPose)) {
                 resolvedRearPose = inputs.altEstimatedRearPose;
                 resolvedRearReprojErr = inputs.altRearReprojErr;
             }
-            if (!hasSeenTag || resolvedRearPose.toPose2d().minus(odometryPose).getTranslation()
-                    .getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
+            if (!hasSeenTag || LobstahMath.getDistBetweenPoses(resolvedRearPose.toPose2d(),
+                    odometryPose) < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
                 hasSeenTag = true;
                 rearStdev = VisionConstants.BASE_STDEV
                         .times(Math.pow(resolvedRearReprojErr, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with reprojection error
