@@ -1,4 +1,5 @@
 package frc.robot.subsystems.vision;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -36,38 +37,40 @@ public class Vision extends SubsystemBase {
         Vector<N3> frontStdev = null;
         Vector<N3> rearStdev = null;
 
-        if (inputs.visibleFrontFiducialIDs.length > 0
-                && (!hasSeenTag || resolvedFrontPose.toPose2d().minus(odometryPose).getTranslation()
-                        .getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD)) {
+        Logger.recordOutput("Rear Best Pose", inputs.bestEstimatedRearPose);
+        Logger.recordOutput("Alt Rear Pose", inputs.altEstimatedRearPose);
+        Logger.recordOutput("Best Front Pose", inputs.bestEstimatedFrontPose);
+        Logger.recordOutput("Alt Front Pose", inputs.altEstimatedFrontPose);
 
-            if (inputs.visibleFrontFiducialIDs.length > 0
-                    && inputs.bestEstimatedFrontPose != inputs.altEstimatedFrontPose
-                    && inputs.frontAmbiguity < VisionConstants.AMBIGUITY_DIFF_THRESHOLD) {
-                if (inputs.altEstimatedFrontPose.minus(new Pose3d(odometryPose)).getTranslation().toTranslation2d()
-                        .getNorm() < inputs.bestEstimatedFrontPose.minus(new Pose3d(odometryPose)).getTranslation()
-                                .toTranslation2d().getNorm()) {
-                    resolvedFrontPose = inputs.altEstimatedFrontPose;
-                    resolvedFrontReprojErr = inputs.altFrontReprojErr;
-                }
-                if (!hasSeenTag || resolvedRearPose.toPose2d().minus(odometryPose).getTranslation()
-                        .getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
-                    hasSeenTag = true;
-                    frontStdev = VisionConstants.BASE_STDEV.times(Math.pow(resolvedFrontReprojErr,
-                            VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with reprojection error
-                            * Math.exp(1 / inputs.visibleFrontFiducialIDs.length)
-                            * Math.pow(inputs.visibleFrontFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
-                            * Math.pow(inputs.frontTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE)
-                            * Math.log(2) / Math.log(inputs.frontTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
-                    );
-                }
+        if (inputs.visibleFrontFiducialIDs.length > 0) {
+            if (inputs.bestEstimatedFrontPose != inputs.altEstimatedFrontPose
+                    && inputs.frontAmbiguity < VisionConstants.AMBIGUITY_DIFF_THRESHOLD
+                    && inputs.altEstimatedFrontPose.minus(new Pose3d(odometryPose)).getTranslation().toTranslation2d()
+                            .getNorm() < inputs.bestEstimatedFrontPose.minus(new Pose3d(odometryPose)).getTranslation()
+                                    .toTranslation2d().getNorm()) {
+                resolvedFrontPose = inputs.altEstimatedFrontPose;
+                resolvedFrontReprojErr = inputs.altFrontReprojErr;
+            }
+            if (!hasSeenTag || resolvedRearPose.toPose2d().minus(odometryPose).getTranslation()
+                    .getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
+                hasSeenTag = true;
+                frontStdev = VisionConstants.BASE_STDEV
+                        .times(Math.pow(resolvedFrontReprojErr, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with reprojection error
+                                * Math.exp(1 / inputs.visibleFrontFiducialIDs.length)
+                                * Math.pow(inputs.visibleFrontFiducialIDs.length,
+                                        VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
+                                * Math.pow(inputs.frontTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE)
+                                * Math.log(2) / Math.log(inputs.frontTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
+                        );
             }
         }
 
-        if (inputs.visibleRearFiducialIDs.length > 0 && inputs.bestEstimatedRearPose != inputs.altEstimatedRearPose
-                && inputs.rearAmbiguity < VisionConstants.AMBIGUITY_DIFF_THRESHOLD) {
-            if (inputs.altEstimatedRearPose.minus(new Pose3d(odometryPose)).getTranslation().toTranslation2d()
-                    .getNorm() < inputs.bestEstimatedFrontPose.minus(new Pose3d(odometryPose)).getTranslation()
-                            .toTranslation2d().getNorm()) {
+        if (inputs.visibleRearFiducialIDs.length > 0) {
+            if (inputs.bestEstimatedRearPose != inputs.altEstimatedRearPose
+                    && inputs.rearAmbiguity < VisionConstants.AMBIGUITY_DIFF_THRESHOLD
+                    && inputs.altEstimatedRearPose.minus(new Pose3d(odometryPose)).getTranslation().toTranslation2d()
+                            .getNorm() < inputs.bestEstimatedFrontPose.minus(new Pose3d(odometryPose)).getTranslation()
+                                    .toTranslation2d().getNorm()) {
                 resolvedRearPose = inputs.altEstimatedRearPose;
                 resolvedRearReprojErr = inputs.altRearReprojErr;
             }
