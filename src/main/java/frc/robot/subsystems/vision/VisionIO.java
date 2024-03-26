@@ -16,16 +16,21 @@ public interface VisionIO {
         public Pose3d bestEstimatedRearPose = new Pose3d();
         public Pose3d altEstimatedFrontPose = new Pose3d();
         public Pose3d altEstimatedRearPose = new Pose3d();
-        public double bestFrontAmbiguity = 0.0;
-        public double bestRearAmbiguity = 0.0;
-        public double altFrontAmbiguity = 0.0;
-        public double altRearAmbiguity = 0.0;
+
+        public double bestFrontReprojErr = 0.0;
+        public double bestRearReprojErr = 0.0;
+        public double altFrontReprojErr = 0.0;
+        public double altRearReprojErr = 0.0;
+
+        public double frontAmbiguity = 0.0;
+        public double rearAmbiguity = 0.0;
+
         public double estimatedFrontPoseTimestamp = 0.0;
         public double estimatedRearPoseTimestamp = 0.0;
+
         public int[] visibleFrontFiducialIDs = new int[] {};
         public int[] visibleRearFiducialIDs = new int[] {};
-        public double[] frontAmbiguities = new double[] {};
-        public double[] rearAmbiguities = new double[] {};
+        
         public double frontTotalArea = 0.0;
         public double rearTotalArea = 0.0;
     }

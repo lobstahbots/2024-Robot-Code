@@ -429,6 +429,7 @@ public class PhotonPoseEstimator {
                             result.getMultiTagResult().estimatedPose.bestReprojErr,
                             result.getMultiTagResult().estimatedPose.altReprojErr,
                             result.getTimestampSeconds(),
+                            result.getMultiTagResult().estimatedPose.ambiguity,
                             result.getTargets(),
                             PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR));
         } else {
@@ -478,9 +479,10 @@ public class PhotonPoseEstimator {
                                 .transformBy(lowestAmbiguityTarget.getBestCameraToTarget().inverse())
                                 .transformBy(robotToCamera.inverse()),
                         new Pose3d(),
-                        lowestAmbiguityTarget.getPoseAmbiguity(),
+                        1,
                         1,
                         result.getTimestampSeconds(),
+                        lowestAmbiguityTarget.getPoseAmbiguity(),
                         result.getTargets(),
                         PoseStrategy.LOWEST_AMBIGUITY));
     }
@@ -543,6 +545,7 @@ public class PhotonPoseEstimator {
                                 bestTransformPosition,
                                 1, 0,
                                 result.getTimestampSeconds(),
+                                1,
                                 result.getTargets(),
                                 PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
             }
@@ -554,6 +557,7 @@ public class PhotonPoseEstimator {
                                 altTransformPosition,
                                 1, 0, 
                                 result.getTimestampSeconds(),
+                                1,
                                 result.getTargets(),
                                 PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
             }
@@ -600,6 +604,7 @@ public class PhotonPoseEstimator {
                                 new Pose3d(),
                                 1, 0,
                                 result.getTimestampSeconds(),
+                                0,
                                 result.getTargets(),
                                 PoseStrategy.AVERAGE_BEST_TARGETS));
             }
@@ -637,6 +642,7 @@ public class PhotonPoseEstimator {
                         new Pose3d(),
                         1, 0, 
                         result.getTimestampSeconds(),
+                        totalAmbiguity,
                         result.getTargets(),
                         PoseStrategy.AVERAGE_BEST_TARGETS));
     }

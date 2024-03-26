@@ -21,9 +21,9 @@ public class VisionIOPhoton implements VisionIO {
     private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     private final PhotonPoseEstimator frontPoseEstimator;
     private final PhotonPoseEstimator rearPoseEstimator;
-    private EstimatedRobotPose estimatedFrontPose = new EstimatedRobotPose(new Pose3d(), new Pose3d(), 0.0, 0.0, 0.0,
+    private EstimatedRobotPose estimatedFrontPose = new EstimatedRobotPose(new Pose3d(), new Pose3d(), 0.0, 0.0, 0.0, 0.0,
             new ArrayList<PhotonTrackedTarget>(), VisionConstants.POSE_STRATEGY);
-    private EstimatedRobotPose estimatedRearPose = new EstimatedRobotPose(new Pose3d(), new Pose3d(), 0.0, 0.0, 0.0,
+    private EstimatedRobotPose estimatedRearPose = new EstimatedRobotPose(new Pose3d(), new Pose3d(), 0.0, 0.0, 0.0, 0.0,
             new ArrayList<PhotonTrackedTarget>(), VisionConstants.POSE_STRATEGY);
     private final Alert frontDisconnectedAlert;
     private final Alert rearDisconnectedAlert;
@@ -46,12 +46,12 @@ public class VisionIOPhoton implements VisionIO {
 
             inputs.bestEstimatedFrontPose = estimatedFrontPose.bestEstimatedPose;
             inputs.altEstimatedFrontPose = estimatedFrontPose.alternateEstimatedPose;
-            inputs.bestFrontAmbiguity = estimatedFrontPose.bestReprojError;
-            inputs.altFrontAmbiguity = estimatedFrontPose.altReprojError;
+            inputs.bestFrontReprojErr = estimatedFrontPose.bestReprojError;
+            inputs.altFrontReprojErr = estimatedFrontPose.altReprojError;
             inputs.estimatedFrontPoseTimestamp = estimatedFrontPose.timestampSeconds;
             inputs.visibleFrontFiducialIDs = estimatedFrontPose.fiducialIDsUsed;
-            inputs.frontAmbiguities = estimatedFrontPose.ambiguities;
             inputs.frontTotalArea = estimatedFrontPose.totalArea;
+            inputs.frontAmbiguity = estimatedFrontPose.multiTagAmbiguity;
         }
 
         Optional<EstimatedRobotPose> rearPoseOptional = rearPoseEstimator.update();
@@ -60,12 +60,12 @@ public class VisionIOPhoton implements VisionIO {
 
             inputs.bestEstimatedRearPose = estimatedRearPose.bestEstimatedPose;
             inputs.altEstimatedRearPose = estimatedRearPose.alternateEstimatedPose;
-            inputs.bestRearAmbiguity = estimatedRearPose.bestReprojError;
-            inputs.altRearAmbiguity = estimatedRearPose.altReprojError;
+            inputs.bestRearReprojErr = estimatedRearPose.bestReprojError;
+            inputs.altRearReprojErr = estimatedRearPose.altReprojError;
             inputs.estimatedRearPoseTimestamp = estimatedRearPose.timestampSeconds;
             inputs.visibleRearFiducialIDs = estimatedRearPose.fiducialIDsUsed;
-            inputs.rearAmbiguities = estimatedRearPose.ambiguities;
             inputs.rearTotalArea = estimatedRearPose.totalArea;
+            inputs.rearAmbiguity = estimatedRearPose.multiTagAmbiguity;
         }
     }
 
