@@ -320,7 +320,8 @@ public final class Constants {
 
     public static final double AMBIGUITY_TO_STDEV_EXP = 1;
     public static final Vector<N3> BASE_STDEV = VecBuilder.fill(0.1, 0.1, 1000.0); // x, y, angle
-    public static final double AMBIGUITY_DIFF_THRESHOLD = 0.8; 
+    public static final double AMBIGUITY_ACCEPTANCE_THRESHOLD = 0.2; 
+    public static final double REPROJECTION_ERROR_REJECTION_THRESHOLD = 0.4;
   }
 
   public static class IndexerConstants {

@@ -31,10 +31,10 @@ public class Vision extends SubsystemBase {
      * @return The estimated pose.
      */
     public Poses getEstimatedPose(Pose2d odometryPose) {
-        Pose3d resolvedFrontPose = inputs.bestEstimatedFrontPose;
-        double resolvedFrontReprojErr = inputs.bestFrontReprojErr;
-        Pose3d resolvedRearPose = inputs.bestEstimatedRearPose;
-        double resolvedRearReprojErr = inputs.bestRearReprojErr;
+        Pose3d resolvedFrontPose = null;
+        double resolvedFrontReprojErr = 0.0;
+        Pose3d resolvedRearPose = null;
+        double resolvedRearReprojErr = 0.0;
         Vector<N3> frontStdev = null;
         Vector<N3> rearStdev = null;
 
@@ -44,9 +44,22 @@ public class Vision extends SubsystemBase {
         Logger.recordOutput("Alt Front Pose", inputs.altEstimatedFrontPose);
 
         if (inputs.visibleFrontFiducialIDs.length > 0) {
-            if (inputs.frontAmbiguity < VisionConstants.AMBIGUITY_DIFF_THRESHOLD && LobstahMath
-                    .getDistBetweenPoses(inputs.altEstimatedFrontPose.toPose2d(), odometryPose) < LobstahMath
-                            .getDistBetweenPoses(inputs.bestEstimatedFrontPose.toPose2d(), odometryPose)) {
+            // Select pose if ambiguity is low enough or if closest to robot pose, reject if reprojection error > 0.4 * alternative pose reprojection error
+            if ((LobstahMath.getDistBetweenPoses(inputs.bestEstimatedFrontPose.toPose2d(), odometryPose) < LobstahMath
+                    .getDistBetweenPoses(inputs.altEstimatedFrontPose.toPose2d(), odometryPose)
+                    || inputs.frontAmbiguity < VisionConstants.AMBIGUITY_ACCEPTANCE_THRESHOLD)
+                    && inputs.bestFrontReprojErr < VisionConstants.REPROJECTION_ERROR_REJECTION_THRESHOLD
+                            * inputs.altFrontReprojErr) {
+                resolvedFrontPose = inputs.bestEstimatedFrontPose;
+                resolvedFrontReprojErr = inputs.bestFrontReprojErr;
+            }
+            // Otherwise, select alt pose if ambiguity is high enough and alt solution is closest to robot pose, reject if reprojection error > 0.4 * best pose reprojection error
+            else if (inputs.frontAmbiguity >= VisionConstants.AMBIGUITY_ACCEPTANCE_THRESHOLD
+                    && LobstahMath.getDistBetweenPoses(inputs.altEstimatedFrontPose.toPose2d(),
+                            odometryPose) < LobstahMath.getDistBetweenPoses(inputs.bestEstimatedFrontPose.toPose2d(),
+                                    odometryPose)
+                    && inputs.altFrontReprojErr < VisionConstants.REPROJECTION_ERROR_REJECTION_THRESHOLD
+                            * inputs.bestFrontReprojErr) {
                 resolvedFrontPose = inputs.altEstimatedFrontPose;
                 resolvedFrontReprojErr = inputs.altFrontReprojErr;
             }
@@ -65,9 +78,22 @@ public class Vision extends SubsystemBase {
         }
 
         if (inputs.visibleRearFiducialIDs.length > 0) {
-            if (inputs.rearAmbiguity < VisionConstants.AMBIGUITY_DIFF_THRESHOLD && LobstahMath
-                    .getDistBetweenPoses(inputs.altEstimatedRearPose.toPose2d(), odometryPose) < LobstahMath
-                            .getDistBetweenPoses(inputs.bestEstimatedRearPose.toPose2d(), odometryPose)) {
+            // Select pose if ambiguity is low enough or if closest to robot pose, reject if reprojection error > 0.4 * alternative pose reprojection error
+            if ((LobstahMath.getDistBetweenPoses(inputs.bestEstimatedRearPose.toPose2d(), odometryPose) < LobstahMath
+                    .getDistBetweenPoses(inputs.altEstimatedRearPose.toPose2d(), odometryPose)
+                    || inputs.rearAmbiguity < VisionConstants.AMBIGUITY_ACCEPTANCE_THRESHOLD)
+                    && inputs.bestRearReprojErr < VisionConstants.REPROJECTION_ERROR_REJECTION_THRESHOLD
+                            * inputs.altRearReprojErr) {
+                resolvedRearPose = inputs.bestEstimatedRearPose;
+                resolvedRearReprojErr = inputs.bestRearReprojErr;
+            }
+            // Otherwise, select alt pose if ambiguity is high enough and alt solution is closest to robot pose, reject if reprojection error > 0.4 * best pose reprojection error
+            else if (inputs.rearAmbiguity >= VisionConstants.AMBIGUITY_ACCEPTANCE_THRESHOLD
+                    && LobstahMath.getDistBetweenPoses(inputs.altEstimatedRearPose.toPose2d(),
+                            odometryPose) < LobstahMath.getDistBetweenPoses(inputs.bestEstimatedRearPose.toPose2d(),
+                                    odometryPose)
+                    && inputs.altRearReprojErr < VisionConstants.REPROJECTION_ERROR_REJECTION_THRESHOLD
+                            * inputs.bestRearReprojErr) {
                 resolvedRearPose = inputs.altEstimatedRearPose;
                 resolvedRearReprojErr = inputs.altRearReprojErr;
             }
