@@ -50,7 +50,7 @@ public class Vision extends SubsystemBase {
                 resolvedFrontPose = inputs.altEstimatedFrontPose;
                 resolvedFrontReprojErr = inputs.altFrontReprojErr;
             }
-            if (!hasSeenTag || resolvedRearPose.toPose2d().minus(odometryPose).getTranslation()
+            if (!hasSeenTag || resolvedFrontPose.toPose2d().minus(odometryPose).getTranslation()
                     .getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
                 hasSeenTag = true;
                 frontStdev = VisionConstants.BASE_STDEV
