@@ -37,14 +37,13 @@ public class Vision extends SubsystemBase {
         Vector<N3> frontStdev = null;
         Vector<N3> rearStdev = null;
 
-        Logger.recordOutput("Rear Best Pose", inputs.bestEstimatedRearPose);
+        Logger.recordOutput("Best Rear Pose", inputs.bestEstimatedRearPose);
         Logger.recordOutput("Alt Rear Pose", inputs.altEstimatedRearPose);
         Logger.recordOutput("Best Front Pose", inputs.bestEstimatedFrontPose);
         Logger.recordOutput("Alt Front Pose", inputs.altEstimatedFrontPose);
 
         if (inputs.visibleFrontFiducialIDs.length > 0) {
-            if (inputs.bestEstimatedFrontPose != inputs.altEstimatedFrontPose
-                    && inputs.frontAmbiguity < VisionConstants.AMBIGUITY_DIFF_THRESHOLD
+            if (inputs.frontAmbiguity < VisionConstants.AMBIGUITY_DIFF_THRESHOLD
                     && inputs.altEstimatedFrontPose.minus(new Pose3d(odometryPose)).getTranslation().toTranslation2d()
                             .getNorm() < inputs.bestEstimatedFrontPose.minus(new Pose3d(odometryPose)).getTranslation()
                                     .toTranslation2d().getNorm()) {
@@ -66,8 +65,7 @@ public class Vision extends SubsystemBase {
         }
 
         if (inputs.visibleRearFiducialIDs.length > 0) {
-            if (inputs.bestEstimatedRearPose != inputs.altEstimatedRearPose
-                    && inputs.rearAmbiguity < VisionConstants.AMBIGUITY_DIFF_THRESHOLD
+            if (inputs.rearAmbiguity < VisionConstants.AMBIGUITY_DIFF_THRESHOLD
                     && inputs.altEstimatedRearPose.minus(new Pose3d(odometryPose)).getTranslation().toTranslation2d()
                             .getNorm() < inputs.bestEstimatedFrontPose.minus(new Pose3d(odometryPose)).getTranslation()
                                     .toTranslation2d().getNorm()) {
