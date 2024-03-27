@@ -18,6 +18,6 @@ public class AnimationEasing {
     }
 
     public static double sine(double input, double period, double phaseAngle) {
-        return (1 - Math.cos(2 * Math.PI / period * (input - phaseAngle))) / 2;
+        return (1 - Math.cos(2 * Math.PI * (input / period - phaseAngle))) / 2;
     }
 }
