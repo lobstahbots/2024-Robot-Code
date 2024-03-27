@@ -5,6 +5,7 @@
 package stl.math;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -127,6 +128,16 @@ public class LobstahMath {
   public static Twist2d toTwist2d(ChassisSpeeds chassisSpeeds) {
     return new Twist2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond,
         chassisSpeeds.omegaRadiansPerSecond);
+  }
+
+  /**
+   * Gets the distance between two {@link Pose2d}s. 
+   * @param initialPose The first pose
+   * @param endingPose The second pose
+   * @return The distance in meters
+   */
+  public static double getDistBetweenPoses(Pose2d firstPose, Pose2d secondPose) {
+    return firstPose.minus(secondPose).getTranslation().getNorm();
   }
 
 }

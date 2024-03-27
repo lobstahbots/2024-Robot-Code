@@ -265,20 +265,19 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
            resetPose(new Pose2d(estimatedPoses.frontPose().get().getX(), estimatedPoses.frontPose().get().getY(), getGyroAngle()));
            hasSeenTag = true;
         }
-        Logger.recordOutput("FrontPose", estimatedPoses.frontPose().get());
-        Logger.recordOutput("FrontStdev", estimatedPoses.frontStdev().toString());
+        Logger.recordOutput("Front Pose", estimatedPoses.frontPose().get());
+        Logger.recordOutput("Front Stdev", estimatedPoses.frontStdev().toString());
         swerveOdometry.addVisionMeasurement(estimatedPoses.frontPose().get(), photonVision.getFrontTimestamp(), estimatedPoses.frontStdev().get());
      } if (estimatedPoses.rearPose().isPresent() && estimatedPoses.rearStdev().isPresent()) {
         if(!hasSeenTag) {
             resetPose(new Pose2d(estimatedPoses.rearPose().get().getX(), estimatedPoses.rearPose().get().getY(), getGyroAngle()));
             hasSeenTag = true;
           } 
-        Logger.recordOutput("RearPose", estimatedPoses.rearPose().get());
-        Logger.recordOutput("RearStdev", estimatedPoses.rearStdev().toString());
+        Logger.recordOutput("Rear Pose", estimatedPoses.rearPose().get());
+        Logger.recordOutput("Rear Stdev", estimatedPoses.rearStdev().toString());
         swerveOdometry.addVisionMeasurement(estimatedPoses.rearPose().get(), photonVision.getRearTimestamp(), estimatedPoses.rearStdev().get());
      }
      field.setRobotPose(getPose());
-    SmartDashboard.putString("Pose", getPose().toString());
     Logger.recordOutput("Odometry", getPose());
     Logger.recordOutput("Vision Less", visionLessOdometry.getEstimatedPosition());
     gyro.updateInputs(gyroInputs);

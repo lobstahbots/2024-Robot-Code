@@ -1,18 +1,17 @@
 package frc.robot.subsystems.vision;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
+import stl.math.LobstahMath;
 
 public class Vision extends SubsystemBase {
     private final VisionIO io;
@@ -32,46 +31,89 @@ public class Vision extends SubsystemBase {
      * @return The estimated pose.
      */
     public Poses getEstimatedPose(Pose2d odometryPose) {
-        Pose2d resolvedFrontPose = null;
-        Pose2d resolvedRearPose = null;
+        Pose3d resolvedFrontPose = null;
+        double resolvedFrontReprojErr = 0.0;
+        Pose3d resolvedRearPose = null;
+        double resolvedRearReprojErr = 0.0;
         Vector<N3> frontStdev = null;
         Vector<N3> rearStdev = null;
 
-        Pose2d frontPose = inputs.estimatedFrontPose.toPose2d();
-        double frontAmbiguity = Arrays.stream(inputs.frontAmbiguities).average().orElse(1);
-        if (inputs.visibleFrontFiducialIDs.length > 0
-                && (!hasSeenTag || (frontAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD)
-                        && frontPose.minus(odometryPose).getTranslation()
-                                .getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD))) {
-            resolvedFrontPose = frontPose;
-            hasSeenTag = true;
-            frontStdev = VisionConstants.BASE_STDEV
-                    .times(Math.pow(frontAmbiguity, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with ambiguity
-                            * Math.exp(1 / inputs.visibleFrontFiducialIDs.length)
-                            * Math.pow(inputs.visibleFrontFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
-                            * Math.pow(inputs.frontTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE)
-                            * Math.log(2) / Math.log(inputs.frontTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
-                    );
+        Logger.recordOutput("Best Rear Pose", inputs.bestEstimatedRearPose);
+        Logger.recordOutput("Alt Rear Pose", inputs.altEstimatedRearPose);
+        Logger.recordOutput("Best Front Pose", inputs.bestEstimatedFrontPose);
+        Logger.recordOutput("Alt Front Pose", inputs.altEstimatedFrontPose);
+
+        if (inputs.visibleFrontFiducialIDs.length > 0) {
+            // Select pose if ambiguity is low enough or if closest to robot pose, reject if reprojection error > 0.4 * alternative pose reprojection error
+            if ((LobstahMath.getDistBetweenPoses(inputs.bestEstimatedFrontPose.toPose2d(), odometryPose) < LobstahMath
+                    .getDistBetweenPoses(inputs.altEstimatedFrontPose.toPose2d(), odometryPose)
+                    || inputs.frontAmbiguity < VisionConstants.AMBIGUITY_ACCEPTANCE_THRESHOLD)
+                    && inputs.bestFrontReprojErr < VisionConstants.REPROJECTION_ERROR_REJECTION_THRESHOLD
+                            * inputs.altFrontReprojErr) {
+                resolvedFrontPose = inputs.bestEstimatedFrontPose;
+                resolvedFrontReprojErr = inputs.bestFrontReprojErr;
+            }
+            // Otherwise, select alt pose if ambiguity is high enough and alt solution is closest to robot pose, reject if reprojection error > 0.4 * best pose reprojection error
+            else if (inputs.frontAmbiguity >= VisionConstants.AMBIGUITY_ACCEPTANCE_THRESHOLD
+                    && LobstahMath.getDistBetweenPoses(inputs.altEstimatedFrontPose.toPose2d(),
+                            odometryPose) < LobstahMath.getDistBetweenPoses(inputs.bestEstimatedFrontPose.toPose2d(),
+                                    odometryPose)
+                    && inputs.altFrontReprojErr < VisionConstants.REPROJECTION_ERROR_REJECTION_THRESHOLD
+                            * inputs.bestFrontReprojErr) {
+                resolvedFrontPose = inputs.altEstimatedFrontPose;
+                resolvedFrontReprojErr = inputs.altFrontReprojErr;
+            }
+            if (!hasSeenTag || LobstahMath.getDistBetweenPoses(resolvedFrontPose.toPose2d(),
+                    odometryPose) < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
+                hasSeenTag = true;
+                frontStdev = VisionConstants.BASE_STDEV
+                        .times(Math.pow(resolvedFrontReprojErr, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with reprojection error
+                                * Math.exp(1 / inputs.visibleFrontFiducialIDs.length)
+                                * Math.pow(inputs.visibleFrontFiducialIDs.length,
+                                        VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
+                                * Math.pow(inputs.frontTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE)
+                                * Math.log(2) / Math.log(inputs.frontTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
+                        );
+            }
         }
 
-        Pose2d rearPose = inputs.estimatedRearPose.toPose2d();
-        double rearAmbiguity = Arrays.stream(inputs.rearAmbiguities).average().orElse(1);
-        if (inputs.visibleRearFiducialIDs.length > 0
-                && (!hasSeenTag || rearAmbiguity < (1 - VisionConstants.POSE_CONFIDENCE_FILTER_THRESHOLD)
-                        && rearPose.minus(odometryPose).getTranslation()
-                                .getNorm() < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD)) {
-            resolvedRearPose = rearPose;
-            hasSeenTag = true;
-            rearStdev = VisionConstants.BASE_STDEV.times(Math.pow(rearAmbiguity, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with ambiguity
-                    * Math.exp(1 / inputs.visibleRearFiducialIDs.length)
-                    * Math.pow(inputs.visibleRearFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
-                    * Math.pow(inputs.rearTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE) * Math.log(2)
-                    / Math.log(inputs.rearTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
-            );
+        if (inputs.visibleRearFiducialIDs.length > 0) {
+            // Select pose if ambiguity is low enough or if closest to robot pose, reject if reprojection error > 0.4 * alternative pose reprojection error
+            if ((LobstahMath.getDistBetweenPoses(inputs.bestEstimatedRearPose.toPose2d(), odometryPose) < LobstahMath
+                    .getDistBetweenPoses(inputs.altEstimatedRearPose.toPose2d(), odometryPose)
+                    || inputs.rearAmbiguity < VisionConstants.AMBIGUITY_ACCEPTANCE_THRESHOLD)
+                    && inputs.bestRearReprojErr < VisionConstants.REPROJECTION_ERROR_REJECTION_THRESHOLD
+                            * inputs.altRearReprojErr) {
+                resolvedRearPose = inputs.bestEstimatedRearPose;
+                resolvedRearReprojErr = inputs.bestRearReprojErr;
+            }
+            // Otherwise, select alt pose if ambiguity is high enough and alt solution is closest to robot pose, reject if reprojection error > 0.4 * best pose reprojection error
+            else if (inputs.rearAmbiguity >= VisionConstants.AMBIGUITY_ACCEPTANCE_THRESHOLD
+                    && LobstahMath.getDistBetweenPoses(inputs.altEstimatedRearPose.toPose2d(),
+                            odometryPose) < LobstahMath.getDistBetweenPoses(inputs.bestEstimatedRearPose.toPose2d(),
+                                    odometryPose)
+                    && inputs.altRearReprojErr < VisionConstants.REPROJECTION_ERROR_REJECTION_THRESHOLD
+                            * inputs.bestRearReprojErr) {
+                resolvedRearPose = inputs.altEstimatedRearPose;
+                resolvedRearReprojErr = inputs.altRearReprojErr;
+            }
+            if (!hasSeenTag || LobstahMath.getDistBetweenPoses(resolvedRearPose.toPose2d(),
+                    odometryPose) < VisionConstants.VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD) {
+                hasSeenTag = true;
+                rearStdev = VisionConstants.BASE_STDEV
+                        .times(Math.pow(resolvedRearReprojErr, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with reprojection error
+                                * Math.exp(1 / inputs.visibleRearFiducialIDs.length)
+                                * Math.pow(inputs.visibleRearFiducialIDs.length,
+                                        VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
+                                * Math.pow(inputs.rearTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE)
+                                * Math.log(2) / Math.log(inputs.rearTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
+                        );
+            }
         }
 
-        return new Poses(Optional.ofNullable(resolvedFrontPose), Optional.ofNullable(resolvedRearPose),
-                Optional.ofNullable(frontStdev), Optional.ofNullable(rearStdev));
+        return new Poses(Optional.ofNullable(resolvedFrontPose.toPose2d()),
+                Optional.ofNullable(resolvedRearPose.toPose2d()), Optional.ofNullable(frontStdev),
+                Optional.ofNullable(rearStdev));
     }
 
     /**

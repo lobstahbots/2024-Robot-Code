@@ -12,14 +12,25 @@ import edu.wpi.first.math.geometry.Pose3d;
 public interface VisionIO {
     @AutoLog
     public static class VisionIOInputs {
-        public Pose3d estimatedFrontPose = new Pose3d();
-        public Pose3d estimatedRearPose = new Pose3d();
+        public Pose3d bestEstimatedFrontPose = new Pose3d();
+        public Pose3d bestEstimatedRearPose = new Pose3d();
+        public Pose3d altEstimatedFrontPose = new Pose3d();
+        public Pose3d altEstimatedRearPose = new Pose3d();
+
+        public double bestFrontReprojErr = 0.0;
+        public double bestRearReprojErr = 0.0;
+        public double altFrontReprojErr = 0.0;
+        public double altRearReprojErr = 0.0;
+
+        public double frontAmbiguity = 0.0;
+        public double rearAmbiguity = 0.0;
+
         public double estimatedFrontPoseTimestamp = 0.0;
         public double estimatedRearPoseTimestamp = 0.0;
+
         public int[] visibleFrontFiducialIDs = new int[] {};
         public int[] visibleRearFiducialIDs = new int[] {};
-        public double[] frontAmbiguities = new double[] {};
-        public double[] rearAmbiguities = new double[] {};
+        
         public double frontTotalArea = 0.0;
         public double rearTotalArea = 0.0;
     }

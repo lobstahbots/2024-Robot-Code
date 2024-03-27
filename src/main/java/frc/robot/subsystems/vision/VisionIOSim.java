@@ -34,9 +34,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.littletonrobotics.junction.AutoLogOutput;
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.estimation.TargetModel;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
@@ -66,9 +64,9 @@ public class VisionIOSim implements VisionIO {
     private final PhotonCameraSim rearCameraSim;
     private final PhotonPoseEstimator frontPoseEstimator;
     private final PhotonPoseEstimator rearPoseEstimator;
-    private EstimatedRobotPose estimatedFrontPose = new EstimatedRobotPose(new Pose3d(), 0,
+    private EstimatedRobotPose estimatedFrontPose = new EstimatedRobotPose(new Pose3d(), new Pose3d(), 0, 0, 0, 0,
             new ArrayList<PhotonTrackedTarget>(), VisionConstants.POSE_STRATEGY);
-    private EstimatedRobotPose estimatedRearPose = new EstimatedRobotPose(new Pose3d(), 0,
+    private EstimatedRobotPose estimatedRearPose = new EstimatedRobotPose(new Pose3d(), new Pose3d(), 0, 0, 0, 0,
             new ArrayList<PhotonTrackedTarget>(), VisionConstants.POSE_STRATEGY);
     private final Map<String, PhotonCameraSim> camSimMap = new HashMap<>();
     private static final double kBufferLengthSeconds = 1.5;
@@ -232,27 +230,31 @@ public class VisionIOSim implements VisionIO {
                 Optional<EstimatedRobotPose> frontPoseOptional = frontPoseEstimator.update(camResult);
                 if (frontPoseOptional.isPresent()) {
                     estimatedFrontPose = frontPoseOptional.get();
-                    inputs.estimatedFrontPose = estimatedFrontPose.estimatedPose;
+                    inputs.bestEstimatedFrontPose = estimatedFrontPose.bestEstimatedPose;
+                    inputs.altEstimatedFrontPose = estimatedFrontPose.alternateEstimatedPose;
+                    inputs.bestFrontReprojErr = estimatedFrontPose.bestReprojError;
+                    inputs.altFrontReprojErr = estimatedFrontPose.altReprojError;
                     inputs.estimatedFrontPoseTimestamp = estimatedFrontPose.timestampSeconds;
                     inputs.visibleFrontFiducialIDs = estimatedFrontPose.targetsUsed.stream()
                             .mapToInt((target) -> target.getFiducialId()).toArray();
-                    inputs.frontAmbiguities = estimatedFrontPose.targetsUsed.stream()
-                            .mapToDouble((target) -> target.getPoseAmbiguity()).toArray();
                     inputs.frontTotalArea = estimatedFrontPose.targetsUsed.stream()
                             .mapToDouble((target) -> target.getArea() / 100).sum();
+                    inputs.frontAmbiguity = estimatedFrontPose.multiTagAmbiguity;
                 }
             } else {
                 Optional<EstimatedRobotPose> rearPoseOptional = rearPoseEstimator.update(camResult);
                 if (rearPoseOptional.isPresent()) {
                     estimatedRearPose = rearPoseOptional.get();
-                    inputs.estimatedRearPose = estimatedRearPose.estimatedPose;
+                    inputs.bestEstimatedRearPose = estimatedRearPose.bestEstimatedPose;
+                    inputs.altEstimatedRearPose = estimatedRearPose.alternateEstimatedPose;
+                    inputs.bestRearReprojErr = estimatedRearPose.bestReprojError;
+                    inputs.altRearReprojErr = estimatedRearPose.altReprojError;
                     inputs.estimatedRearPoseTimestamp = estimatedRearPose.timestampSeconds;
                     inputs.visibleRearFiducialIDs = estimatedRearPose.targetsUsed.stream()
                             .mapToInt((target) -> target.getFiducialId()).toArray();
-                    inputs.rearAmbiguities = estimatedRearPose.targetsUsed.stream()
-                            .mapToDouble((target) -> target.getPoseAmbiguity()).toArray();
                     inputs.rearTotalArea = estimatedRearPose.targetsUsed.stream()
                             .mapToDouble((target) -> target.getArea() / 100).sum();
+                    inputs.rearAmbiguity = estimatedRearPose.multiTagAmbiguity;
                 }
             }
 
