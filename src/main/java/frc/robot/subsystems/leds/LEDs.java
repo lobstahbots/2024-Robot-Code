@@ -197,7 +197,7 @@ public class LEDs extends SubsystemBase {
 
     LobstahLEDBuffer disconnected() {
         return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, Color.kWhite)
-                .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 3, AnimationEasing.sine(Timer.getFPGATimestamp(), 10, 0)*10));
+                .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 10, AnimationEasing.sine(Timer.getFPGATimestamp(), 3, 0)*10));
     }
 
     LobstahLEDBuffer autonomous() {
