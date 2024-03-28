@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.Logger;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -34,6 +35,7 @@ import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.Vision.Poses;
+import stl.math.LobstahMath;
 import stl.sysId.CharacterizableSubsystem;
 
 public class DriveBase extends CharacterizableSubsystem {
@@ -260,23 +262,26 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     }
     SmartDashboard.putBoolean("Has seen tag", hasSeenTag);
     Poses estimatedPoses = photonVision.getEstimatedPose(getPose());
-    if (estimatedPoses.frontPose().isPresent() && estimatedPoses.frontStdev().isPresent()) {
-        if(!hasSeenTag) {
+    if (estimatedPoses.frontPose().isPresent() && (hasSeenTag == false || LobstahMath.getDistBetweenPoses(estimatedPoses.frontPose().get().toPose2d(),
+    getPose()) <= 1)) {
+        if(hasSeenTag == false) {
            resetPose(new Pose2d(estimatedPoses.frontPose().get().getX(), estimatedPoses.frontPose().get().getY(), getGyroAngle()));
            hasSeenTag = true;
         }
         Logger.recordOutput("Front Pose", estimatedPoses.frontPose().get());
         Logger.recordOutput("Front Stdev", estimatedPoses.frontStdev().toString());
-        swerveOdometry.addVisionMeasurement(estimatedPoses.frontPose().get(), photonVision.getFrontTimestamp(), estimatedPoses.frontStdev().get());
-     } if (estimatedPoses.rearPose().isPresent() && estimatedPoses.rearStdev().isPresent()) {
-        if(!hasSeenTag) {
+        swerveOdometry.addVisionMeasurement(estimatedPoses.frontPose().get().toPose2d(), Timer.getFPGATimestamp(), VecBuilder.fill(0.1, 0.1, 0.2));
+     } if (estimatedPoses.rearPose().isPresent() && (hasSeenTag == false || LobstahMath.getDistBetweenPoses(estimatedPoses.rearPose().get().toPose2d(),
+    getPose()) <= 1)) {
+        if(hasSeenTag == false) {
             resetPose(new Pose2d(estimatedPoses.rearPose().get().getX(), estimatedPoses.rearPose().get().getY(), getGyroAngle()));
             hasSeenTag = true;
           } 
         Logger.recordOutput("Rear Pose", estimatedPoses.rearPose().get());
         Logger.recordOutput("Rear Stdev", estimatedPoses.rearStdev().toString());
-        swerveOdometry.addVisionMeasurement(estimatedPoses.rearPose().get(), photonVision.getRearTimestamp(), estimatedPoses.rearStdev().get());
+        swerveOdometry.addVisionMeasurement(estimatedPoses.rearPose().get().toPose2d(), Timer.getFPGATimestamp(), VecBuilder.fill(0.1, 0.1, 0.2));
      }
+    resetPose(new Pose2d(MathUtil.clamp(getPose().getX(), RobotConstants.TRACK_WIDTH/2, 16.5 - RobotConstants.TRACK_WIDTH / 2), MathUtil.clamp(getPose().getY(), RobotConstants.TRACK_WIDTH/2, 8 - RobotConstants.TRACK_WIDTH/2), getPose().getRotation()));
      field.setRobotPose(getPose());
     Logger.recordOutput("Odometry", getPose());
     Logger.recordOutput("Vision Less", visionLessOdometry.getEstimatedPosition());

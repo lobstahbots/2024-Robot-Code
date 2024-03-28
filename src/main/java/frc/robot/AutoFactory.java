@@ -20,6 +20,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -73,11 +74,11 @@ public class AutoFactory {
                 driveBase::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 driveBase::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
-                        new PIDConstants(0.5, 0.0, 0), // Translation PID constants
+                        new PIDConstants(0.001, 0.0, 0), // Translation PID constants
                         new PIDConstants(0.1, 0.0, 0), // Rotation PID constants
-                        4.5, // Max module speed, in m/s
-                        0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-                        new ReplanningConfig(true, false) // Default path replanning config. See the API for the options
+                        1, // Max module speed, in m/s
+                        Units.inchesToMeters(Math.sqrt(28* 28 + 28 * 28)), // Drive base radius in meters. Distance from robot center to furthest module.
+                        new ReplanningConfig(true, true) // Default path replanning config. See the API for the options
                 ),
                 () -> {
                     return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
@@ -110,7 +111,7 @@ public class AutoFactory {
                 targetPose,
                 PathConstants.CONSTRAINTS,
                 0.0, // Goal end velocity in meters/sec
-                0.0 // Rotation delay distance in meters. This is how far the robot should travel
+                10.0 // Rotation delay distance in meters. This is how far the robot should travel
                     // before attempting to rotate.
         ).andThen(new SwerveDriveStopCommand(driveBase));
 
@@ -130,7 +131,7 @@ public class AutoFactory {
                 targetPose.get(),
                 PathConstants.CONSTRAINTS,
                 0.0, // Goal end velocity in meters/sec
-                0.0 // Rotation delay distance in meters. This is how far the robot should travel
+                10.0 // Rotation delay distance in meters. This is how far the robot should travel
                     // before attempting to rotate.
         ).andThen(new SwerveDriveStopCommand(driveBase));
 
@@ -166,7 +167,7 @@ public class AutoFactory {
         Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
                 path,
                 PathConstants.CONSTRAINTS,
-                3.0 // Rotation delay distance in meters. This is how far the robot should travel
+                10.0 // Rotation delay distance in meters. This is how far the robot should travel
                     // before attempting to rotate.
         );
 
@@ -199,7 +200,7 @@ public class AutoFactory {
         Supplier<Command> pathCommand = () -> AutoBuilder.pathfindThenFollowPath(
                 path,
                 PathConstants.CONSTRAINTS,
-                3.0 // Rotation delay distance in meters. This is how far the robot should travel
+                10.0 // Rotation delay distance in meters. This is how far the robot should travel
                     // before attempting to rotate.
         );
         return pathCommand;
@@ -311,8 +312,8 @@ public class AutoFactory {
                         notePoseBlue)
                         .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED))
                         .raceWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
-                // .andThen(getPathFindToPoseCommand(() -> scoringPose)
-                //         .onlyWhile(() -> notePoseBlue.getX() > scoringPose.getX()))
+                .andThen(getPathFindToPoseCommand(() -> scoringPose)
+                        .onlyWhile(() -> notePoseBlue.getX() > scoringPose.getX()))
                 .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false, true))
                 .andThen(aimAndShoot());
         return pickupAndScoreCommand;

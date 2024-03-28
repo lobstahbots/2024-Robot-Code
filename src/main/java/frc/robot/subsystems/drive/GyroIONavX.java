@@ -7,6 +7,7 @@ package frc.robot.subsystems.drive;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import stl.math.LobstahMath;
 
 /** Add your docs here. */
 public class GyroIONavX implements GyroIO {
@@ -17,7 +18,7 @@ public class GyroIONavX implements GyroIO {
     }
 
     public Rotation2d getYaw() {
-        return Rotation2d.fromDegrees(gyro.getYaw());
+        return LobstahMath.flipRotation(Rotation2d.fromDegrees(gyro.getYaw()));
       }
 
     public Rotation2d getPitch() {

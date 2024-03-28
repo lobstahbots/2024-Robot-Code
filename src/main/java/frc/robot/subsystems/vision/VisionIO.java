@@ -12,10 +12,10 @@ import edu.wpi.first.math.geometry.Pose3d;
 public interface VisionIO {
     @AutoLog
     public static class VisionIOInputs {
-        public Pose3d bestEstimatedFrontPose = new Pose3d();
-        public Pose3d bestEstimatedRearPose = new Pose3d();
-        public Pose3d altEstimatedFrontPose = new Pose3d();
-        public Pose3d altEstimatedRearPose = new Pose3d();
+        public Pose3d bestEstimatedFrontPose = null;
+        public Pose3d bestEstimatedRearPose = null;
+        public Pose3d altEstimatedFrontPose = null;
+        public Pose3d altEstimatedRearPose = null;
 
         public double bestFrontReprojErr = 0.0;
         public double bestRearReprojErr = 0.0;

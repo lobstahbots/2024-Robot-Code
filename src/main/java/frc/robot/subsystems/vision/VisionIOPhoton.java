@@ -21,9 +21,9 @@ public class VisionIOPhoton implements VisionIO {
     private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     private final PhotonPoseEstimator frontPoseEstimator;
     private final PhotonPoseEstimator rearPoseEstimator;
-    private EstimatedRobotPose estimatedFrontPose = new EstimatedRobotPose(new Pose3d(), new Pose3d(), 0.0, 0.0, 0.0, 0.0,
+    private EstimatedRobotPose estimatedFrontPose = new EstimatedRobotPose(null, null, 0.0, 0.0, 0.0, 0.0,
             new ArrayList<PhotonTrackedTarget>(), VisionConstants.POSE_STRATEGY);
-    private EstimatedRobotPose estimatedRearPose = new EstimatedRobotPose(new Pose3d(), new Pose3d(), 0.0, 0.0, 0.0, 0.0,
+    private EstimatedRobotPose estimatedRearPose = new EstimatedRobotPose(null, null, 0.0, 0.0, 0.0, 0.0,
             new ArrayList<PhotonTrackedTarget>(), VisionConstants.POSE_STRATEGY);
     private final Alert frontDisconnectedAlert;
     private final Alert rearDisconnectedAlert;
@@ -52,6 +52,14 @@ public class VisionIOPhoton implements VisionIO {
             inputs.visibleFrontFiducialIDs = estimatedFrontPose.fiducialIDsUsed;
             inputs.frontTotalArea = estimatedFrontPose.totalArea;
             inputs.frontAmbiguity = estimatedFrontPose.multiTagAmbiguity;
+        } else {
+            inputs.bestEstimatedFrontPose = null;
+            inputs.altEstimatedFrontPose = null;
+            inputs.bestFrontReprojErr = 0.0;
+            inputs.visibleFrontFiducialIDs = new int[0];
+            inputs.frontTotalArea = 0;
+            inputs.frontAmbiguity = 0;
+            inputs.altFrontReprojErr = 0;
         }
 
         Optional<EstimatedRobotPose> rearPoseOptional = rearPoseEstimator.update();
@@ -66,6 +74,14 @@ public class VisionIOPhoton implements VisionIO {
             inputs.visibleRearFiducialIDs = estimatedRearPose.fiducialIDsUsed;
             inputs.rearTotalArea = estimatedRearPose.totalArea;
             inputs.rearAmbiguity = estimatedRearPose.multiTagAmbiguity;
+        } else {
+            inputs.bestEstimatedRearPose = null;
+            inputs.altEstimatedRearPose = null;
+            inputs.bestRearReprojErr = 0.0;
+            inputs.visibleRearFiducialIDs = new int[0];
+            inputs.rearTotalArea = 0;
+            inputs.rearAmbiguity = 0;
+            inputs.altRearReprojErr = 0;
         }
     }
 
