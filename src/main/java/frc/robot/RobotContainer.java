@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -111,6 +112,8 @@ public class RobotContainer {
     private final JoystickButton ampButton = new JoystickButton(operatorJoystick, OperatorIOConstants.AMP_BUTTON_ID);
     private final JoystickButton sourceButton = new JoystickButton(operatorJoystick,
             OperatorIOConstants.SOURCE_BUTTON_ID); // DOWN
+    private final JoystickButton backshotSubwoofer = new JoystickButton(operatorJoystick, OperatorIOConstants.SUBWOOFER_BACKSHOT_ID);
+    private final JoystickButton backshotPodium = new JoystickButton(operatorJoystick, OperatorIOConstants.PODIUM_BACKSHOT_ID);
 
     private final JoystickButton userSignalButton = new JoystickButton(operatorJoystick, OperatorIOConstants.USER_SIGNAL_BUTTON_ID);
 
@@ -238,11 +241,13 @@ public class RobotContainer {
                 .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.SLOW_INDEXER_MOTOR_SPEED)));
         subwooferButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.SUBWOOFER_ANGLE_SETPOINT).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
-        wingButton.whileTrue(new RotatePivotCommand(pivot, 15).alongWith(
+        wingButton.whileTrue(new RotatePivotCommand(pivot, 11.5).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
         podiumButton.whileTrue(new RotatePivotCommand(pivot, 23).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
         passButton.whileTrue(new RotatePivotCommand(pivot, 30).alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED)));
+        backshotPodium.whileTrue(new RotatePivotCommand(pivot, Units.radiansToDegrees(1.77)).alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED)));
+        backshotSubwoofer.whileTrue(new RotatePivotCommand(pivot, Units.radiansToDegrees(2.22)).alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED)));
         sourceButton.whileTrue(new RotatePivotCommand(pivot, 108).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED)));
         userSignalButton.onTrue(new InstantCommand(() -> leds.setUserSignal(true)).ignoringDisable(true))

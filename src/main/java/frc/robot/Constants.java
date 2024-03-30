@@ -79,6 +79,8 @@ public final class Constants {
       public static final int PODIUM_POV_ANGLE = 270;
       public static final int PASS_POV_ANGLE = 180;
       public static final int USER_SIGNAL_BUTTON_ID = 7;
+      public static final int SUBWOOFER_BACKSHOT_ID = 9;
+      public static final int PODIUM_BACKSHOT_ID = 10;
     }
   }
 
@@ -120,7 +122,7 @@ public final class Constants {
     public static final double TURN_KI = 0;
     public static final double TURN_KD = 0;
 
-    public static final double TURN_DEADBAND = Units.degreesToRadians(3);
+    public static final double TURN_DEADBAND = Units.degreesToRadians(5);
 
     public static class FrontLeftModuleConstants {
       public static final int moduleID = 0;
@@ -277,19 +279,19 @@ public final class Constants {
     static {
       shotAngleMap.put(1.04, 40.0);
       shotAngleMap.put(1.25, 38.0);
-      shotAngleMap.put(1.5, 33.0);
-      shotAngleMap.put(1.75, 29.0);
-      shotAngleMap.put(2.0, 27.0);
-      shotAngleMap.put(2.25, 24.5);
-      shotAngleMap.put(2.5, 22.5);
-      shotAngleMap.put(2.75, 20.25);
-      shotAngleMap.put(2.94, 19.15);
-      shotAngleMap.put(3.15, 17.65);
-      shotAngleMap.put(3.55, 15.75);
-      shotAngleMap.put(3.75, 15.1);
-      shotAngleMap.put(4.0, 14.75);
-      shotAngleMap.put(4.25, 13.8);
-      shotAngleMap.put(4.5, 12.6);
+      shotAngleMap.put(1.5, 32.0);
+      shotAngleMap.put(1.75, 28.0);
+      shotAngleMap.put(2.0, 26.0);
+      shotAngleMap.put(2.25, 23.5);
+      shotAngleMap.put(2.5, 21.5);
+      shotAngleMap.put(2.75, 19.25);
+      shotAngleMap.put(2.94, 18.15);
+      shotAngleMap.put(3.15, 16.65);
+      shotAngleMap.put(3.55, 14.75);
+      shotAngleMap.put(3.75, 14.1);
+      shotAngleMap.put(4.0, 13.75);
+      shotAngleMap.put(4.25, 12.8);
+      shotAngleMap.put(4.5, 11.6);
     }
   }
 
