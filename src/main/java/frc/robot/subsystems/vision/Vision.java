@@ -179,9 +179,7 @@ public class Vision extends SubsystemBase {
 
     private Transform3d[] transformFromNotes(PhotonTrackedTarget[] notes) {
         return Stream.of(trackerInputs.notes)
-                .map(note -> note.getBestCameraToTarget().plus(VisionConstants.ROBOT_TO_NOTE_CAMERA.inverse())
-                        .plus(new Transform3d(robotPose.getX(), robotPose.getY(), 0.0,
-                                new Rotation3d(0, 0, robotPose.getRotation().getRadians()))))
+                .map(note -> note.getBestCameraToTarget().plus(VisionConstants.ROBOT_TO_NOTE_CAMERA.inverse()))
                 .toArray(Transform3d[]::new);
     }
 
@@ -193,7 +191,7 @@ public class Vision extends SubsystemBase {
         io.periodic();
         trackerIO.periodic();
 
-        Logger.recordOutput("NotePoses", transformFromNotes(trackerInputs.notes));
+        Logger.recordOutput("NoteTransforms", transformFromNotes(trackerInputs.notes));
     }
 
     public record Poses(Optional<Pose3d> frontPose, Optional<Pose3d> rearPose, Optional<Vector<N3>> frontStdev,
