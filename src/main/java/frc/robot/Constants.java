@@ -329,8 +329,8 @@ public final class Constants {
   public static class IndexerConstants {
     public static final int INDEXER_CURRENT_LIMIT = 40;
     public static final int INDEXER_MOTOR_ID = 44;
-    public static final double FAST_INDEXER_MOTOR_SPEED = -0.9;
-    public static final double SLOW_INDEXER_MOTOR_SPEED = 1;
+    public static final double FAST_INDEXER_MOTOR_SPEED = 1;
+    public static final double SLOW_INDEXER_MOTOR_SPEED = 0.25;
     public static final double DEBOUNCE_TIME = 0.05;
     public enum IndexerState {
       NoNote, MovingInIndexer, InShooter, InIndexer
@@ -373,6 +373,6 @@ public final class Constants {
 
   public static class LEDConstants {
     public static final int LED_PORT = 0;
-    public static final int LED_LENGTH = 60;
+    public static final int LED_LENGTH = 500;
   }
 }

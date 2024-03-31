@@ -21,96 +21,96 @@ import frc.robot.subsystems.intake.Intake;
  * After this, the command is done.
  */
 public class IntakeNoteCommand extends Command {
-  /** Creates a new IntakeNoteCommand. */
-  public Intake intake;
-  public Indexer indexer;
+//   /** Creates a new IntakeNoteCommand. */
+//   public Intake intake;
+//   public Indexer indexer;
 
-  public IntakeNoteCommand(Indexer indexer, Intake intake) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.intake = intake;
-    this.indexer = indexer;
-    indexer.setIndexerState(IndexerState.NoNote);
-    addRequirements(indexer, intake);
-  }
+//   public IntakeNoteCommand(Indexer indexer, Intake intake) {
+//     // Use addRequirements() here to declare subsystem dependencies.
+//     this.intake = intake;
+//     this.indexer = indexer;
+//     indexer.setIndexerState(IndexerState.NoNote);
+//     addRequirements(indexer, intake);
+//   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    indexer.setIndexerState(IndexerState.NoNote);
-    intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
-  }
+//   // Called when the command is initially scheduled.
+//   @Override
+//   public void initialize() {
+//     indexer.setIndexerState(IndexerState.NoNote);
+//     intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
+//   }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    updateIndexerState();
-    switch(indexer.getIndexerState()) {
-      case NoNote:
-        intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
-        indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);
-        break;
+//   // Called every time the scheduler runs while the command is scheduled.
+//   @Override
+//   public void execute() {
+//     updateIndexerState();
+//     switch(indexer.getIndexerState()) {
+//       case NoNote:
+//         intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
+//         indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);
+//         break;
       
-      case MovingInIndexer: 
-        intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
-        indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);
-        break;
+//       case MovingInIndexer: 
+//         intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
+//         indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);
+//         break;
       
-      case InShooter:
-        intake.stopIntakeMotor();
-        indexer.setIndexerMotorSpeed(IndexerConstants.SLOW_INDEXER_MOTOR_SPEED);
-        break;
+//       case InShooter:
+//         intake.stopIntakeMotor();
+//         indexer.setIndexerMotorSpeed(IndexerConstants.SLOW_INDEXER_MOTOR_SPEED);
+//         break;
       
-      default:
-        intake.stopIntakeMotor();
-        indexer.stopIndexerMotor();
-        break;
-    }
+//       default:
+//         intake.stopIntakeMotor();
+//         indexer.stopIndexerMotor();
+//         break;
+//     }
 
-    SmartDashboard.putBoolean("Flywheel Beam Broken", indexer.flywheelBeamBroken());
-    SmartDashboard.putBoolean("Intake Beam Broken", indexer.intakeBeamBroken());
-    SmartDashboard.putString("State", indexer.getIndexerState().toString());
-  }
+//     SmartDashboard.putBoolean("Flywheel Beam Broken", indexer.flywheelBeamBroken());
+//     SmartDashboard.putBoolean("Intake Beam Broken", indexer.intakeBeamBroken());
+//     SmartDashboard.putString("State", indexer.getIndexerState().toString());
+//   }
 
-  private void updateIndexerState() {
-        // if (indexer.intakeBeamBroken() && indexer.flywheelBeamBroken()) indexerState = IndexerState.InIndexer;
-        // else if (indexer.intakeBeamBroken()) indexerState = IndexerState.MovingInIndexer;
-        // else if (indexer.flywheelBeamBroken()) indexerState = IndexerState.InShooter;
-        switch (indexer.getIndexerState()) {
-          case NoNote:
-            if(indexer.intakeBeamBroken()) indexer.setIndexerState(IndexerState.MovingInIndexer);
-              break;
+//   private void updateIndexerState() {
+//         // if (indexer.intakeBeamBroken() && indexer.flywheelBeamBroken()) indexerState = IndexerState.InIndexer;
+//         // else if (indexer.intakeBeamBroken()) indexerState = IndexerState.MovingInIndexer;
+//         // else if (indexer.flywheelBeamBroken()) indexerState = IndexerState.InShooter;
+//         switch (indexer.getIndexerState()) {
+//           case NoNote:
+//             if(indexer.intakeBeamBroken()) indexer.setIndexerState(IndexerState.MovingInIndexer);
+//               break;
             
-          case MovingInIndexer:
-            if(!indexer.intakeBeamBroken()) indexer.setIndexerState(IndexerState.InShooter);
-            break;
+//           case MovingInIndexer:
+//             if(!indexer.intakeBeamBroken()) indexer.setIndexerState(IndexerState.InShooter);
+//             break;
             
-          case InShooter:
-            if(indexer.intakeBeamBroken()) indexer.setIndexerState(IndexerState.InIndexer);
-            break;
+//           case InShooter:
+//             if(indexer.intakeBeamBroken()) indexer.setIndexerState(IndexerState.InIndexer);
+//             break;
           
-          case InIndexer:
-            break;
+//           case InIndexer:
+//             break;
 
-          default: 
-            indexer.setIndexerState(IndexerState.NoNote);
-            break;
-        }
-  }
+//           default: 
+//             indexer.setIndexerState(IndexerState.NoNote);
+//             break;
+//         }
+//   }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    SmartDashboard.putBoolean("Flywheel Beam Broken", indexer.flywheelBeamBroken());
-    SmartDashboard.putBoolean("Intake Beam Broken", indexer.intakeBeamBroken());
-    SmartDashboard.putString("State", indexer.getIndexerState().toString());
-    indexer.stopIndexerMotor();
-    intake.stopIntakeMotor();
-  }
+//   // Called once the command ends or is interrupted.
+//   @Override
+//   public void end(boolean interrupted) {
+//     SmartDashboard.putBoolean("Flywheel Beam Broken", indexer.flywheelBeamBroken());
+//     SmartDashboard.putBoolean("Intake Beam Broken", indexer.intakeBeamBroken());
+//     SmartDashboard.putString("State", indexer.getIndexerState().toString());
+//     indexer.stopIndexerMotor();
+//     intake.stopIntakeMotor();
+//   }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return indexer.getIndexerState() == IndexerState.InIndexer;
-  }
+//   // Returns true when the command should end.
+//   @Override
+//   public boolean isFinished() {
+//     return indexer.getIndexerState() == IndexerState.InIndexer;
+//   }
 
 }

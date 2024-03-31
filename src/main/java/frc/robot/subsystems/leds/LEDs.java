@@ -117,6 +117,7 @@ public class LEDs extends SubsystemBase {
                 posessionIndicator(),
                 posessionSignal(),
                 shooterReadyIndicator(),
+                LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, Color.kRed),
                 userSignal()
             ).toAdressableLEDBuffer());
     }

@@ -6,8 +6,12 @@ package frc.robot.subsystems.indexer;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IndexerConstants.IndexerState;
 import frc.robot.subsystems.leds.LEDs;
 
@@ -16,7 +20,10 @@ public class Indexer extends SubsystemBase {
 
   private IndexerIO io;
   private final IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
-  private IndexerState indexerState = IndexerState.NoNote;
+  private final Debouncer intakeBeamBreakDebouncer = new Debouncer(IndexerConstants.DEBOUNCE_TIME, DebounceType.kBoth);
+  private final Debouncer flywheelBeamBreakDebouncer = new Debouncer(IndexerConstants.DEBOUNCE_TIME, DebounceType.kBoth);
+  private boolean intakeBeamBroken;
+  private boolean flywheelBeamBroken;
 
   public Indexer(IndexerIO io) {
     this.io = io;
@@ -40,7 +47,7 @@ public class Indexer extends SubsystemBase {
   * @return true if beam is broken, false if beam is not broken
   */
   public boolean intakeBeamBroken() {
-    return inputs.intakeBeamBroken;
+    return intakeBeamBroken;
   } 
   
   /**
@@ -48,26 +55,39 @@ public class Indexer extends SubsystemBase {
   * @return true if beam is broken, false if beam is not broken
   */
   public boolean flywheelBeamBroken() {
-    return inputs.flywheelBeamBroken;
+    return flywheelBeamBroken;
   } 
-
-  public void setIndexerState(IndexerState newState) {
-    indexerState = newState;
-  }
-
-  public IndexerState getIndexerState() {
-    return indexerState;
-  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
     Logger.processInputs("Indexer", inputs);
-    SmartDashboard.putBoolean("Intake Beam Broken", inputs.intakeBeamBroken);
-    SmartDashboard.putBoolean("Flywheel Beam Broken", inputs.flywheelBeamBroken);
-    SmartDashboard.putString("State", indexerState.toString());
-    LEDs.getInstance().setPossession(inputs.intakeBeamBrokenRaw);
+    SmartDashboard.putBoolean("Intake Beam Broken Raw", inputs.intakeBeamBroken);
+    SmartDashboard.putBoolean("Flywheel Beam Broken Raw", inputs.flywheelBeamBroken);
+    SmartDashboard.putBoolean("Intake Beam Broken", intakeBeamBroken);
+    SmartDashboard.putBoolean("Flywheel Beam Broken", flywheelBeamBroken);
+    LEDs.getInstance().setPossession(inputs.intakeBeamBroken);
+    intakeBeamBroken = intakeBeamBreakDebouncer.calculate(inputs.intakeBeamBroken);
+    flywheelBeamBroken = flywheelBeamBreakDebouncer.calculate(inputs.flywheelBeamBroken);
     io.periodic();
+  }
+
+  public Command centerNoteCommand() {
+    return this.run(() -> {
+        if (!flywheelBeamBroken) {
+            setIndexerMotorSpeed(-IndexerConstants.SLOW_INDEXER_MOTOR_SPEED);
+        } else if (!intakeBeamBroken) {
+            setIndexerMotorSpeed(IndexerConstants.SLOW_INDEXER_MOTOR_SPEED);
+        } else {
+            stopIndexerMotor();
+        }
+    });
+  }
+
+  public Command intakeNoteCommand(double speed) {
+    return this.run(() -> {
+        setIndexerMotorSpeed(speed);
+    }).until(() -> flywheelBeamBroken || intakeBeamBroken);
   }
 }

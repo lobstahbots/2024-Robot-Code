@@ -21,7 +21,6 @@ public class IndexerSparkMax implements IndexerIO {
   private DigitalInput intakeBeamBreak = new DigitalInput(2);
   private DigitalInput flywheelBeamBreak = new DigitalInput(1);
   private final TemperatureMonitor monitor;
-  private final Debouncer debouncer = new Debouncer(IndexerConstants.DEBOUNCE_TIME, DebounceType.kBoth);
 
   /** Creates a new IndexerSparkMax. */
   public IndexerSparkMax(int indexerMotorID) {
@@ -44,9 +43,8 @@ public class IndexerSparkMax implements IndexerIO {
     inputs.indexerMotorCurrent = indexerMotor.getOutputCurrent();
     inputs.indexerMotorTemperature = indexerMotor.getMotorTemperature();
     inputs.indexerMotorVoltage = indexerMotor.getBusVoltage() * indexerMotor.getAppliedOutput();
-    inputs.intakeBeamBroken = debouncer.calculate(!intakeBeamBreak.get());
-    inputs.intakeBeamBrokenRaw = !intakeBeamBreak.get();
-    inputs.flywheelBeamBroken = debouncer.calculate(!flywheelBeamBreak.get());
+    inputs.intakeBeamBroken = !intakeBeamBreak.get();
+    inputs.flywheelBeamBroken = !flywheelBeamBreak.get();
   }
 
   public void periodic() {

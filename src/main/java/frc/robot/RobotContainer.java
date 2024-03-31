@@ -112,10 +112,13 @@ public class RobotContainer {
     private final JoystickButton ampButton = new JoystickButton(operatorJoystick, OperatorIOConstants.AMP_BUTTON_ID);
     private final JoystickButton sourceButton = new JoystickButton(operatorJoystick,
             OperatorIOConstants.SOURCE_BUTTON_ID); // DOWN
-    private final JoystickButton backshotSubwoofer = new JoystickButton(operatorJoystick, OperatorIOConstants.SUBWOOFER_BACKSHOT_ID);
-    private final JoystickButton backshotPodium = new JoystickButton(operatorJoystick, OperatorIOConstants.PODIUM_BACKSHOT_ID);
+    private final JoystickButton backshotSubwoofer = new JoystickButton(operatorJoystick,
+            OperatorIOConstants.SUBWOOFER_BACKSHOT_ID);
+    private final JoystickButton backshotPodium = new JoystickButton(operatorJoystick,
+            OperatorIOConstants.PODIUM_BACKSHOT_ID);
 
-    private final JoystickButton userSignalButton = new JoystickButton(operatorJoystick, OperatorIOConstants.USER_SIGNAL_BUTTON_ID);
+    private final JoystickButton userSignalButton = new JoystickButton(operatorJoystick,
+            OperatorIOConstants.USER_SIGNAL_BUTTON_ID);
 
     private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
             () -> Commands.none());
@@ -165,6 +168,8 @@ public class RobotContainer {
     }
 
     private void setDefaultCommands() {
+        indexer.setDefaultCommand(indexer.centerNoteCommand());
+        intake.setDefaultCommand(intake.run(() -> intake.stopIntakeMotor()));
         driveBase.setDefaultCommand(new SwerveDriveCommand(driveBase,
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
@@ -215,18 +220,20 @@ public class RobotContainer {
                 () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS), () -> DriveConstants.FIELD_CENTRIC,
                 false).alongWith(autoFactory.autoAimHold()));
-        intakeButton.whileTrue(new IntakeNoteCommand(indexer, intake).alongWith(new RotatePivotCommand(pivot, 0)).alongWith(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake)))
-                .finallyDo(() -> driverJoystick.setRumble(RumbleType.kBothRumble, 1)).repeatedly().withTimeout(10));
+        intakeButton.whileTrue(intake.run(() -> intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED))
+                .alongWith(indexer.intakeNoteCommand(-IndexerConstants.FAST_INDEXER_MOTOR_SPEED)
+                        .alongWith(new RotatePivotCommand(pivot, 0))
+                        .alongWith(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake)))));
         driveIndexButton.whileTrue(new PeriodicConditionalCommand(
-                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
-                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                new SpinIndexerCommand(indexer, -IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                new SpinIndexerCommand(indexer, -IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                 () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
                         * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
                         && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
                                 * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR));
         operatorIndexButton.whileTrue(new PeriodicConditionalCommand(
-                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
-                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                new SpinIndexerCommand(indexer, -IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                new SpinIndexerCommand(indexer, -IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                 () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
                         * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
                         && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
@@ -245,9 +252,12 @@ public class RobotContainer {
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
         podiumButton.whileTrue(new RotatePivotCommand(pivot, 23).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
-        passButton.whileTrue(new RotatePivotCommand(pivot, 30).alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED)));
-        backshotPodium.whileTrue(new RotatePivotCommand(pivot, Units.radiansToDegrees(1.77)).alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED)));
-        backshotSubwoofer.whileTrue(new RotatePivotCommand(pivot, Units.radiansToDegrees(2.22)).alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED)));
+        passButton.whileTrue(new RotatePivotCommand(pivot, 30)
+                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED)));
+        backshotPodium.whileTrue(new RotatePivotCommand(pivot, Units.radiansToDegrees(1.77))
+                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED)));
+        backshotSubwoofer.whileTrue(new RotatePivotCommand(pivot, Units.radiansToDegrees(2.22))
+                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED)));
         sourceButton.whileTrue(new RotatePivotCommand(pivot, 108).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED)));
         userSignalButton.onTrue(new InstantCommand(() -> leds.setUserSignal(true)).ignoringDisable(true))
