@@ -325,7 +325,7 @@ public final class Constants {
     public static final double AMBIGUITY_ACCEPTANCE_THRESHOLD = 0.2; 
     public static final double REPROJECTION_ERROR_REJECTION_THRESHOLD = 0.4;
 
-    public static final Transform3d ROBOT_TO_NOTE_CSMERA = new Transform3d();
+    public static final Transform3d ROBOT_TO_NOTE_CAMERA = new Transform3d();
   }
 
   public static class IndexerConstants {

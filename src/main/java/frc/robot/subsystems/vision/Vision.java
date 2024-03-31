@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -9,6 +10,8 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import stl.math.LobstahMath;
@@ -16,11 +19,14 @@ import stl.math.LobstahMath;
 public class Vision extends SubsystemBase {
     private final VisionIO io;
     private final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
+    private final NoteTrackerIO trackerIO;
+    private final NoteTrackerIOInputsAutoLogged trackerInputs = new NoteTrackerIOInputsAutoLogged();
     private Pose2d robotPose = new Pose2d();
     private boolean hasSeenTag = false;
 
-    public Vision(VisionIO io) {
+    public Vision(VisionIO io, NoteTrackerIO trackerIO) {
         this.io = io;
+        this.trackerIO = trackerIO;
     }
 
     /**
@@ -40,24 +46,29 @@ public class Vision extends SubsystemBase {
 
         if (inputs.visibleFrontFiducialIDs.length > 0) {
             // Select pose if ambiguity is low enough or if closest to robot pose, reject if reprojection error > 0.4 * alternative pose reprojection error
-            if (Math.abs(inputs.bestEstimatedFrontPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians()) <= Math.abs(inputs.altEstimatedFrontPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians()))  {
+            if (Math.abs(inputs.bestEstimatedFrontPose.toPose2d().getRotation().minus(odometryPose.getRotation())
+                    .getRadians()) <= Math
+                            .abs(inputs.altEstimatedFrontPose.toPose2d().getRotation().minus(odometryPose.getRotation())
+                                    .getRadians())) {
                 resolvedFrontPose = inputs.bestEstimatedFrontPose;
                 resolvedFrontReprojErr = inputs.bestFrontReprojErr;
             }
             // Otherwise, select alt pose if ambiguity is high enough and alt solution is closest to robot pose, reject if reprojection error > 0.4 * best pose reprojection error
-            else if (Math.abs(inputs.altEstimatedFrontPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians()) <= Math.abs(inputs.bestEstimatedFrontPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians())) {
+            else if (Math.abs(inputs.altEstimatedFrontPose.toPose2d().getRotation().minus(odometryPose.getRotation())
+                    .getRadians()) <= Math
+                            .abs(inputs.bestEstimatedFrontPose.toPose2d().getRotation()
+                                    .minus(odometryPose.getRotation()).getRadians())) {
                 resolvedFrontPose = inputs.altEstimatedFrontPose;
                 resolvedFrontReprojErr = inputs.altFrontReprojErr;
             }
-                frontStdev = VisionConstants.BASE_STDEV
-                        .times(Math.pow(resolvedFrontReprojErr, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with reprojection error
-                                * Math.exp(1 / inputs.visibleFrontFiducialIDs.length)
-                                * Math.pow(inputs.visibleFrontFiducialIDs.length,
-                                        VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
-                                * Math.pow(inputs.frontTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE)
-                                * Math.log(2) / Math.log(inputs.frontTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
-                        );
-            
+            frontStdev = VisionConstants.BASE_STDEV
+                    .times(Math.pow(resolvedFrontReprojErr, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with reprojection error
+                            * Math.exp(1 / inputs.visibleFrontFiducialIDs.length)
+                            * Math.pow(inputs.visibleFrontFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
+                            * Math.pow(inputs.frontTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE)
+                            * Math.log(2) / Math.log(inputs.frontTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
+                    );
+
             Logger.recordOutput("Best Front Pose", inputs.bestEstimatedFrontPose);
             Logger.recordOutput("Alt Front Pose", inputs.altEstimatedFrontPose);
             Logger.recordOutput("Resolved front", resolvedFrontPose.toPose2d());
@@ -65,38 +76,44 @@ public class Vision extends SubsystemBase {
 
         if (inputs.visibleRearFiducialIDs.length > 0) {
             // Select pose if ambiguity is low enough or if closest to robot pose, reject if reprojection error > 0.4 * alternative pose reprojection error
-            if (Math.abs(inputs.bestEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians())  <= Math.abs(inputs.altEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians())) {
+            if (Math.abs(inputs.bestEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation())
+                    .getRadians()) <= Math
+                            .abs(inputs.altEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation())
+                                    .getRadians())) {
                 resolvedRearPose = inputs.bestEstimatedRearPose;
                 resolvedRearReprojErr = inputs.bestRearReprojErr;
                 Logger.recordOutput("Seen Rear", true);
             }
             // Otherwise, select alt pose if ambiguity is high enough and alt solution is closest to robot pose, reject if reprojection error > 0.4 * best pose reprojection error
-            else if (Math.abs(inputs.altEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians())  <= Math.abs(inputs.bestEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians())) {
+            else if (Math.abs(inputs.altEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation())
+                    .getRadians()) <= Math
+                            .abs(inputs.bestEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation())
+                                    .getRadians())) {
                 resolvedRearPose = inputs.altEstimatedRearPose;
                 resolvedRearReprojErr = inputs.altRearReprojErr;
                 Logger.recordOutput("Seen Rear", true);
-            } 
+            }
             rearStdev = VisionConstants.BASE_STDEV
-                        .times(Math.pow(resolvedRearReprojErr, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with reprojection error
-                                * Math.exp(1 / inputs.visibleRearFiducialIDs.length)
-                                * Math.pow(inputs.visibleRearFiducialIDs.length,
-                                        VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
-                                * Math.pow(inputs.rearTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE)
-                                * Math.log(2) / Math.log(inputs.rearTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
-                        );
+                    .times(Math.pow(resolvedRearReprojErr, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with reprojection error
+                            * Math.exp(1 / inputs.visibleRearFiducialIDs.length)
+                            * Math.pow(inputs.visibleRearFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
+                            * Math.pow(inputs.rearTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE)
+                            * Math.log(2) / Math.log(inputs.rearTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
+                    );
             Logger.recordOutput("Best Rear Pose", inputs.bestEstimatedRearPose);
             Logger.recordOutput("Alt Rear Pose", inputs.altEstimatedRearPose);
             Logger.recordOutput("Resolved Rear", resolvedRearPose);
         }
 
-        if(resolvedFrontPose != null && resolvedFrontPose.getX() == 0 && resolvedFrontPose.getY() == 0) resolvedFrontPose = null;
-        if(resolvedRearPose != null && resolvedRearPose.getX() == 0 && resolvedRearPose.getY() == 0) resolvedRearPose = null;
+        if (resolvedFrontPose != null && resolvedFrontPose.getX() == 0 && resolvedFrontPose.getY() == 0)
+            resolvedFrontPose = null;
+        if (resolvedRearPose != null && resolvedRearPose.getX() == 0 && resolvedRearPose.getY() == 0)
+            resolvedRearPose = null;
 
-        Poses poses = new Poses(Optional.ofNullable(resolvedFrontPose),
-                Optional.ofNullable(resolvedRearPose), Optional.ofNullable(frontStdev),
-                Optional.ofNullable(rearStdev));
+        Poses poses = new Poses(Optional.ofNullable(resolvedFrontPose), Optional.ofNullable(resolvedRearPose),
+                Optional.ofNullable(frontStdev), Optional.ofNullable(rearStdev));
 
-        Logger.recordOutput("ront pose there?" , poses.frontPose.isPresent());
+        Logger.recordOutput("ront pose there?", poses.frontPose.isPresent());
 
         return poses;
     }
@@ -156,10 +173,27 @@ public class Vision extends SubsystemBase {
         return inputs.visibleRearFiducialIDs;
     }
 
+    public Transform3d[] getNotePositions() {
+        return transformFromNotes(trackerInputs.notes);
+    }
+
+    private Transform3d[] transformFromNotes(PhotonTrackedTarget[] notes) {
+        return Stream.of(trackerInputs.notes)
+                .map(note -> note.getBestCameraToTarget().plus(VisionConstants.ROBOT_TO_NOTE_CAMERA.inverse())
+                        .plus(new Transform3d(robotPose.getX(), robotPose.getY(), 0.0,
+                                new Rotation3d(0, 0, robotPose.getRotation().getRadians()))))
+                .toArray(Transform3d[]::new);
+    }
+
     public void periodic() {
         io.updateInputs(inputs, new Pose3d(robotPose));
+        trackerIO.updateInputs(trackerInputs);
         Logger.processInputs("PhotonVision", inputs);
+        Logger.processInputs("NoteTracker", trackerInputs);
         io.periodic();
+        trackerIO.periodic();
+
+        Logger.recordOutput("NotePoses", transformFromNotes(trackerInputs.notes));
     }
 
     public record Poses(Optional<Pose3d> frontPose, Optional<Pose3d> rearPose, Optional<Vector<N3>> frontStdev,
