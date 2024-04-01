@@ -21,11 +21,13 @@ import frc.robot.Constants.IOConstants.OperatorIOConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.auto.AutonSelector;
 import frc.robot.auto.AutonSelector.AutoQuestion;
+import frc.robot.commands.CenterNoteCommand;
 import frc.robot.commands.IntakeNoteCommand;
 import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.SpinIndexerCommand;
 import frc.robot.commands.SpinIntakeCommand;
 import frc.robot.commands.SpinShooterCommand;
+import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.TurnToPointCommand;
@@ -60,7 +62,6 @@ import java.util.Map;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -168,8 +169,8 @@ public class RobotContainer {
     }
 
     private void setDefaultCommands() {
-        indexer.setDefaultCommand(indexer.centerNoteCommand());
-        intake.setDefaultCommand(intake.run(() -> intake.stopIntakeMotor()));
+        intake.setDefaultCommand(new StopIntakeCommand(intake));
+        indexer.setDefaultCommand(new CenterNoteCommand(indexer).unless(() -> !indexer.flywheelBeamBroken() && !indexer.intakeBeamBroken()));
         driveBase.setDefaultCommand(new SwerveDriveCommand(driveBase,
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
@@ -220,10 +221,9 @@ public class RobotContainer {
                 () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS), () -> DriveConstants.FIELD_CENTRIC,
                 false).alongWith(autoFactory.autoAimHold()));
-        intakeButton.whileTrue(intake.run(() -> intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED))
-                .alongWith(indexer.intakeNoteCommand(-IndexerConstants.FAST_INDEXER_MOTOR_SPEED)
+        intakeButton.whileTrue(new IntakeNoteCommand(indexer, intake)
                         .alongWith(new RotatePivotCommand(pivot, 0))
-                        .alongWith(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake)))));
+                        .alongWith(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake))));
         driveIndexButton.whileTrue(new PeriodicConditionalCommand(
                 new SpinIndexerCommand(indexer, -IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                 new SpinIndexerCommand(indexer, -IndexerConstants.FAST_INDEXER_MOTOR_SPEED),

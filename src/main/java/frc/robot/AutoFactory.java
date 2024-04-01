@@ -232,10 +232,13 @@ public class AutoFactory {
     public Command aimAndShoot() {
         return autoAimOnce().andThen(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
-                        .alongWith(new WaitCommand(2)
+                        .alongWith(new WaitCommand(2).until(() -> shooter
+                                        .getLowerFlywheelVelocityRPS() > shooter.getSetpoint() * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
+                                        && shooter
+                                                .getUpperFlywheelVelocityRPS() > shooter.getSetpoint() * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(autoAimHold()))
-                .withTimeout(5);
+                .withTimeout(5).until(() -> !indexer.flywheelBeamBroken() && !indexer.flywheelBeamBroken());
     }
 
     /* Hardcoded two-note auto. (BSU) */
@@ -274,7 +277,7 @@ public class AutoFactory {
 
     /* Hardcoded drive-back auto. (BSU) */
     public Command getDriveAuto() {
-        return new SwerveDriveCommand(driveBase, -1, 0, 0, false).withTimeout(1.5);
+        return new SwerveDriveCommand(driveBase, 0.5, 0, 0, false).withTimeout(3);
     }
 
     /* Hardcoded one-note auto. (BSU) */
@@ -287,18 +290,12 @@ public class AutoFactory {
                                                 .getUpperFlywheelVelocityRPS() > shooter.getSetpoint() * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(new RotatePivotCommand(pivot, 40)))
-                .withTimeout(5);
+                .withTimeout(5).until(() -> !indexer.flywheelBeamBroken() && !indexer.flywheelBeamBroken());
     }
 
     /* Hardcoded one note and drive back auto. (BSU) */
     public Command getScoreAndDriveAuto() {
-        return aimOnce(() -> Rotation2d.fromDegrees(40))
-                .andThen(
-                        new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
-                                .alongWith(new WaitCommand(2).andThen(
-                                        new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
-                                .alongWith(new RotatePivotCommand(pivot, 40)))
-                .withTimeout(5).andThen(new SwerveDriveCommand(driveBase, 0.5, 0, 0, false).withTimeout(3));
+        return getScoreAuto().andThen(new SwerveDriveCommand(driveBase, 0.5, 0, 0, false).withTimeout(3));
     }
 
     /* Pickup and score one note. */

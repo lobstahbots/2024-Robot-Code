@@ -112,13 +112,13 @@ public class LEDs extends SubsystemBase {
         }
 
         io.setData(LobstahLEDBuffer.layer(LEDConstants.LED_LENGTH,
-                robotMode == RobotMode.DISABLED ? disabledStandby() : null,
-                robotMode == RobotMode.AUTONOMOUS ? autonomous() : null,
-                posessionIndicator(),
-                posessionSignal(),
-                shooterReadyIndicator(),
+                 robotMode == RobotMode.DISABLED ? disabledStandby() : null,
+                 robotMode == RobotMode.AUTONOMOUS ? autonomous() : null,
+                 posessionIndicator(),
+                 posessionSignal(),
+                 shooterReadyIndicator(),
                 LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, Color.kRed),
-                userSignal()
+                 userSignal()
             ).toAdressableLEDBuffer());
     }
 

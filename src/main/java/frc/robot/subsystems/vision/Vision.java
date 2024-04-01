@@ -11,13 +11,11 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
-import stl.math.LobstahMath;
 
 public class Vision extends SubsystemBase {
     private final VisionIO io;
     private final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
     private Pose2d robotPose = new Pose2d();
-    private boolean hasSeenTag = false;
 
     public Vision(VisionIO io) {
         this.io = io;
