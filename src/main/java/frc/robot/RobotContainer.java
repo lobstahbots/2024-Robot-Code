@@ -41,6 +41,7 @@ import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOSparkMax;
 import frc.robot.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.vision.NoteTrackerIOPhoton;
+import frc.robot.subsystems.vision.NoteTrackerIOSim;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhoton;
 import frc.robot.subsystems.vision.VisionIOSim;
@@ -152,7 +153,7 @@ public class RobotContainer {
             SwerveModuleIOSim backLeft = new SwerveModuleIOSim(BackLeftModuleConstants.angleOffset);
             SwerveModuleIOSim backRight = new SwerveModuleIOSim(BackRightModuleConstants.angleOffset);
 
-            driveBase = new DriveBase(new GyroIO() {}, new Vision(new VisionIOSim(), new NoteTrackerIOPhoton()), frontLeft, frontRight, backLeft,
+            driveBase = new DriveBase(new GyroIO() {}, new Vision(new VisionIOSim(), new NoteTrackerIOSim()), frontLeft, frontRight, backLeft,
                     backRight, false);
             pivot = new Pivot(new PivotIOSim());
             shooter = new Shooter(new ShooterIOSim());

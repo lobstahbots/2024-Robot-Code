@@ -10,6 +10,7 @@ import java.util.List;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.networkalerts.Alert;
 import frc.robot.networkalerts.Alert.AlertType;
 
@@ -28,9 +29,8 @@ public class NoteTrackerIOPhoton implements NoteTrackerIO {
         return notes;
     }
 
-    public void updateInputs(NoteTrackerIOInputs inputs) {
+    public void updateInputs(NoteTrackerIOInputs inputs, Pose2d robotPose) {
         var result = noteCamera.getLatestResult();
-        notes = result.targets;
-        inputs.notes = notes.toArray(new PhotonTrackedTarget[] {});
+        NoteTrackerIO.updateInputs(inputs, result.targets);
     }
 }

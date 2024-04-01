@@ -326,6 +326,14 @@ public final class Constants {
     public static final double REPROJECTION_ERROR_REJECTION_THRESHOLD = 0.4;
 
     public static final Transform3d ROBOT_TO_NOTE_CAMERA = new Transform3d();
+    public static final int NOTE_CAMERA_RES_WIDTH = 1280;
+    public static final int NOTE_CAMERA_RES_HEIGHT = 960;
+    public static final int NOTE_CAMERA_FOV_DEG = 90;
+    public static final double NOTE_CAMERA_AVG_LATENCY_MS = 35;
+    public static final double NOTE_AVG_ERROR_PX = 0.25;
+    public static final double NOTE_ERROR_STDEV_PX = 0.08;
+    public static final double NOTE_FPS = 20;
+    public static final double NOTE_CAMERA_LATENCY_STDEV_MS = 5;
   }
 
   public static class IndexerConstants {
@@ -365,6 +373,9 @@ public final class Constants {
     public static final double PICKUP_OFFSET = 1;
     public static final double WING_LINE_X_METERS = 5.8217054 - 1;
     public static final Pose2d[] SHOOTING_POSES = new Pose2d[]{new Pose2d(WING_LINE_X_METERS, 7.004, new Rotation2d()), new Pose2d(WING_LINE_X_METERS, 0.756, new Rotation2d())};
+
+    public static final double NOTE_RADIUS = Units.feetToMeters(1);
+    public static final double NOTE_THICKNESS_RADIUS = Units.inchesToMeters(1);
   }
 
   public static class AlertConstants {

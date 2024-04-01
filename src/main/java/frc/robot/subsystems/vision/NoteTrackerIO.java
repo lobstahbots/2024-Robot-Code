@@ -4,30 +4,43 @@
 
 package frc.robot.subsystems.vision;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.littletonrobotics.junction.AutoLog;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform3d;
 
 /** Add your docs here. */
 public interface NoteTrackerIO {
     @AutoLog
     public static class NoteTrackerIOInputs {
-        public PhotonTrackedTarget[] notes; // One might think that this is a bad idea, but turns out
-                                            // that PhotonTrackedTargets work in AdvantageKit
-                                            // So this is nice
+        public double[] yaws = new double[] {};
+        public double[] pitches = new double[] {};
+        public double[] areas = new double[] {};
+        public double[] skews = new double[] {};
+        public Transform3d[] cameraToTargets = new Transform3d[] {};
     }
 
-    public default List<PhotonTrackedTarget> getNotes() {
-        return new ArrayList<>();
+    public default void updateInputs(NoteTrackerIOInputs inputs, Pose2d robotPose) {};
+
+    public static void updateInputs(NoteTrackerIOInputs inputs, List<PhotonTrackedTarget> targets) {
+        int len = targets.size();
+        inputs.yaws = new double[len];
+        inputs.pitches = new double[len];
+        inputs.areas = new double[len];
+        inputs.skews = new double[len];
+        inputs.cameraToTargets = new Transform3d[len];
+        for (int i = 0; i < len; i++) {
+            var target = targets.get(i);
+            inputs.yaws[i] = target.getYaw();
+            inputs.pitches[i] = target.getPitch();
+            inputs.areas[i] = target.getArea();
+            inputs.skews[i] = target.getSkew();
+            inputs.cameraToTargets[i] = target.getBestCameraToTarget();
+        }
     }
-
-    public default void update(Pose2d robotPose) {}
-
-    public default void updateInputs(NoteTrackerIOInputs inputs) {};
 
     public default void periodic() {};
 }
