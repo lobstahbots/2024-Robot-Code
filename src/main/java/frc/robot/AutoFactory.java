@@ -50,6 +50,7 @@ import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotKinematics;
 import frc.robot.subsystems.shooter.NoteVisualizer;
 import frc.robot.subsystems.shooter.Shooter;
+import stl.command.PeriodicConditionalCommand;
 import stl.sysId.CharacterizableSubsystem;
 import stl.trajectory.AlliancePoseMirror;
 
@@ -70,8 +71,7 @@ public class AutoFactory {
         this.pivot = pivot;
         this.indexer = indexer;
 
-        AutoBuilder.configureHolonomic(
-                driveBase::getPose, // Robot pose supplier
+        AutoBuilder.configureHolonomic(driveBase::getPose, // Robot pose supplier
                 driveBase::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
                 driveBase::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 driveBase::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
@@ -79,13 +79,11 @@ public class AutoFactory {
                         new PIDConstants(2.25, 0.0, 0), // Translation PID constants
                         new PIDConstants(0.5, 0.0, 0), // Rotation PID constants
                         0.1, // Max module speed, in m/s
-                        Units.inchesToMeters(Math.sqrt(35* 35 + 35 * 35)), // Drive base radius in meters. Distance from robot center to furthest module.
+                        Units.inchesToMeters(Math.sqrt(35 * 35 + 35 * 35)), // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig(true, false) // Default path replanning config. See the API for the options
-                ),
-                () -> {
+                ), () -> {
                     return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
-                },
-                driveBase);
+                }, driveBase);
 
         NoteVisualizer.setRobotPoseSupplier(driveBase::getPose, pivot::getPosition);
 
@@ -96,8 +94,7 @@ public class AutoFactory {
      * using PathPlanner. Default should be Choreo.
      */
     public enum PathType {
-        CHOREO,
-        PATHPLANNER
+        CHOREO, PATHPLANNER
     }
 
     /**
@@ -109,10 +106,7 @@ public class AutoFactory {
     public Command getPathFindToPoseCommand(Pose2d targetPose) {
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        Command pathfindingCommand = AutoBuilder.pathfindToPoseFlipped(
-                targetPose,
-                PathConstants.CONSTRAINTS,
-                0.0, // Goal end velocity in meters/sec
+        Command pathfindingCommand = AutoBuilder.pathfindToPoseFlipped(targetPose, PathConstants.CONSTRAINTS, 0.0, // Goal end velocity in meters/sec
                 0.0 // Rotation delay distance in meters. This is how far the robot should travel
                     // before attempting to rotate.
         ).andThen(new SwerveDriveStopCommand(driveBase));
@@ -129,10 +123,7 @@ public class AutoFactory {
     public Command getPathFindToPoseCommand(Supplier<Pose2d> targetPose) {
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        Command pathfindingCommand = AutoBuilder.pathfindToPoseFlipped(
-                targetPose.get(),
-                PathConstants.CONSTRAINTS,
-                0.0, // Goal end velocity in meters/sec
+        Command pathfindingCommand = AutoBuilder.pathfindToPoseFlipped(targetPose.get(), PathConstants.CONSTRAINTS, 0.0, // Goal end velocity in meters/sec
                 0.0 // Rotation delay distance in meters. This is how far the robot should travel
                     // before attempting to rotate.
         ).andThen(new SwerveDriveStopCommand(driveBase));
@@ -166,11 +157,8 @@ public class AutoFactory {
         }
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
-                path,
-                PathConstants.CONSTRAINTS,
-                0.0 // Rotation delay distance in meters. This is how far the robot should travel
-                    // before attempting to rotate.
+        Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, PathConstants.CONSTRAINTS, 0.0 // Rotation delay distance in meters. This is how far the robot should travel
+                                                                                                             // before attempting to rotate.
         );
 
         return pathfindingCommand;
@@ -192,27 +180,22 @@ public class AutoFactory {
         List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(poses);
 
         // Create the path using the bezier points created above
-        PathPlannerPath path = new PathPlannerPath(
-                bezierPoints, PathConstants.CONSTRAINTS,
+        PathPlannerPath path = new PathPlannerPath(bezierPoints, PathConstants.CONSTRAINTS,
                 new GoalEndState(0.0, goalEndRotationHolonomic) // Goal end state. You can set a holonomic rotation
-                                                                // here. If using a differential drivetrain, the
-                                                                // rotation will have no effect.
+                                                                                                                                                    // here. If using a differential drivetrain, the
+                                                                                                                                                    // rotation will have no effect.
         );
 
-        Supplier<Command> pathCommand = () -> AutoBuilder.pathfindThenFollowPath(
-                path,
-                PathConstants.CONSTRAINTS,
-                0.0 // Rotation delay distance in meters. This is how far the robot should travel
-                    // before attempting to rotate.
+        Supplier<Command> pathCommand = () -> AutoBuilder.pathfindThenFollowPath(path, PathConstants.CONSTRAINTS, 0.0 // Rotation delay distance in meters. This is how far the robot should travel
+                                                                                                                      // before attempting to rotate.
         );
         return pathCommand;
     }
 
     /* Aim and end. */
     public Command aimOnce(Supplier<Rotation2d> value) {
-        return new RotatePivotCommand(pivot, value.get().getDegrees())
-                .until(() -> Math
-                        .abs(pivot.getPosition().minus(value.get()).getDegrees()) < PivotConstants.MAX_PIVOT_ERROR);
+        return new RotatePivotCommand(pivot, value.get().getDegrees()).until(
+                () -> Math.abs(pivot.getPosition().minus(value.get()).getDegrees()) < PivotConstants.MAX_PIVOT_ERROR);
     }
 
     /* Automatically aim at speaker and stop once it reaches the angle. */
@@ -232,12 +215,13 @@ public class AutoFactory {
 
     /* Automatically aim and shoot note at speaker. */
     public Command aimAndShoot() {
-        return autoAimOnce().andThen(
-                new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
-                        .alongWith(new WaitCommand(2).until(() -> shooter
-                                        .getLowerFlywheelVelocityRPS() > shooter.getSetpoint() * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
-                                        && shooter
-                                                .getUpperFlywheelVelocityRPS() > shooter.getSetpoint() * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR)
+        return autoAimOnce()
+                .andThen(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                        .alongWith(new WaitCommand(2)
+                                .until(() -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
+                                        * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
+                                        && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
+                                                * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(autoAimHold()))
                 .withTimeout(5).until(() -> !indexer.flywheelBeamBroken() && !indexer.flywheelBeamBroken());
@@ -246,15 +230,13 @@ public class AutoFactory {
     /* Hardcoded two-note auto. (BSU) */
     public Command getTwoNote() {
         return aimOnce(() -> Rotation2d.fromDegrees(40))
-                .andThen(
-                        new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
-                                .alongWith(new WaitCommand(2)
-                                        .andThen(
-                                                new SpinIndexerCommand(indexer,
-                                                        IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
-                                .alongWith(new RotatePivotCommand(pivot, 40)))
+                .andThen(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                        .alongWith(new WaitCommand(2)
+                                .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
+                        .alongWith(new RotatePivotCommand(pivot, 40)))
                 .withTimeout(5)
-                .andThen(aimOnce(() -> new Rotation2d(0)).alongWith(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake))))
+                .andThen(aimOnce(() -> new Rotation2d(0))
+                        .alongWith(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake))))
                 .andThen(new SwerveDriveCommand(driveBase, 0.15, 0, 0, true).withTimeout(1.5)
                         .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
                                 .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))))
@@ -268,12 +250,15 @@ public class AutoFactory {
 
     public Command getInitialPose() {
         int startingIndex = (int) responses.get().get(0);
-        if(startingIndex == 0) {
-            return new InstantCommand(() -> driveBase.resetPose(AlliancePoseMirror.mirrorPose2d(new Pose2d(0.61, 6.47, driveBase.getGyroAngle()))));
+        if (startingIndex == 0) {
+            return new InstantCommand(() -> driveBase
+                    .resetPose(AlliancePoseMirror.mirrorPose2d(new Pose2d(0.61, 6.47, driveBase.getGyroAngle()))));
         } else if (startingIndex == 1) {
-            return new InstantCommand(() -> driveBase.resetPose(AlliancePoseMirror.mirrorPose2d(new Pose2d(1.07, 5.46, driveBase.getGyroAngle()))));
+            return new InstantCommand(() -> driveBase
+                    .resetPose(AlliancePoseMirror.mirrorPose2d(new Pose2d(1.07, 5.46, driveBase.getGyroAngle()))));
         } else {
-            return new InstantCommand(() -> driveBase.resetPose(AlliancePoseMirror.mirrorPose2d(new Pose2d(0.51, 4.47, driveBase.getGyroAngle()))));
+            return new InstantCommand(() -> driveBase
+                    .resetPose(AlliancePoseMirror.mirrorPose2d(new Pose2d(0.51, 4.47, driveBase.getGyroAngle()))));
         }
     }
 
@@ -284,12 +269,13 @@ public class AutoFactory {
 
     /* Hardcoded one-note auto. (BSU) */
     public Command getScoreAuto() {
-        return aimOnce(() -> Rotation2d.fromDegrees(40)).andThen(
-                new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
-                        .alongWith(new WaitCommand(2).until(() -> shooter
-                                        .getLowerFlywheelVelocityRPS() > shooter.getSetpoint() * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
-                                        && shooter
-                                                .getUpperFlywheelVelocityRPS() > shooter.getSetpoint() * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR)
+        return aimOnce(() -> Rotation2d.fromDegrees(40))
+                .andThen(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                        .alongWith(new WaitCommand(2)
+                                .until(() -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
+                                        * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
+                                        && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
+                                                * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(new RotatePivotCommand(pivot, 40)))
                 .withTimeout(5).until(() -> !indexer.flywheelBeamBroken() && !indexer.flywheelBeamBroken());
@@ -303,34 +289,38 @@ public class AutoFactory {
     /* Pickup and score one note. */
     public Command pickupAndScore(Pose2d notePoseBlue, Pose2d scoringPose) {
         Pose2d targetPose = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d();
-        Logger.recordOutput(notePoseBlue.toString(), new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()));
-        Command pickupAndScoreCommand = getPathFindToPoseCommand(new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()))
-        .andThen(new InstantCommand( () -> Logger.recordOutput("Auto Step", 0)))
-        .raceWith(new RotatePivotCommand(pivot, 0))
-        .andThen(new InstantCommand( () -> Logger.recordOutput("Auto Step", 1)))
-        .andThen(new SwerveDriveStopCommand(driveBase))
-        .andThen(new InstantCommand( () -> Logger.recordOutput("Auto Step", 2)))
-        .andThen(new TurnToAngleCommand(driveBase, new Rotation2d(0), 0, 0, true))
-        .andThen(new InstantCommand( () -> Logger.recordOutput("Auto Step", 3)))
-        .andThen(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake)))
-        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 4)))
-                .andThen(getPathFindToPoseCommand(new Pose2d(notePoseBlue.getX() + FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()))
-                        .deadlineWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED).alongWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)).until(() -> indexer.flywheelBeamBroken() && indexer.intakeBeamBroken())))
-                                .andThen(new InstantCommand( () -> Logger.recordOutput("Auto Step", 5)))
-                .andThen(getPathFindToPoseCommand(scoringPose)
-                        .onlyIf(() -> notePoseBlue.getX() > scoringPose.getX()))
-                                .andThen(new InstantCommand( () -> Logger.recordOutput("Auto Step", 6)))
-                .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false, true))
-                        .andThen(new InstantCommand( () -> Logger.recordOutput("Auto Step", 7)))
-                .andThen(aimAndShoot());
+        Logger.recordOutput(notePoseBlue.toString(),
+                new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()));
+        Command pickupAndScoreCommand = getPathFindToPoseCommand(
+                new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()))
+                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 0)))
+                        .raceWith(new RotatePivotCommand(pivot, 0))
+                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 1)))
+                        .andThen(new SwerveDriveStopCommand(driveBase))
+                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 2)))
+                        .andThen(new TurnToAngleCommand(driveBase, new Rotation2d(0), 0, 0, true))
+                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 3)))
+                        .andThen(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake)))
+                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 4)))
+                        .andThen(new SwerveDriveCommand(driveBase, 0.25, 0, 0, true).withTimeout(0.5)
+                                .deadlineWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
+                                        .alongWith(new PeriodicConditionalCommand(new SpinIndexerCommand(indexer, 0),
+                                                new SpinIndexerCommand(indexer,
+                                                        IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                                                () -> indexer.flywheelBeamBroken() && indexer.intakeBeamBroken()))))
+                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 5)))
+                        .andThen(getPathFindToPoseCommand(scoringPose)
+                                .onlyIf(() -> notePoseBlue.getX() > scoringPose.getX()))
+                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 6)))
+                        .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false, true))
+                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 7))).andThen(aimAndShoot());
         return pickupAndScoreCommand;
     }
 
     @AutoLogOutput
     public BooleanSupplier isWithinTarget(Pose2d target, double zone) {
         return () -> Math.abs(driveBase.getPose().getTranslation()
-                .getDistance(
-                        AlliancePoseMirror.mirrorTranslation2d(target.getTranslation()))) < zone;
+                .getDistance(AlliancePoseMirror.mirrorTranslation2d(target.getTranslation()))) < zone;
     }
 
     public Command getWingAndMidlineAuto() {
@@ -343,15 +333,13 @@ public class AutoFactory {
 
         if (startingWingNoteIndex < endingWingNoteIndex) {
             for (int i = startingWingNoteIndex; i <= endingWingNoteIndex; i++) {
-                autoCommand = autoCommand
-                        .andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i],
-                                new Pose2d(16, 16, new Rotation2d())));
+                autoCommand = autoCommand.andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i],
+                        new Pose2d(16, 16, new Rotation2d())));
             }
         } else {
             for (int i = startingWingNoteIndex; i >= endingWingNoteIndex; i--) {
-                autoCommand = autoCommand
-                        .andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i],
-                                new Pose2d(16, 16, new Rotation2d())));
+                autoCommand = autoCommand.andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i],
+                        new Pose2d(16, 16, new Rotation2d())));
             }
         }
 
@@ -372,23 +360,16 @@ public class AutoFactory {
     }
 
     public enum CharacterizationRoutine {
-        QUASISTATIC_FORWARD,
-        QUASISTATIC_BACKWARD,
-        DYNAMIC_FORWARD,
-        DYNAMIC_BACKWARD,
+        QUASISTATIC_FORWARD, QUASISTATIC_BACKWARD, DYNAMIC_FORWARD, DYNAMIC_BACKWARD,
     }
 
     public Command getCharacterizationRoutine() {
         CharacterizableSubsystem subsystem = (CharacterizableSubsystem) responses.get().get(0);
         CharacterizationRoutine routine = (CharacterizationRoutine) responses.get().get(1);
 
-        var sysIdRoutine = new SysIdRoutine(
-                new SysIdRoutine.Config(
-                        null, null, null, // Use default config
-                        (state) -> Logger.recordOutput("SysIdTestState", state.toString())),
-                new SysIdRoutine.Mechanism(
-                        (Measure<Voltage> voltage) -> subsystem.runVolts(voltage.in(Volts)),
-                        null, // No log consumer, since data is recorded by AdvantageKit
+        var sysIdRoutine = new SysIdRoutine(new SysIdRoutine.Config(null, null, null, // Use default config
+                (state) -> Logger.recordOutput("SysIdTestState", state.toString())),
+                new SysIdRoutine.Mechanism((Measure<Voltage> voltage) -> subsystem.runVolts(voltage.in(Volts)), null, // No log consumer, since data is recorded by AdvantageKit
                         subsystem));
         switch (routine) {
             case QUASISTATIC_FORWARD:
