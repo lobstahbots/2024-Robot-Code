@@ -224,7 +224,7 @@ public class AutoFactory {
                                                 * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(autoAimHold()))
-                .withTimeout(5).until(() -> !indexer.flywheelBeamBroken() && !indexer.flywheelBeamBroken());
+                .withTimeout(3);
     }
 
     /* Hardcoded two-note auto. (BSU) */
@@ -278,7 +278,7 @@ public class AutoFactory {
                                                 * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(new RotatePivotCommand(pivot, 40)))
-                .withTimeout(5).until(() -> !indexer.flywheelBeamBroken() && !indexer.flywheelBeamBroken());
+                .withTimeout(5).until(() -> !indexer.intakeBeamBroken() && !indexer.flywheelBeamBroken());
     }
 
     /* Hardcoded one note and drive back auto. (BSU) */
@@ -302,15 +302,15 @@ public class AutoFactory {
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 3)))
                         .andThen(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake)))
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 4)))
-                        .andThen(new SwerveDriveCommand(driveBase, 0.25, 0, 0, true).withTimeout(0.5)
+                        .andThen(new SwerveDriveCommand(driveBase, 0.2, 0, 0, true).withTimeout(0.9)
                                 .deadlineWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
-                                        .alongWith(new PeriodicConditionalCommand(new SpinIndexerCommand(indexer, 0),
+                                        .alongWith(new PeriodicConditionalCommand(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                                                 new SpinIndexerCommand(indexer,
                                                         IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                                                 () -> indexer.flywheelBeamBroken() && indexer.intakeBeamBroken()))))
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 5)))
-                        .andThen(getPathFindToPoseCommand(scoringPose)
-                                .onlyIf(() -> notePoseBlue.getX() > scoringPose.getX()))
+                        //  .andThen(getPathFindToPoseCommand(scoringPose)
+                                //  .onlyIf(() -> notePoseBlue.getX() > scoringPose.getX()))
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 6)))
                         .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false, true))
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 7))).andThen(aimAndShoot());
