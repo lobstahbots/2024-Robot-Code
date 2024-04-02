@@ -11,8 +11,12 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.ConstraintsZone;
+import com.pathplanner.lib.path.EventMarker;
 import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.RotationTarget;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -25,6 +29,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -176,12 +181,12 @@ public class AutoFactory {
      * @return The constructed path following command through provided poses, with
      *         set end rotation.
      */
-    public Supplier<Command> getPathFromWaypoints(Rotation2d goalEndRotationHolonomic, Pose2d... poses) {
+    public Supplier<Command> getPathFromWaypoints(Rotation2d goalEndRotationHolonomic, List<RotationTarget> rotationTargets, List<ConstraintsZone> constraintsZone, List<EventMarker> eventMarkers, Pose2d... poses) {
         List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(poses);
 
         // Create the path using the bezier points created above
-        PathPlannerPath path = new PathPlannerPath(bezierPoints, PathConstants.CONSTRAINTS,
-                new GoalEndState(0.0, goalEndRotationHolonomic) // Goal end state. You can set a holonomic rotation
+        PathPlannerPath path = new PathPlannerPath(bezierPoints, rotationTargets, constraintsZone, eventMarkers, PathConstants.CONSTRAINTS, 
+                new GoalEndState(0, goalEndRotationHolonomic), false // Goal end state. You can set a holonomic rotation
                                                                                                                                                     // here. If using a differential drivetrain, the
                                                                                                                                                     // rotation will have no effect.
         );
@@ -290,30 +295,16 @@ public class AutoFactory {
     public Command pickupAndScore(Pose2d notePoseBlue, Pose2d scoringPose) {
         Pose2d targetPose = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d();
         Logger.recordOutput(notePoseBlue.toString(),
-                new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()));
-        Command pickupAndScoreCommand = getPathFindToPoseCommand(
-                new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()))
-                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 0)))
-                        .raceWith(new RotatePivotCommand(pivot, 0))
-                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 1)))
-                        .andThen(new SwerveDriveStopCommand(driveBase))
-                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 2)))
-                        .andThen(new TurnToAngleCommand(driveBase, new Rotation2d(0), 0, 0, true))
-                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 3)))
+                new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d(0)));
+        Command pickupAndScoreCommand = new ConditionalCommand(getPathFromWaypoints(new Rotation2d(0), List.of(), List.of(), List.of(), scoringPose,
+                new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()), notePoseBlue).get(), getPathFromWaypoints(new Rotation2d(0), List.of(), List.of(), List.of(),
+                new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()), notePoseBlue).get(), () -> AlliancePoseMirror.mirrorX(notePoseBlue.getX()) > scoringPose.getX())
+                        .deadlineWith(new RotatePivotCommand(pivot, 0).alongWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)).alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .andThen(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake)))
-                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 4)))
-                        .andThen(new SwerveDriveCommand(driveBase, 0.2, 0, 0, true).withTimeout(0.9)
-                                .deadlineWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
-                                        .alongWith(new PeriodicConditionalCommand(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
-                                                new SpinIndexerCommand(indexer,
-                                                        IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
-                                                () -> indexer.flywheelBeamBroken() && indexer.intakeBeamBroken()))))
-                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 5)))
-                        //  .andThen(getPathFindToPoseCommand(scoringPose)
-                                //  .onlyIf(() -> notePoseBlue.getX() > scoringPose.getX()))
-                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 6)))
-                        .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false, true))
-                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 7))).andThen(aimAndShoot());
+                         .andThen(getPathFindToPoseCommand(scoringPose)
+                                 .onlyIf(() -> AlliancePoseMirror.mirrorX(driveBase.getPose().getX()) > scoringPose.getX()));
+                        // .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false, true))
+                        // .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 7))).andThen(aimAndShoot());
         return pickupAndScoreCommand;
     }
 

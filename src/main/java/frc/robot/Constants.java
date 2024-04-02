@@ -41,7 +41,9 @@ public final class Constants {
     public static final PathConstraints CONSTRAINTS = new PathConstraints(
         1, 1,
         Units.degreesToRadians(540), Units.degreesToRadians(720));
-
+    public static final PathConstraints PICKUP_CONSTRAINTS = new PathConstraints(
+        1, 1,
+        Units.degreesToRadians(360), Units.degreesToRadians(360));
     public static final Pose2d STATION_1 = new Pose2d(0.4119143784046173, 7.161474227905273,
         Rotation2d.fromRotations(0));
     public static final Pose2d STATION_2 = new Pose2d(0.5068893432617188, 3.710716009140014,
