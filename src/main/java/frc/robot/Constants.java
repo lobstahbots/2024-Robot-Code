@@ -370,6 +370,6 @@ public final class Constants {
 
   public static class LEDConstants {
     public static final int LED_PORT = 0;
-    public static final int LED_LENGTH = 100;
+    public static final int LED_LENGTH = 60;
   }
 }

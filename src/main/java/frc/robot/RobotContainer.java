@@ -169,8 +169,8 @@ public class RobotContainer {
     }
 
     private void setDefaultCommands() {
-        intake.setDefaultCommand(new StopIntakeCommand(intake));
-        indexer.setDefaultCommand(new CenterNoteCommand(indexer).unless(() -> !indexer.flywheelBeamBroken() && !indexer.intakeBeamBroken()));
+        // intake.setDefaultCommand(new StopIntakeCommand(intake));
+        // indexer.setDefaultCommand(new CenterNoteCommand(indexer).unless(() -> !indexer.flywheelBeamBroken() && !indexer.intakeBeamBroken()));
         driveBase.setDefaultCommand(new SwerveDriveCommand(driveBase,
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),

@@ -34,12 +34,14 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PathConstants;
+import frc.robot.commands.IntakeNoteCommand;
 import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.SpinIndexerCommand;
 import frc.robot.commands.SpinIntakeCommand;
 import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveDriveStopCommand;
+import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.TurnToPointCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.indexer.Indexer;
@@ -74,11 +76,11 @@ public class AutoFactory {
                 driveBase::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 driveBase::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
-                        new PIDConstants(0.001, 0.0, 0), // Translation PID constants
-                        new PIDConstants(0.1, 0.0, 0), // Rotation PID constants
-                        1, // Max module speed, in m/s
-                        Units.inchesToMeters(Math.sqrt(28* 28 + 28 * 28)), // Drive base radius in meters. Distance from robot center to furthest module.
-                        new ReplanningConfig(true, true) // Default path replanning config. See the API for the options
+                        new PIDConstants(2.25, 0.0, 0), // Translation PID constants
+                        new PIDConstants(0.5, 0.0, 0), // Rotation PID constants
+                        0.1, // Max module speed, in m/s
+                        Units.inchesToMeters(Math.sqrt(35* 35 + 35 * 35)), // Drive base radius in meters. Distance from robot center to furthest module.
+                        new ReplanningConfig(true, false) // Default path replanning config. See the API for the options
                 ),
                 () -> {
                     return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
@@ -111,7 +113,7 @@ public class AutoFactory {
                 targetPose,
                 PathConstants.CONSTRAINTS,
                 0.0, // Goal end velocity in meters/sec
-                10.0 // Rotation delay distance in meters. This is how far the robot should travel
+                0.0 // Rotation delay distance in meters. This is how far the robot should travel
                     // before attempting to rotate.
         ).andThen(new SwerveDriveStopCommand(driveBase));
 
@@ -131,7 +133,7 @@ public class AutoFactory {
                 targetPose.get(),
                 PathConstants.CONSTRAINTS,
                 0.0, // Goal end velocity in meters/sec
-                10.0 // Rotation delay distance in meters. This is how far the robot should travel
+                0.0 // Rotation delay distance in meters. This is how far the robot should travel
                     // before attempting to rotate.
         ).andThen(new SwerveDriveStopCommand(driveBase));
 
@@ -167,7 +169,7 @@ public class AutoFactory {
         Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
                 path,
                 PathConstants.CONSTRAINTS,
-                10.0 // Rotation delay distance in meters. This is how far the robot should travel
+                0.0 // Rotation delay distance in meters. This is how far the robot should travel
                     // before attempting to rotate.
         );
 
@@ -200,7 +202,7 @@ public class AutoFactory {
         Supplier<Command> pathCommand = () -> AutoBuilder.pathfindThenFollowPath(
                 path,
                 PathConstants.CONSTRAINTS,
-                10.0 // Rotation delay distance in meters. This is how far the robot should travel
+                0.0 // Rotation delay distance in meters. This is how far the robot should travel
                     // before attempting to rotate.
         );
         return pathCommand;
@@ -303,15 +305,23 @@ public class AutoFactory {
         Pose2d targetPose = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d();
         Logger.recordOutput(notePoseBlue.toString(), new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()));
         Command pickupAndScoreCommand = getPathFindToPoseCommand(new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()))
-                .raceWith(new RotatePivotCommand(pivot, 0))
-                .andThen(new SwerveDriveStopCommand(driveBase))
-                .andThen(getPathFindToPoseCommand(
-                        notePoseBlue)
-                        .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED))
-                        .raceWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
-                .andThen(getPathFindToPoseCommand(() -> scoringPose)
-                        .onlyWhile(() -> notePoseBlue.getX() > scoringPose.getX()))
+        .andThen(new InstantCommand( () -> Logger.recordOutput("Auto Step", 0)))
+        .raceWith(new RotatePivotCommand(pivot, 0))
+        .andThen(new InstantCommand( () -> Logger.recordOutput("Auto Step", 1)))
+        .andThen(new SwerveDriveStopCommand(driveBase))
+        .andThen(new InstantCommand( () -> Logger.recordOutput("Auto Step", 2)))
+        .andThen(new TurnToAngleCommand(driveBase, new Rotation2d(0), 0, 0, true))
+        .andThen(new InstantCommand( () -> Logger.recordOutput("Auto Step", 3)))
+        .andThen(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake)))
+        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 4)))
+                .andThen(getPathFindToPoseCommand(new Pose2d(notePoseBlue.getX() + FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()))
+                        .deadlineWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED).alongWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)).until(() -> indexer.flywheelBeamBroken() && indexer.intakeBeamBroken())))
+                                .andThen(new InstantCommand( () -> Logger.recordOutput("Auto Step", 5)))
+                .andThen(getPathFindToPoseCommand(scoringPose)
+                        .onlyIf(() -> notePoseBlue.getX() > scoringPose.getX()))
+                                .andThen(new InstantCommand( () -> Logger.recordOutput("Auto Step", 6)))
                 .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false, true))
+                        .andThen(new InstantCommand( () -> Logger.recordOutput("Auto Step", 7)))
                 .andThen(aimAndShoot());
         return pickupAndScoreCommand;
     }
