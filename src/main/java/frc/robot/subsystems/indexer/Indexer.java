@@ -8,7 +8,6 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IndexerConstants.IndexerState;
 import frc.robot.subsystems.leds.LEDs;
 
 public class Indexer extends SubsystemBase {
@@ -16,8 +15,7 @@ public class Indexer extends SubsystemBase {
 
   private IndexerIO io;
   private final IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
-  private IndexerState indexerState = IndexerState.NoNote;
-
+ 
   public Indexer(IndexerIO io) {
     this.io = io;
   }
@@ -51,23 +49,34 @@ public class Indexer extends SubsystemBase {
     return inputs.flywheelBeamBroken;
   } 
 
-  public void setIndexerState(IndexerState newState) {
-    indexerState = newState;
-  }
-
-  public IndexerState getIndexerState() {
-    return indexerState;
-  }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
     Logger.processInputs("Indexer", inputs);
-    SmartDashboard.putBoolean("Intake Beam Broken", inputs.intakeBeamBroken);
-    SmartDashboard.putBoolean("Flywheel Beam Broken", inputs.flywheelBeamBroken);
-    SmartDashboard.putString("State", indexerState.toString());
-    LEDs.getInstance().setPossession(inputs.intakeBeamBrokenRaw);
+    SmartDashboard.putBoolean("Intake Beam Broken Raw", inputs.intakeBeamBroken);
+    SmartDashboard.putBoolean("Flywheel Beam Broken Raw", inputs.flywheelBeamBroken);
+    SmartDashboard.putBoolean("Intake Beam Broken", inputs.debouncedIntakeBeamBroken);
+    SmartDashboard.putBoolean("Flywheel Beam Broken", inputs.debouncedFlywheelBeamBroken);
+    LEDs.getInstance().setPossession(inputs.intakeBeamBroken);
     io.periodic();
   }
+
+//   public Command centerNoteCommand() {
+//     return this.run(() -> {
+//         if (!flywheelBeamBroken) {
+//             setIndexerMotorSpeed(-IndexerConstants.SLOW_INDEXER_MOTOR_SPEED);
+//         } else if (!intakeBeamBroken) {
+//             setIndexerMotorSpeed(IndexerConstants.SLOW_INDEXER_MOTOR_SPEED);
+//         } else {
+//             stopIndexerMotor();
+//         }
+//     });
+//   }
+
+//   public Command intakeNoteCommand(double speed) {
+//     return this.run(() -> {
+//         setIndexerMotorSpeed(speed);
+//     }).until(() -> flywheelBeamBroken || intakeBeamBroken);
+//   }
 }
