@@ -224,7 +224,7 @@ public class AutoFactory {
                                                 * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(autoAimHold()))
-                .withTimeout(3);
+                .withTimeout(3).until(() -> !indexer.flywheelBeamBroken() && !indexer.intakeBeamBroken());
     }
 
     /* Hardcoded two-note auto. (BSU) */
@@ -304,7 +304,7 @@ public class AutoFactory {
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 4)))
                         .andThen(new SwerveDriveCommand(driveBase, 0.2, 0, 0, true).withTimeout(0.9)
                                 .deadlineWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
-                                        .alongWith(new PeriodicConditionalCommand(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                                        .alongWith(new PeriodicConditionalCommand(new SpinIndexerCommand(indexer, 0),
                                                 new SpinIndexerCommand(indexer,
                                                         IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                                                 () -> indexer.flywheelBeamBroken() && indexer.intakeBeamBroken()))))

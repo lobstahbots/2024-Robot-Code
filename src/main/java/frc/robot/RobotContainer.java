@@ -192,30 +192,14 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
-        alignToAmpButton.whileTrue(new PeriodicConditionalCommand(
-                new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT).alongWith(
-                        new SpinShooterCommand(shooter, ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED)),
-                autoFactory.getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D)
-                        .andThen(new TurnToAngleCommand(driveBase,
-                                () -> FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation(), () -> 0, () -> 0,
-                                () -> DriveConstants.FIELD_CENTRIC, true)
-                                        .alongWith(new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT))
-                                        .raceWith(new SpinShooterCommand(shooter, ShooterConstants.AMP_SPEED,
-                                                ShooterConstants.AMP_SPEED))),
-                autoFactory.isWithinTarget(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D, PathConstants.AMP_ALIGN_DEADBAND)));
-        alignToSourceButton.whileTrue(new PeriodicConditionalCommand(
-                new RotatePivotCommand(pivot, PivotConstants.SOURCE_PICKUP_ANGLE_SETPOINT)
-                        .alongWith(new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED,
-                                ShooterConstants.UNSHOOTER_SPEED)),
-                autoFactory.getPathFindToPoseCommand(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D)
-                        .andThen(new TurnToAngleCommand(driveBase,
-                                () -> FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(), () -> 0, () -> 0,
-                                () -> DriveConstants.FIELD_CENTRIC, true).alongWith(
-                                        new RotatePivotCommand(pivot, PivotConstants.SOURCE_PICKUP_ANGLE_SETPOINT))
-                                        .raceWith(new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED,
-                                                ShooterConstants.UNSHOOTER_SPEED))),
-                autoFactory.isWithinTarget(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D,
-                        PathConstants.SOURCE_ALIGN_DEADBAND)));
+        alignToAmpButton.whileTrue(new TurnToAngleCommand(driveBase,
+                                () -> FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation(), () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
+                () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
+                                () -> false, false));
+        alignToSourceButton.whileTrue(new TurnToAngleCommand(driveBase,
+                                () -> FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(), () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
+                () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
+                                () -> false, false));
         alignToSpeakerButton.whileTrue(new TurnToPointCommand(driveBase, driveBase::getPose,
                 FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
                 () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
@@ -225,15 +209,15 @@ public class RobotContainer {
                         .alongWith(new RotatePivotCommand(pivot, 0))
                         .alongWith(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake))));
         driveIndexButton.whileTrue(new PeriodicConditionalCommand(
-                new SpinIndexerCommand(indexer, -IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
-                new SpinIndexerCommand(indexer, -IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                 () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
                         * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
                         && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
                                 * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR));
         operatorIndexButton.whileTrue(new PeriodicConditionalCommand(
-                new SpinIndexerCommand(indexer, -IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
-                new SpinIndexerCommand(indexer, -IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                 () -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
                         * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
                         && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
