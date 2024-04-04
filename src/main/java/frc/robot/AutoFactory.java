@@ -34,6 +34,7 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PathConstants;
+import frc.robot.commands.IntakeNoteCommand;
 import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.SpinIndexerCommand;
 import frc.robot.commands.SpinIntakeCommand;
@@ -216,11 +217,7 @@ public class AutoFactory {
     public Command aimAndShoot() {
         return autoAimOnce()
                 .andThen(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
-                        .alongWith(new WaitCommand(1)
-                                .until(() -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
-                                        * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
-                                        && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
-                                                * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR)
+                        .alongWith(new WaitCommand(2)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(autoAimHold()))
                 .withTimeout(5);
@@ -271,18 +268,14 @@ public class AutoFactory {
         return aimOnce(() -> Rotation2d.fromDegrees(40))
                 .andThen(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
                         .alongWith(new WaitCommand(2)
-                                .until(() -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
-                                        * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
-                                        && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
-                                                * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(new RotatePivotCommand(pivot, 40)))
-                .withTimeout(5).until(() -> !indexer.intakeBeamBroken() && !indexer.flywheelBeamBroken());
+                .withTimeout(5);
     }
 
     /* Hardcoded one note and drive back auto. (BSU) */
     public Command getScoreAndDriveAuto() {
-        return getScoreAuto().andThen(new SwerveDriveCommand(driveBase, 0.5, 0, 0, false).withTimeout(3));
+        return getScoreAuto().andThen(new SwerveDriveCommand(driveBase, 0.5, 0, 0, false).withTimeout(4));
     }
 
     /* Pickup and score one note. */
@@ -295,7 +288,6 @@ public class AutoFactory {
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 0)))
                         .raceWith(new RotatePivotCommand(pivot, 0))
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 1)))
-                        .andThen(new SwerveDriveStopCommand(driveBase))
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 2)))
                         .andThen(new TurnToAngleCommand(driveBase, new Rotation2d(0), 0, 0, true))
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 3)))
@@ -308,10 +300,10 @@ public class AutoFactory {
                                                         IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                                                 () -> indexer.flywheelBeamBroken() && indexer.intakeBeamBroken()))))
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 5)))
-                        //  .andThen(getPathFindToPoseCommand(scoringPose)
-                                //  .onlyIf(() -> notePoseBlue.getX() > scoringPose.getX()))
+                        .andThen(getPathFindToPoseCommand(scoringPose))
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 6)))
                         .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false, true))
+                        // .andThen(getScoreAuto())
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 7))).andThen(aimAndShoot());
         return pickupAndScoreCommand;
     }
@@ -333,12 +325,12 @@ public class AutoFactory {
         if (startingWingNoteIndex < endingWingNoteIndex) {
             for (int i = startingWingNoteIndex; i <= endingWingNoteIndex; i++) {
                 autoCommand = autoCommand.andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i],
-                        new Pose2d(16, 16, new Rotation2d())));
+                        FieldConstants.SUBWOOFER_SHOOTING_POSE));
             }
         } else {
             for (int i = startingWingNoteIndex; i >= endingWingNoteIndex; i--) {
                 autoCommand = autoCommand.andThen(pickupAndScore(FieldConstants.BLUE_WING_NOTES_STARTING_POSES[i],
-                        new Pose2d(16, 16, new Rotation2d())));
+                        FieldConstants.SUBWOOFER_SHOOTING_POSE));
             }
         }
 

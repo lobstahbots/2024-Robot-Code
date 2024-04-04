@@ -172,6 +172,7 @@ public class RobotContainer {
     private void setDefaultCommands() {
         // intake.setDefaultCommand(new StopIntakeCommand(intake));
         // indexer.setDefaultCommand(new CenterNoteCommand(indexer).unless(() -> !indexer.flywheelBeamBroken() && !indexer.intakeBeamBroken()));
+        indexer.setDefaultCommand(new SpinIndexerCommand(indexer, 0));
         driveBase.setDefaultCommand(new SwerveDriveCommand(driveBase,
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
@@ -194,11 +195,11 @@ public class RobotContainer {
 
     public void configureButtonBindings() {
         alignToAmpButton.whileTrue(new TurnToAngleCommand(driveBase,
-                                () -> AlliancePoseMirror.mirrorRotation2d(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation()), () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
+                                () -> AlliancePoseMirror.flipRotation(AlliancePoseMirror.mirrorRotation2d(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation())), () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
                                 () -> true, false));
         alignToSourceButton.whileTrue(new TurnToAngleCommand(driveBase,
-                                () -> AlliancePoseMirror.mirrorRotation2d(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation()), () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
+                                () -> AlliancePoseMirror.flipRotation(AlliancePoseMirror.mirrorRotation2d(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation())), () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
                                 () -> true, false));
         alignToSpeakerButton.whileTrue(new TurnToPointCommand(driveBase, driveBase::getPose,
