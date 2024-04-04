@@ -46,6 +46,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhoton;
 import frc.robot.subsystems.vision.VisionIOSim;
 import stl.command.PeriodicConditionalCommand;
+import stl.trajectory.AlliancePoseMirror;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.intake.Intake;
@@ -193,11 +194,11 @@ public class RobotContainer {
 
     public void configureButtonBindings() {
         alignToAmpButton.whileTrue(new TurnToAngleCommand(driveBase,
-                                () -> FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation(), () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
+                                () -> AlliancePoseMirror.mirrorRotation2d(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation()), () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
-                                () -> false, false));
+                                () -> true, false));
         alignToSourceButton.whileTrue(new TurnToAngleCommand(driveBase,
-                                () -> FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(), () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
+                                () -> AlliancePoseMirror.mirrorRotation2d(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation()), () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
                                 () -> true, false));
         alignToSpeakerButton.whileTrue(new TurnToPointCommand(driveBase, driveBase::getPose,

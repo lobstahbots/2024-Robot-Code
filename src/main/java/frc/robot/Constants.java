@@ -343,8 +343,8 @@ public final class Constants {
     public static final double FIELD_LENGTH = 16.54;
     public static final Pose3d BLUE_ALLIANCE_SPEAKER_POSE3D = new Pose3d(0.225, 5.55, 2.1,
         new Rotation3d(0, 0, Units.degreesToRadians(180)));
-    public static final Pose2d BLUE_ALLIANCE_AMP_POSE2D = new Pose2d(2, 8.25, Rotation2d.fromDegrees(-90));
-    public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(14.75, 0.75, Rotation2d.fromDegrees(60));
+    public static final Pose2d BLUE_ALLIANCE_AMP_POSE2D = new Pose2d(2, 8.25, Rotation2d.fromDegrees(90));
+    public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(14.75, 0.75, Rotation2d.fromDegrees(-60));
     public static final Pose2d[] MIDLINE_NOTES_STARTING_POSES = new Pose2d[] {
         new Pose2d(8.258, 7.462, new Rotation2d()), new Pose2d(8.258, 5.785, new Rotation2d()),
         new Pose2d(8.258, 4.109, new Rotation2d()), new Pose2d(8.258, 2.432, new Rotation2d()),
