@@ -117,7 +117,7 @@ public class LEDs extends SubsystemBase {
                  robotMode == RobotMode.AUTONOMOUS ? autonomous() : null,
                  posessionIndicator(),
                  posessionSignal(),
-                 shooterReadyIndicator(),
+                //  shooterReadyIndicator(),
                  debugColor == null? null : LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, debugColor),
                  userSignal()
             ).toAdressableLEDBuffer());
