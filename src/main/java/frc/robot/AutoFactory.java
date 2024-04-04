@@ -34,7 +34,6 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PathConstants;
-import frc.robot.commands.IntakeNoteCommand;
 import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.SpinIndexerCommand;
 import frc.robot.commands.SpinIntakeCommand;
