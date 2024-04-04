@@ -288,21 +288,17 @@ public class AutoFactory {
         Pose2d targetPose = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d();
         Logger.recordOutput(notePoseBlue.toString(),
                 new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d(0)));
-        Command pickupAndScoreCommand = new ConditionalCommand(getPathFromWaypoints(new Rotation2d(0), List.of(), List.of(), List.of(), scoringPose,
-                new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()), notePoseBlue).get(), getPathFromWaypoints(new Rotation2d(0), List.of(), List.of(), List.of(),
-                new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()), notePoseBlue).get(), () -> AlliancePoseMirror.mirrorX(notePoseBlue.getX()) > scoringPose.getX())
+        Command pickupAndScoreCommand = getPathFromWaypoints(new Rotation2d(0), List.of(), List.of(), List.of(),
+                new Pose2d(notePoseBlue.getX() - FieldConstants.PICKUP_OFFSET, notePoseBlue.getY(), new Rotation2d()), notePoseBlue, scoringPose).get()
                         .deadlineWith(new RotatePivotCommand(pivot, 0).alongWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)).alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .andThen(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake)))
-                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 4)))
                         .andThen(new SwerveDriveCommand(driveBase, 0.2, 0, 0, true).withTimeout(0.7)
                                 .deadlineWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
                                         .alongWith(new PeriodicConditionalCommand(new SpinIndexerCommand(indexer, 0),
                                                 new SpinIndexerCommand(indexer,
                                                         IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                                                 () -> indexer.flywheelBeamBroken() && indexer.intakeBeamBroken()))))
-                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 5)))
                         .andThen(getPathFindToPoseCommand(scoringPose))
-                        .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 6)))
                         .andThen(new TurnToPointCommand(driveBase, driveBase::getPose, targetPose, 0, 0, false, true))
                         // .andThen(getScoreAuto())
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 7))).andThen(aimAndShoot());
