@@ -2,8 +2,6 @@
 
 package frc.robot.subsystems.leds;
 
-import com.ctre.phoenix.CANifier.LEDChannel;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
@@ -47,7 +45,6 @@ public class LEDs extends SubsystemBase {
     boolean tipped = false;
     boolean coastMode = false;
     boolean lowBattery = false;
-
     public Color debugColor = Color.kRed;
 
     private void setFMSState(ConnectionState value) { connectionState = value; }
@@ -121,7 +118,6 @@ public class LEDs extends SubsystemBase {
                  posessionIndicator(),
                  posessionSignal(),
                  shooterReadyIndicator(),
-                LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, Color.kRed),
                 LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, debugColor),
                  userSignal()
             ).toAdressableLEDBuffer());
@@ -193,7 +189,7 @@ public class LEDs extends SubsystemBase {
         if (connectionState == ConnectionState.DISCONNECTED) {
             return disconnected();
         } else if (connectionState == ConnectionState.DS_ONLY) {
-            return disabledStandby.get(new Color(255, 25, 25), new Color(25, 25,255));
+            return disabledStandby.get(new Color(255, 25, 25), new Color(255, 69, 70));
         } else if (alliance == Alliance.Red) {
             return disabledStandby.get(new Color(255, 25, 25), new Color(255, 69, 70));
         } else  {

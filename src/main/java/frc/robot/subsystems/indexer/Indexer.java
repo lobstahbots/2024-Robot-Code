@@ -58,7 +58,7 @@ public class Indexer extends SubsystemBase {
     SmartDashboard.putBoolean("Flywheel Beam Broken Raw", inputs.flywheelBeamBroken);
     SmartDashboard.putBoolean("Intake Beam Broken", inputs.debouncedIntakeBeamBroken);
     SmartDashboard.putBoolean("Flywheel Beam Broken", inputs.debouncedFlywheelBeamBroken);
-    LEDs.getInstance().setPossession(inputs.intakeBeamBroken);
+    LEDs.getInstance().setPossession(inputs.intakeBeamBroken || inputs.flywheelBeamBroken);
     io.periodic();
   }
 
