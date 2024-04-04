@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
@@ -83,6 +84,7 @@ public class DriveBase extends CharacterizableSubsystem {
 
     this.isOpenLoop = isOpenLoop;
     this.resetPose(getPose());
+    SmartDashboard.putData("Toggle Has Seen Tag", new InstantCommand(() -> hasSeenTag = !hasSeenTag).ignoringDisable(true));
   }
 
   /**
@@ -263,7 +265,8 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     SmartDashboard.putBoolean("Has seen tag", hasSeenTag);
     Poses estimatedPoses = photonVision.getEstimatedPose(getPose());
     if (estimatedPoses.frontPose().isPresent() && (hasSeenTag == false || LobstahMath.getDistBetweenPoses(estimatedPoses.frontPose().get().toPose2d(),
-    getPose()) <= 1)) {
+    getPose()) <= 2)) {
+        Logger.recordOutput("Found Front", true);
         if(hasSeenTag == false) {
            resetPose(new Pose2d(estimatedPoses.frontPose().get().getX(), estimatedPoses.frontPose().get().getY(), getGyroAngle()));
            hasSeenTag = true;
@@ -272,7 +275,8 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
         Logger.recordOutput("Front Stdev", estimatedPoses.frontStdev().toString());
         swerveOdometry.addVisionMeasurement(estimatedPoses.frontPose().get().toPose2d(), Timer.getFPGATimestamp(), VecBuilder.fill(0.1, 0.1, 0.2));
      } if (estimatedPoses.rearPose().isPresent() && (hasSeenTag == false || LobstahMath.getDistBetweenPoses(estimatedPoses.rearPose().get().toPose2d(),
-    getPose()) <= 1)) {
+    getPose()) <= 2)) {
+        Logger.recordOutput("Found Rear", true);
         if(hasSeenTag == false) {
             resetPose(new Pose2d(estimatedPoses.rearPose().get().getX(), estimatedPoses.rearPose().get().getY(), getGyroAngle()));
             hasSeenTag = true;

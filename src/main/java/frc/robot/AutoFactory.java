@@ -217,14 +217,14 @@ public class AutoFactory {
     public Command aimAndShoot() {
         return autoAimOnce()
                 .andThen(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
-                        .alongWith(new WaitCommand(2)
+                        .alongWith(new WaitCommand(1)
                                 .until(() -> shooter.getLowerFlywheelVelocityRPS() > shooter.getSetpoint()
                                         * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR
                                         && shooter.getUpperFlywheelVelocityRPS() > shooter.getSetpoint()
                                                 * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(autoAimHold()))
-                .withTimeout(3).until(() -> !indexer.flywheelBeamBroken() && !indexer.intakeBeamBroken());
+                .withTimeout(5);
     }
 
     /* Hardcoded two-note auto. (BSU) */
