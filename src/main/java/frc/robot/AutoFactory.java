@@ -301,7 +301,7 @@ public class AutoFactory {
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 3)))
                         .andThen(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake)))
                         .andThen(new InstantCommand(() -> Logger.recordOutput("Auto Step", 4)))
-                        .andThen(new SwerveDriveCommand(driveBase, 0.2, 0, 0, true).withTimeout(0.9)
+                        .andThen(new SwerveDriveCommand(driveBase, 0.2, 0, 0, true).withTimeout(0.7)
                                 .deadlineWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
                                         .alongWith(new PeriodicConditionalCommand(new SpinIndexerCommand(indexer, 0),
                                                 new SpinIndexerCommand(indexer,

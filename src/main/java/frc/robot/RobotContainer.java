@@ -197,9 +197,9 @@ public class RobotContainer {
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
                                 () -> false, false));
         alignToSourceButton.whileTrue(new TurnToAngleCommand(driveBase,
-                                () -> FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(), () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
+                                () -> FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation(), () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
-                                () -> false, false));
+                                () -> true, false));
         alignToSpeakerButton.whileTrue(new TurnToPointCommand(driveBase, driveBase::getPose,
                 FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
                 () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
@@ -229,7 +229,7 @@ public class RobotContainer {
         ampButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT)
                 .alongWith(new SpinShooterCommand(shooter, ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED)));
         outtakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.OUTTAKE_SPEED)
-                .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.SLOW_INDEXER_MOTOR_SPEED)));
+                .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.SLOW_INDEXER_MOTOR_OUTTAKE_SPEED)));
         subwooferButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.SUBWOOFER_ANGLE_SETPOINT).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
         wingButton.whileTrue(new RotatePivotCommand(pivot, 11.5).alongWith(

@@ -46,7 +46,7 @@ public class IntakeNoteCommand extends Command {
         indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);
         intake.setIntakeMotorSpeed(IntakeConstants.INTAKE_SPEED);
     } else if (indexer.flywheelBeamBroken()) {
-        indexer.setIndexerMotorSpeed(-IndexerConstants.SLOW_INDEXER_MOTOR_SPEED);
+        indexer.setIndexerMotorSpeed(IndexerConstants.SLOW_INDEXER_MOTOR_OUTTAKE_SPEED);
         intake.stopIntakeMotor();
     } else {
         indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);

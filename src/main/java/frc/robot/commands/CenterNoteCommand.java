@@ -38,9 +38,9 @@ public class CenterNoteCommand extends Command {
     if (indexer.intakeBeamBroken() && indexer.flywheelBeamBroken()) {
         indexer.stopIndexerMotor();
     } else if (indexer.intakeBeamBroken()) {
-        indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);
+        indexer.setIndexerMotorSpeed(-IndexerConstants.SLOW_INDEXER_MOTOR_OUTTAKE_SPEED);
     } else if (indexer.flywheelBeamBroken()) {
-        indexer.setIndexerMotorSpeed(-IndexerConstants.SLOW_INDEXER_MOTOR_SPEED);
+        indexer.setIndexerMotorSpeed(IndexerConstants.SLOW_INDEXER_MOTOR_OUTTAKE_SPEED);
     } else {
         indexer.setIndexerMotorSpeed(IndexerConstants.FAST_INDEXER_MOTOR_SPEED);
     } 
