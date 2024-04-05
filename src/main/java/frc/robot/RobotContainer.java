@@ -163,6 +163,7 @@ public class RobotContainer {
 
         this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, indexer, autoChooser::getResponses);
 
+        registerNamedCommands();
         setDefaultCommands();
         smartDashSetup();
         configureButtonBindings();
@@ -180,6 +181,11 @@ public class RobotContainer {
                         () -> pivot.getPosition().getDegrees() + -20 * MathUtil.applyDeadband(
                                 operatorJoystick.getRawAxis(OperatorIOConstants.PIVOT_ANGLE_AXIS),
                                 PivotConstants.INPUT_DEADBAND)));
+    }
+
+    private void registerNamedCommands() {
+        NamedCommands.registerCommand("Intake", autoFactory.pickup());
+        NamedCommands.registerCommand("Score", autoFactory.aimAndShoot());
     }
 
     /**
@@ -272,6 +278,7 @@ public class RobotContainer {
         autoChooser.addRoutine("Score Preload", List.of(), autoFactory::getScoreAuto);
         autoChooser.addRoutine("Score Preload And Drive", List.of(), autoFactory::getScoreAndDriveAuto);
         autoChooser.addRoutine("2 Note Subwoofer Center Auto", List.of(), autoFactory::getTwoNote);
+        autoChooser.addRoutine("2 Note Subwoofer Center Auto", List.of(), autoFactory::g);
 
         autoChooser.addRoutine("Wing And Midline Auto", List.of(
                 new AutoQuestion<>("Starting Note?", Map.of("Wing Right", 0, "Wing Center", 1, "Wing Left", 2)),

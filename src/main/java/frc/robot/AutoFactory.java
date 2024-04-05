@@ -226,6 +226,10 @@ public class AutoFactory {
                 .withTimeout(3).until(() -> !indexer.flywheelBeamBroken() && !indexer.intakeBeamBroken());
     }
 
+    public Command getCleanup() {
+        return getPathFindToPathCommand("New Path", PathType.CHOREO);
+    }
+
     /* Hardcoded two-note auto. (BSU) */
     public Command getTwoNote() {
         return aimOnce(() -> Rotation2d.fromDegrees(40))
@@ -283,6 +287,15 @@ public class AutoFactory {
     /* Hardcoded one note and drive back auto. (BSU) */
     public Command getScoreAndDriveAuto() {
         return getScoreAuto().andThen(new SwerveDriveCommand(driveBase, 0.5, 0, 0, false).withTimeout(3));
+    }
+
+    public Command pickup() {
+        return new new SwerveDriveCommand(driveBase, 0.2, 0, 0, true).withTimeout(0.9)
+        .deadlineWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
+                .alongWith(new PeriodicConditionalCommand(new SpinIndexerCommand(indexer, 0),
+                        new SpinIndexerCommand(indexer,
+                                IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
+                        () -> indexer.flywheelBeamBroken() && indexer.intakeBeamBroken())))
     }
 
     /* Pickup and score one note. */
