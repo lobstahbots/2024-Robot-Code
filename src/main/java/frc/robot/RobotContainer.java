@@ -52,6 +52,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOSparkMax;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.revrobotics.CANSparkMax.IdleMode;
 import frc.robot.subsystems.leds.LEDs;
 import frc.robot.subsystems.leds.LEDsReal;
@@ -184,8 +185,9 @@ public class RobotContainer {
     }
 
     private void registerNamedCommands() {
-        NamedCommands.registerCommand("Intake", autoFactory.pickup());
-        NamedCommands.registerCommand("Score", autoFactory.aimAndShoot());
+        NamedCommands.registerCommand("Begin Intake", autoFactory.intake());
+        NamedCommands.registerCommand("Shoot", autoFactory.aimAndShoot());
+        NamedCommands.registerCommand("Shoot Turn And Intake", autoFactory.aimAndShoot());
     }
 
     /**
@@ -278,7 +280,7 @@ public class RobotContainer {
         autoChooser.addRoutine("Score Preload", List.of(), autoFactory::getScoreAuto);
         autoChooser.addRoutine("Score Preload And Drive", List.of(), autoFactory::getScoreAndDriveAuto);
         autoChooser.addRoutine("2 Note Subwoofer Center Auto", List.of(), autoFactory::getTwoNote);
-        autoChooser.addRoutine("2 Note Subwoofer Center Auto", List.of(), autoFactory::g);
+        autoChooser.addRoutine("Cleanup Auto", List.of(), autoFactory::getCleanup);
 
         autoChooser.addRoutine("Wing And Midline Auto", List.of(
                 new AutoQuestion<>("Starting Note?", Map.of("Wing Right", 0, "Wing Center", 1, "Wing Left", 2)),
