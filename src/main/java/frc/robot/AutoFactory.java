@@ -28,13 +28,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.PivotConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PathConstants;
-import frc.robot.commands.IntakeNoteCommand;
+import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.SpinIndexerCommand;
 import frc.robot.commands.SpinIntakeCommand;
@@ -223,10 +222,6 @@ public class AutoFactory {
                 .withTimeout(3);
     }
 
-    public Command getCleanup() {
-        return getPathFindToPathCommand("Cleanup", PathType.CHOREO);
-    }
-
     /* Hardcoded two-note auto. (BSU) */
     public Command getTwoNote() {
         return aimOnce(() -> Rotation2d.fromDegrees(40))
@@ -282,7 +277,12 @@ public class AutoFactory {
         return getScoreAuto().andThen(new SwerveDriveCommand(driveBase, 0.5, 0, 0, false).withTimeout(4));
     }
 
+    public Command getScoreAndDriveAutoAmpSide() {
+        return getScoreAuto().andThen(new WaitCommand(5)).andThen(new SwerveDriveCommand(driveBase, 0.15, 0, 0, true).withTimeout(6));
+    }
+
     public Command intake() {
+        System.out.println("Scheduled Intaking");
         return new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
         .alongWith(new PeriodicConditionalCommand(new SpinIndexerCommand(indexer, 0),
                 new SpinIndexerCommand(indexer,
@@ -291,6 +291,7 @@ public class AutoFactory {
     }
 
     public Command shootTurnIntake() {
+        System.out.println("Schedule Shoot Turn");
         return aimAndShoot().andThen(new TurnToAngleCommand(driveBase, new Rotation2d(0), 0, 0, true)).andThen(intake());
     }
 

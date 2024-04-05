@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.AutoFactory.CharacterizationRoutine;
+import frc.robot.AutoFactory.PathType;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -126,6 +127,7 @@ public class RobotContainer {
     private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
             () -> Commands.none());
     private final AutoFactory autoFactory;
+    private final RoutineFactory routineFactory;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -164,7 +166,7 @@ public class RobotContainer {
         }
 
         this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, indexer, autoChooser::getResponses);
-
+        this.routineFactory = new RoutineFactory(autoFactory);
         registerNamedCommands();
         setDefaultCommands();
         smartDashSetup();
@@ -189,7 +191,7 @@ public class RobotContainer {
     private void registerNamedCommands() {
         NamedCommands.registerCommand("Begin Intake", autoFactory.intake());
         NamedCommands.registerCommand("Shoot", autoFactory.aimAndShoot());
-        NamedCommands.registerCommand("Shoot Turn And Intake", autoFactory.aimAndShoot());
+        NamedCommands.registerCommand("Shoot Turn And Intake", autoFactory.shootTurnIntake());
     }
 
     /**
@@ -281,8 +283,9 @@ public class RobotContainer {
         autoChooser.addRoutine("Drive", List.of(), autoFactory::getDriveAuto);
         autoChooser.addRoutine("Score Preload", List.of(), autoFactory::getScoreAuto);
         autoChooser.addRoutine("Score Preload And Drive", List.of(), autoFactory::getScoreAndDriveAuto);
+        autoChooser.addRoutine("Score Preload and Drive Out (Amp Side)", List.of(), autoFactory::getScoreAndDriveAutoAmpSide);
         autoChooser.addRoutine("2 Note Subwoofer Center Auto", List.of(), autoFactory::getTwoNote);
-        autoChooser.addRoutine("Cleanup Auto", List.of(), autoFactory::getCleanup);
+        autoChooser.addRoutine("Cleanup Auto", List.of(), routineFactory::getCleanup);
 
         autoChooser.addRoutine("Wing And Midline Auto", List.of(
                 new AutoQuestion<>("Starting Note?", Map.of("Wing Right", 0, "Wing Center", 1, "Wing Left", 2)),
