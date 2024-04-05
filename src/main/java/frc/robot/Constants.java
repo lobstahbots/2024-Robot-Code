@@ -270,9 +270,14 @@ public final class Constants {
     public static final int ENCODER_CHANNEL = 3;
 
     public static final double MAX_PIVOT_ERROR = 5;
-    public static final double AMP_ANGLE_SETPOINT = 115;
-    public static final double SOURCE_PICKUP_ANGLE_SETPOINT = 115;
-    public static final double SUBWOOFER_ANGLE_SETPOINT = 40;
+    public static final double AMP_ANGLE_SETPOINT = 113;
+    public static final double SOURCE_PICKUP_ANGLE_SETPOINT = 106;
+    public static final double SUBWOOFER_ANGLE_SETPOINT = 38;
+    public static final double WING_ANGLE_SETPOINT = 9.5;
+    public static final double PODIUM_ANGLE_SETPOINT = 21;
+    public static final double PASS_ANGLE_SETPOINT = 26;
+    public static final double BACKSHOT_PODIUM_ANGLE_SETPOINT = Units.radiansToDegrees(1.77);
+    public static final double BACKSHOT_SUBWOOFER_ANGLE_SETPOINT = Units.radiansToDegrees(2.22);
     public static final double GROUND_PICKUP_ANGLE = 0;
     public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();

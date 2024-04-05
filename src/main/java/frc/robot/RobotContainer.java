@@ -244,17 +244,17 @@ public class RobotContainer {
                 .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.SLOW_INDEXER_MOTOR_OUTTAKE_SPEED)));
         subwooferButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.SUBWOOFER_ANGLE_SETPOINT).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
-        wingButton.whileTrue(new RotatePivotCommand(pivot, 11.5).alongWith(
+        wingButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.WING_ANGLE_SETPOINT).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
-        podiumButton.whileTrue(new RotatePivotCommand(pivot, 23).alongWith(
+        podiumButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.PODIUM_ANGLE_SETPOINT).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)));
-        passButton.whileTrue(new RotatePivotCommand(pivot, 30)
+        passButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.PASS_ANGLE_SETPOINT)
                 .alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED)));
-        backshotPodium.whileTrue(new RotatePivotCommand(pivot, Units.radiansToDegrees(1.77))
+        backshotPodium.whileTrue(new RotatePivotCommand(pivot, PivotConstants.BACKSHOT_PODIUM_ANGLE_SETPOINT)
                 .alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED)));
-        backshotSubwoofer.whileTrue(new RotatePivotCommand(pivot, Units.radiansToDegrees(2.22))
+        backshotSubwoofer.whileTrue(new RotatePivotCommand(pivot, PivotConstants.BACKSHOT_SUBWOOFER_ANGLE_SETPOINT)
                 .alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED)));
-        sourceButton.whileTrue(new RotatePivotCommand(pivot, 108).alongWith(
+        sourceButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.SOURCE_PICKUP_ANGLE_SETPOINT).alongWith(
                 new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED)));
         userSignalButton.onTrue(new InstantCommand(() -> leds.setUserSignal(true)).ignoringDisable(true))
                 .onFalse(new InstantCommand(() -> leds.setUserSignal(false)).ignoringDisable(true));
@@ -263,7 +263,7 @@ public class RobotContainer {
     public boolean getOperatorConnected() {
         return operatorJoystick.isConnected();
     }
-
+ 
     public boolean getDriverConnected() {
         return driverJoystick.isConnected();
     }
