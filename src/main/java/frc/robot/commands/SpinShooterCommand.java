@@ -15,11 +15,13 @@ public class SpinShooterCommand extends Command {
   private final Shooter shooter;
   private final double lowerShooterSpeed;
   private final double upperShooterSpeed;
+  private final boolean openLoop;
 
-  public SpinShooterCommand(Shooter shooter, double lowerShooterSpeed, double upperShooterSpeed) {
+  public SpinShooterCommand(Shooter shooter, double lowerShooterSpeed, double upperShooterSpeed, boolean openLoop) {
     this.shooter = shooter;
     this.lowerShooterSpeed = lowerShooterSpeed;
     this.upperShooterSpeed = upperShooterSpeed;
+    this.openLoop = openLoop;
     addRequirements(shooter);
   }
 
@@ -31,7 +33,8 @@ public class SpinShooterCommand extends Command {
 
   @Override
   public void execute() {
-    shooter.setShooterSpeed(upperShooterSpeed, lowerShooterSpeed);
+    if (openLoop) shooter.setShooterSpeedRaw(upperShooterSpeed, lowerShooterSpeed); 
+    else shooter.setShooterSpeed(upperShooterSpeed, lowerShooterSpeed);
   }
 
   @Override

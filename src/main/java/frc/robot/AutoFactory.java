@@ -215,7 +215,7 @@ public class AutoFactory {
     /* Automatically aim and shoot note at speaker. */
     public Command aimAndShoot() {
         return autoAimOnce()
-                .andThen(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                .andThen(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED, false)
                         .alongWith(new WaitCommand(1)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(autoAimHold()))
@@ -225,7 +225,7 @@ public class AutoFactory {
     /* Hardcoded two-note auto. (BSU) */
     public Command getTwoNote() {
         return aimOnce(() -> Rotation2d.fromDegrees(40))
-                .andThen(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                .andThen(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED, false)
                         .alongWith(new WaitCommand(2)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(new RotatePivotCommand(pivot, 40)))
@@ -236,7 +236,7 @@ public class AutoFactory {
                         .raceWith(new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)
                                 .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED))))
                 .andThen(aimOnce(() -> Rotation2d.fromDegrees(22)).andThen(
-                        new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                        new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED, false)
                                 .alongWith(new WaitCommand(2).andThen(
                                         new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                                 .alongWith(new RotatePivotCommand(pivot, 22)))
@@ -265,7 +265,7 @@ public class AutoFactory {
     /* Hardcoded one-note auto. (BSU) */
     public Command getScoreAuto() {
         return aimOnce(() -> Rotation2d.fromDegrees(40))
-                .andThen(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED)
+                .andThen(new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED, false)
                         .alongWith(new WaitCommand(2)
                                 .andThen(new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED)))
                         .alongWith(new RotatePivotCommand(pivot, 40)))
