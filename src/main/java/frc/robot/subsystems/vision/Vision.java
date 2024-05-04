@@ -2,17 +2,17 @@ package frc.robot.subsystems.vision;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
-
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.VisionConstants;
 import stl.math.LobstahMath;
 
@@ -173,8 +173,19 @@ public class Vision extends SubsystemBase {
         return inputs.visibleRearFiducialIDs;
     }
 
-    public Transform3d[] getNotePositions() {
-        return trackerInputs.cameraToTargets;
+    @AutoLogOutput(key = "NotePositions")
+    public Translation2d[] getNotePositions() {
+        int length = trackerInputs.areas.length;
+        Translation2d[] res = new Translation2d[length];
+        for (int i = 0; i < length; i++) {
+            var horizontalWidth = (trackerInputs.maxXs[i] - trackerInputs.minXs[i]) / VisionConstants.NOTE_CAMERA_RES_WIDTH;
+            var hypotDistance = 2 * (FieldConstants.NOTE_RADIUS + FieldConstants.NOTE_THICKNESS_RADIUS)
+                    / horizontalWidth / Units.degreesToRadians(VisionConstants.NOTE_HORIZONTAL_FOV_DEG);
+            var groundDistance = Math.sqrt(Math.pow(hypotDistance, 2) - Math.pow(VisionConstants.ROBOT_TO_NOTE_CAMERA.getZ(), 2));
+            double yaw = trackerInputs.yaws[i];
+            res[i] = new Translation2d(Math.cos(yaw), Math.sin(yaw)).times(groundDistance);
+        }
+        return res;
     }
 
     public void periodic() {

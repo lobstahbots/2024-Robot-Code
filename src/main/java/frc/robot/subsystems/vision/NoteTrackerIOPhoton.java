@@ -13,6 +13,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.networkalerts.Alert;
 import frc.robot.networkalerts.Alert.AlertType;
+import stl.math.LobstahMath;
 
 /** Add your docs here. */
 public class NoteTrackerIOPhoton implements NoteTrackerIO {
@@ -22,15 +23,27 @@ public class NoteTrackerIOPhoton implements NoteTrackerIO {
 
     public NoteTrackerIOPhoton() {
         noteCamera = new PhotonCamera("NoteCam");
-        cameraDisconnectedAlert = new Alert("Note camera has disconnected.", AlertType.ERROR, () -> !noteCamera.isConnected());
-    }
-
-    public List<PhotonTrackedTarget> getNotes() {
-        return notes;
+        cameraDisconnectedAlert = new Alert("Note camera has disconnected.", AlertType.ERROR,
+                () -> !noteCamera.isConnected());
     }
 
     public void updateInputs(NoteTrackerIOInputs inputs, Pose2d robotPose) {
-        var result = noteCamera.getLatestResult();
-        NoteTrackerIO.updateInputs(inputs, result.targets);
+        notes = noteCamera.getLatestResult().getTargets();
+        inputs.areas = notes.stream().mapToDouble(note -> note.getArea()).toArray();
+        inputs.pitches = notes.stream().mapToDouble(note -> note.getPitch()).toArray();
+        inputs.skews = notes.stream().mapToDouble(note -> note.getSkew()).toArray();
+        inputs.yaws = notes.stream().mapToDouble(note -> note.getYaw()).toArray();
+        inputs.minXs = new double[notes.size()];
+        inputs.minYs = new double[notes.size()];
+        inputs.maxXs = new double[notes.size()];
+        inputs.maxYs = new double[notes.size()];
+        for (int i = 0; i < notes.size(); i++) {
+            var note = notes.get(i);
+            var boundaries = LobstahMath.getBoundaries(note.getMinAreaRectCorners());
+            inputs.minXs[i] = boundaries.minX();
+            inputs.minYs[i] = boundaries.minY();
+            inputs.maxXs[i] = boundaries.maxX();
+            inputs.maxYs[i] = boundaries.maxY();
+        }
     }
 }

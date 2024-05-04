@@ -4,26 +4,31 @@
 
 package frc.robot.subsystems.vision;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 import org.photonvision.estimation.TargetModel;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.simulation.VisionTargetSim;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.VisionConstants;
+import stl.math.LobstahMath;
 
 /** Add your docs here. */
 public class NoteTrackerIOSim implements NoteTrackerIO {
@@ -33,6 +38,7 @@ public class NoteTrackerIOSim implements NoteTrackerIO {
     private final VisionSystemSim visionSystemSim;
     private final List<VisionTargetSim> noteTargets;
     private final TimeInterpolatableBuffer<Pose2d> robotPoseBuffer = TimeInterpolatableBuffer.createBuffer(1.5);
+    private List<PhotonTrackedTarget> notes = new ArrayList<>();
 
     public NoteTrackerIOSim() {
         visionSystemSim = new VisionSystemSim("notes");
@@ -83,7 +89,27 @@ public class NoteTrackerIOSim implements NoteTrackerIO {
         // publish this info to NT at estimated timestamp of receive
         noteCameraSim.submitProcessedFrame(camResult, timestampNT);
 
-        NoteTrackerIO.updateInputs(inputs, camResult.getTargets());
+        notes = camResult.getTargets();
+
+        inputs.areas = notes.stream().mapToDouble(note -> note.getArea()).toArray();
+        inputs.pitches = notes.stream().mapToDouble(note -> note.getPitch()).toArray();
+        inputs.skews = notes.stream().mapToDouble(note -> note.getSkew()).toArray();
+        inputs.yaws = notes.stream().mapToDouble(note -> note.getYaw()).toArray();
+        inputs.minXs = new double[notes.size()];
+        inputs.minYs = new double[notes.size()];
+        inputs.maxXs = new double[notes.size()];
+        inputs.maxYs = new double[notes.size()];
+        for (int i = 0; i < notes.size(); i++) {
+            var note = notes.get(i);
+            var boundaries = LobstahMath.getBoundaries(note.getMinAreaRectCorners());
+            inputs.minXs[i] = boundaries.minX();
+            inputs.minYs[i] = boundaries.minY();
+            inputs.maxXs[i] = boundaries.maxX();
+            inputs.maxYs[i] = boundaries.maxY();
+        }
+
+        Logger.recordOutput("RealNoteOffsets", noteTargets.stream()
+                .map(noteTarget -> noteTarget.getPose().toPose2d().minus(robotPose)).toArray(Transform2d[]::new));
     }
 
     public void periodic() {
