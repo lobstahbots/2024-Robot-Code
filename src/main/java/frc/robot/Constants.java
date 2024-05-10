@@ -325,16 +325,16 @@ public final class Constants {
     public static final double AMBIGUITY_ACCEPTANCE_THRESHOLD = 0.2; 
     public static final double REPROJECTION_ERROR_REJECTION_THRESHOLD = 0.4;
 
-    public static final Transform3d ROBOT_TO_NOTE_CAMERA = new Transform3d();
-    public static final int NOTE_CAMERA_RES_WIDTH = 1280;
-    public static final int NOTE_CAMERA_RES_HEIGHT = 960;
-    public static final int NOTE_CAMERA_FOV_DEG = 90;
+    public static final Transform3d ROBOT_TO_NOTE_CAMERA = new Transform3d(0, 0, Units.inchesToMeters(6.5), new Rotation3d());
+    public static final int NOTE_CAMERA_RES_WIDTH = 1920;
+    public static final int NOTE_CAMERA_RES_HEIGHT = 1080;
+    public static final double NOTE_CAMERA_FOV_DEG = 69.34;
     public static final double NOTE_CAMERA_AVG_LATENCY_MS = 35;
     public static final double NOTE_AVG_ERROR_PX = 0.25;
     public static final double NOTE_ERROR_STDEV_PX = 0.08;
     public static final double NOTE_FPS = 20;
     public static final double NOTE_CAMERA_LATENCY_STDEV_MS = 5;
-    public static final double NOTE_HORIZONTAL_FOV_DEG = NOTE_CAMERA_RES_WIDTH / Math.hypot(NOTE_CAMERA_RES_HEIGHT, NOTE_CAMERA_RES_WIDTH) * NOTE_CAMERA_FOV_DEG;
+    public static final double NOTE_HORIZONTAL_FOV_DEG = 62.14;
   }
 
   public static class IndexerConstants {
@@ -387,6 +387,19 @@ public final class Constants {
 
   public static class LEDConstants {
     public static final int LED_PORT = 0;
-    public static final int LED_LENGTH = 60;
+    /** @deprecated */ public static final int LED_LENGTH = 200;
+    
+    /** LED layout:
+     * B   D
+     * |\C/|
+     * A   E
+     */
+
+
+    public static final int LOWER_LEFT_LENGTH = 23; // A
+    public static final int UPPER_LEFT_LENGTH = 16; // B
+    public static final int MID_SEGMENT_LENGTH = 21;// C
+    public static final int UPPER_RIGHT_LENGTH = 18;// D
+    public static final int LOWER_RIGHT_LENGTH = 24;// E
   }
 }

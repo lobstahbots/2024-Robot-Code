@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FieldConstants;
@@ -173,17 +175,23 @@ public class Vision extends SubsystemBase {
         return inputs.visibleRearFiducialIDs;
     }
 
-    @AutoLogOutput(key = "NotePositions")
-    public Translation2d[] getNotePositions() {
+    public Pose2d[] getNotePositions(Pose2d robotPose) {
         int length = trackerInputs.areas.length;
-        Translation2d[] res = new Translation2d[length];
+        Pose2d[] res = new Pose2d[length];
         for (int i = 0; i < length; i++) {
             var horizontalWidth = (trackerInputs.maxXs[i] - trackerInputs.minXs[i]) / VisionConstants.NOTE_CAMERA_RES_WIDTH;
             var hypotDistance = 2 * (FieldConstants.NOTE_RADIUS + FieldConstants.NOTE_THICKNESS_RADIUS)
                     / horizontalWidth / Units.degreesToRadians(VisionConstants.NOTE_HORIZONTAL_FOV_DEG);
+            Logger.recordOutput("HypotDistance"+i, hypotDistance);
             var groundDistance = Math.sqrt(Math.pow(hypotDistance, 2) - Math.pow(VisionConstants.ROBOT_TO_NOTE_CAMERA.getZ(), 2));
-            double yaw = trackerInputs.yaws[i];
-            res[i] = new Translation2d(Math.cos(yaw), Math.sin(yaw)).times(groundDistance);
+            Logger.recordOutput("GroundDistance"+i, groundDistance);
+            var centerX = (trackerInputs.maxXs[i] + trackerInputs.minXs[i] - VisionConstants.NOTE_CAMERA_RES_WIDTH) / 2;
+            Logger.recordOutput("centerX"+i, centerX);
+            var relativeCenterPoint = -centerX / (VisionConstants.NOTE_CAMERA_RES_WIDTH / 2);
+            Logger.recordOutput("centerRatio"+i, relativeCenterPoint);
+            var radAlong = Rotation2d.fromDegrees(relativeCenterPoint * VisionConstants.NOTE_HORIZONTAL_FOV_DEG / 2);
+            Logger.recordOutput("Angle"+i, radAlong.getDegrees());
+            res[i] = robotPose.plus(new Transform2d(new Translation2d(groundDistance, radAlong), new Rotation2d(0)));
         }
         return res;
     }
@@ -191,6 +199,7 @@ public class Vision extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs, new Pose3d(robotPose));
         trackerIO.updateInputs(trackerInputs, robotPose);
+        Logger.recordOutput("Notes", getNotePositions(robotPose));
         Logger.processInputs("PhotonVision", inputs);
         Logger.processInputs("NoteTracker", trackerInputs);
         io.periodic();

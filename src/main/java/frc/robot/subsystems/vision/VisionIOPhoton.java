@@ -29,7 +29,7 @@ public class VisionIOPhoton implements VisionIO {
     private final Alert rearDisconnectedAlert;
 
     public VisionIOPhoton() {
-        this.rearCamera = new PhotonCamera("photonvision1");
+        this.rearCamera = new PhotonCamera("photonvision4");
         this.frontCamera = new PhotonCamera("photonvision2");
         this.frontPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, VisionConstants.POSE_STRATEGY,
                 frontCamera, VisionConstants.ROBOT_TO_FRONT_CAMERA);
