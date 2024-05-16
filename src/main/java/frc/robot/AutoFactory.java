@@ -281,6 +281,11 @@ public class AutoFactory {
         return getScoreAuto().andThen(new WaitCommand(5)).andThen(new SwerveDriveCommand(driveBase, 0.15, 0, 0, true).withTimeout(6));
     }
 
+    public Command getFunnyAuto() {
+        Pose2d pose = (Pose2d)responses.get().get(0);
+        return getPathFindToPoseCommand(() -> pose);
+    }
+
     public Command intake() {
         System.out.println("Scheduled Intaking");
         return new SpinIntakeCommand(intake, IntakeConstants.INTAKE_SPEED)

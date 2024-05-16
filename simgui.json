@@ -11,6 +11,7 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Pivot": "Mechanism2d",
       "/SmartDashboard/Starting Position": "String Chooser",
+      "/SmartDashboard/Toggle Has Seen Tag": "Command",
       "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     },
     "windows": {
@@ -44,6 +45,9 @@
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
     "visible": true
   }
 }

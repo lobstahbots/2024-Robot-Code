@@ -9,6 +9,8 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 
@@ -102,6 +104,18 @@ public class Vision extends SubsystemBase {
 
         return poses;
     }
+
+    public Optional<Transform3d> getTransformToTag (int tagID) {
+        for(PhotonTrackedTarget target : io.getFrontTrackedTargets()) {
+            if(target.getFiducialId() == tagID) return Optional.of(target.getBestCameraToTarget());
+        }
+
+        for(PhotonTrackedTarget target : io.getRearTrackedTargets()) {
+            if(target.getFiducialId() == tagID) return Optional.of(target.getBestCameraToTarget());
+        }
+
+        return Optional.empty();
+    }  
 
     /**
      * Get the timestamp of the front pose capture.

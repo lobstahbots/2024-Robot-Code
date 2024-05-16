@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.Optional;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -14,6 +16,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Twist3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -345,4 +348,9 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
       Logger.recordOutput("Notes", FieldConstants.NOTES_SIM_POSES);
     }
   }
+
+  public Optional<Transform3d> getDriveVision(int targetID) {
+    return photonVision.getTransformToTag(targetID);
+  }
+
 }

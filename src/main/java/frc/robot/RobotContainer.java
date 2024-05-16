@@ -297,6 +297,8 @@ public class RobotContainer {
                         Map.of("-Midline Left", 0, "-Midline Center Left", 1, "-Midline Center", 2,
                                 "-Midline Center Right", 3, "-Midline Right (Source Side)", 4))),
                 autoFactory::getWingAndMidlineAuto);
+        autoChooser.addRoutine("Funny auto", List.of(new AutoQuestion<>("Where to?", Map.of("Amp", FieldConstants.BLUE_ALLIANCE_AMP_POSE2D, "Speaker", FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d()))), autoFactory::getFunnyAuto);
+
     }
 
     public void setIdleMode(IdleMode idleMode, NeutralModeValue shooterIdleMode) {
