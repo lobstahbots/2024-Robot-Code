@@ -191,7 +191,7 @@ public class Vision extends SubsystemBase {
             Logger.recordOutput("centerRatio"+i, relativeCenterPoint);
             var radAlong = Rotation2d.fromDegrees(relativeCenterPoint * VisionConstants.NOTE_HORIZONTAL_FOV_DEG / 2);
             Logger.recordOutput("Angle"+i, radAlong.getDegrees());
-            res[i] = robotPose.plus(new Transform2d(new Translation2d(groundDistance, radAlong), new Rotation2d(0)));
+            res[i] = robotPose.plus(new Transform2d(new Translation2d(groundDistance, radAlong.plus(robotPose.getRotation())), new Rotation2d(0)));
         }
         return res;
     }
