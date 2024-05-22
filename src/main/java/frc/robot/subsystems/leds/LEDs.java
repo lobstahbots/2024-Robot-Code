@@ -123,6 +123,16 @@ public class LEDs extends SubsystemBase {
             ).toAdressableLEDBuffer());
     }
 
+    LobstahLEDBuffer segments(LobstahLEDBuffer lowerLeft, LobstahLEDBuffer midSegment, LobstahLEDBuffer lowerRight, LobstahLEDBuffer upperRight, LobstahLEDBuffer upperLeft) {
+        return LobstahLEDBuffer.concat(
+            lowerLeft == null ? new LobstahLEDBuffer(LEDConstants.LOWER_LEFT_LENGTH) : lowerLeft.crop(LEDConstants.LOWER_LEFT_LENGTH),
+            midSegment == null ? new LobstahLEDBuffer(LEDConstants.MID_SEGMENT_LENGTH) : midSegment.crop(LEDConstants.MID_SEGMENT_LENGTH),
+            lowerRight == null ? new LobstahLEDBuffer(LEDConstants.LOWER_RIGHT_LENGTH) : lowerRight.crop(LEDConstants.LOWER_RIGHT_LENGTH),
+            upperRight == null ? new LobstahLEDBuffer(LEDConstants.UPPER_RIGHT_LENGTH) : upperRight.crop(LEDConstants.UPPER_RIGHT_LENGTH),
+            upperLeft == null ? new LobstahLEDBuffer(LEDConstants.UPPER_LEFT_LENGTH) : upperLeft.crop(LEDConstants.UPPER_LEFT_LENGTH)
+        );
+    }
+
     private final Notifier loadingNotifier = new Notifier(() -> {
         synchronized (this) {
             io.setData(LobstahLEDBuffer.solid(3, Color.kWhite)
