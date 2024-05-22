@@ -127,9 +127,9 @@ public class LEDs extends SubsystemBase {
         return LobstahLEDBuffer.concat(
             lowerLeft == null ? new LobstahLEDBuffer(LEDConstants.LOWER_LEFT_LENGTH) : lowerLeft.crop(LEDConstants.LOWER_LEFT_LENGTH),
             midSegment == null ? new LobstahLEDBuffer(LEDConstants.MID_SEGMENT_LENGTH) : midSegment.crop(LEDConstants.MID_SEGMENT_LENGTH),
-            lowerRight == null ? new LobstahLEDBuffer(LEDConstants.LOWER_RIGHT_LENGTH) : lowerRight.crop(LEDConstants.LOWER_RIGHT_LENGTH),
+            lowerRight == null ? new LobstahLEDBuffer(LEDConstants.LOWER_RIGHT_LENGTH) : lowerRight.crop(LEDConstants.LOWER_RIGHT_LENGTH).flip(),
             upperRight == null ? new LobstahLEDBuffer(LEDConstants.UPPER_RIGHT_LENGTH) : upperRight.crop(LEDConstants.UPPER_RIGHT_LENGTH),
-            upperLeft == null ? new LobstahLEDBuffer(LEDConstants.UPPER_LEFT_LENGTH) : upperLeft.crop(LEDConstants.UPPER_LEFT_LENGTH)
+            upperLeft == null ? new LobstahLEDBuffer(LEDConstants.UPPER_LEFT_LENGTH) : upperLeft.crop(LEDConstants.UPPER_LEFT_LENGTH).flip()
         );
     }
 
