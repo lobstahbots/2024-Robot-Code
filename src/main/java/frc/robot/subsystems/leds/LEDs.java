@@ -156,11 +156,13 @@ public class LEDs extends SubsystemBase {
 
     LobstahLEDBuffer posessionIndicator() {
         if (!possession) return null;
-        return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(255, 25, 25))
-                .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 10, Timer.getFPGATimestamp() * 10))
-                .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(160, 170,255))
-                        .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 10, Timer.getFPGATimestamp() * 10 + 3)))
-                .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(255, 25, 25), 0.25));
+        return prideFlagCycle(3, 10).tile(LEDConstants.LED_LENGTH);
+
+        // return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(255, 25, 25))
+        //         .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 10, Timer.getFPGATimestamp() * 10))
+        //         .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(160, 170,255))
+        //                 .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 10, Timer.getFPGATimestamp() * 10 + 3)))
+        //         .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(255, 25, 25), 0.25));
     }
 
     LobstahLEDBuffer shooterReadyIndicator() {
@@ -233,7 +235,7 @@ public class LEDs extends SubsystemBase {
                 .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, Color.kWhite, 0.2));
     }
 
-    LobstahLEDBuffer prideFlagCycle(int segmentLength, int speed) {
+    LobstahLEDBuffer prideFlagCycle(int segmentLength, double speed) {
         int offset = (int) (Timer.getFPGATimestamp() * speed);
         return prideFlag(segmentLength).cycle(offset);
 
