@@ -9,8 +9,9 @@ public interface IndexerIO {
         public double indexerMotorTemperature = 0.0;
         public double indexerMotorCurrent = 0.0;
         public boolean intakeBeamBroken = false;
-        public boolean intakeBeamBrokenRaw = false;
         public boolean flywheelBeamBroken = false;
+        public boolean debouncedIntakeBeamBroken = false;
+        public boolean debouncedFlywheelBeamBroken = false;
     }
     
     public default void setIndexerMotorSpeed(double indexerMotorSpeed) {}

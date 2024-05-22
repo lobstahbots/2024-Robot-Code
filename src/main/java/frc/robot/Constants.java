@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import frc.robot.subsystems.vision.PhotonPoseEstimator.PoseStrategy;
 
 import com.pathplanner.lib.path.PathConstraints;
 
@@ -79,6 +79,8 @@ public final class Constants {
       public static final int PODIUM_POV_ANGLE = 270;
       public static final int PASS_POV_ANGLE = 180;
       public static final int USER_SIGNAL_BUTTON_ID = 7;
+      public static final int SUBWOOFER_BACKSHOT_ID = 9;
+      public static final int PODIUM_BACKSHOT_ID = 10;
     }
   }
 
@@ -120,7 +122,7 @@ public final class Constants {
     public static final double TURN_KI = 0;
     public static final double TURN_KD = 0;
 
-    public static final double TURN_DEADBAND = Units.degreesToRadians(3);
+    public static final double TURN_DEADBAND = Units.degreesToRadians(5);
 
     public static class FrontLeftModuleConstants {
       public static final int moduleID = 0;
@@ -207,7 +209,7 @@ public final class Constants {
     public static final int LOWER_SHOOTER_ID = 32;
     public static final double CURRENT_LIMIT = 40;
     public static final double SHOOT_TIME = 2; // in seconds
-    public static final double SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR = 0.75;
+    public static final double SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR = 0.9;
 
     public static final double PID_P = 0.05;
     public static final double PID_I = 0;
@@ -268,28 +270,33 @@ public final class Constants {
     public static final int ENCODER_CHANNEL = 3;
 
     public static final double MAX_PIVOT_ERROR = 5;
-    public static final double AMP_ANGLE_SETPOINT = 115;
-    public static final double SOURCE_PICKUP_ANGLE_SETPOINT = 115;
-    public static final double SUBWOOFER_ANGLE_SETPOINT = 40;
+    public static final double AMP_ANGLE_SETPOINT = 113;
+    public static final double SOURCE_PICKUP_ANGLE_SETPOINT = 106;
+    public static final double SUBWOOFER_ANGLE_SETPOINT = 38;
+    public static final double WING_ANGLE_SETPOINT = 9.5;
+    public static final double PODIUM_ANGLE_SETPOINT = 21;
+    public static final double PASS_ANGLE_SETPOINT = 26;
+    public static final double BACKSHOT_PODIUM_ANGLE_SETPOINT = Units.radiansToDegrees(1.77);
+    public static final double BACKSHOT_SUBWOOFER_ANGLE_SETPOINT = Units.radiansToDegrees(2.22);
     public static final double GROUND_PICKUP_ANGLE = 0;
     public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
     static {
       shotAngleMap.put(1.04, 40.0);
       shotAngleMap.put(1.25, 38.0);
-      shotAngleMap.put(1.5, 33.0);
-      shotAngleMap.put(1.75, 29.0);
-      shotAngleMap.put(2.0, 27.0);
-      shotAngleMap.put(2.25, 24.5);
-      shotAngleMap.put(2.5, 22.5);
-      shotAngleMap.put(2.75, 20.25);
-      shotAngleMap.put(2.94, 19.15);
-      shotAngleMap.put(3.15, 17.65);
-      shotAngleMap.put(3.55, 15.75);
-      shotAngleMap.put(3.75, 15.1);
-      shotAngleMap.put(4.0, 14.75);
-      shotAngleMap.put(4.25, 13.8);
-      shotAngleMap.put(4.5, 12.6);
+      shotAngleMap.put(1.5, 32.0);
+      shotAngleMap.put(1.75, 28.0);
+      shotAngleMap.put(2.0, 26.0);
+      shotAngleMap.put(2.25, 23.5);
+      shotAngleMap.put(2.5, 21.5);
+      shotAngleMap.put(2.75, 19.25);
+      shotAngleMap.put(2.94, 18.15);
+      shotAngleMap.put(3.15, 16.65);
+      shotAngleMap.put(3.55, 14.75);
+      shotAngleMap.put(3.75, 14.1);
+      shotAngleMap.put(4.0, 13.75);
+      shotAngleMap.put(4.25, 12.8);
+      shotAngleMap.put(4.5, 11.6);
     }
   }
 
@@ -300,7 +307,6 @@ public final class Constants {
     public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(Units.inchesToMeters(-13.193037),
         Units.inchesToMeters(-9.543), Units.inchesToMeters(7.820),
         new Rotation3d(0, Units.degreesToRadians(-35), Units.degreesToRadians(180)));
-    public static final double POSE_CONFIDENCE_FILTER_THRESHOLD = 0.2;
     public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 5;
     public static final int CAMERA_RES_WIDTH = 1280;
     public static final int CAMERA_RES_HEIGHT = 960;
@@ -320,18 +326,17 @@ public final class Constants {
     // See https://www.desmos.com/calculator/i5z7ddbjy4
 
     public static final double AMBIGUITY_TO_STDEV_EXP = 1;
-    public static final Vector<N3> BASE_STDEV = VecBuilder.fill(0.1, 0.1, 0.2); // x, y, angle
+    public static final Vector<N3> BASE_STDEV = VecBuilder.fill(0.1, 0.1, 1000.0); // x, y, angle
+    public static final double AMBIGUITY_ACCEPTANCE_THRESHOLD = 0.2; 
+    public static final double REPROJECTION_ERROR_REJECTION_THRESHOLD = 0.4;
   }
 
   public static class IndexerConstants {
     public static final int INDEXER_CURRENT_LIMIT = 40;
     public static final int INDEXER_MOTOR_ID = 44;
-    public static final double FAST_INDEXER_MOTOR_SPEED = -0.9;
-    public static final double SLOW_INDEXER_MOTOR_SPEED = 1;
+    public static final double FAST_INDEXER_MOTOR_SPEED = -1;
+    public static final double SLOW_INDEXER_MOTOR_OUTTAKE_SPEED = 0.25;
     public static final double DEBOUNCE_TIME = 0.05;
-    public enum IndexerState {
-      NoNote, MovingInIndexer, InShooter, InIndexer
-    }
   }
 
   public static class TempConstants {
@@ -344,7 +349,7 @@ public final class Constants {
     public static final Pose3d BLUE_ALLIANCE_SPEAKER_POSE3D = new Pose3d(0.225, 5.55, 2.1,
         new Rotation3d(0, 0, Units.degreesToRadians(180)));
     public static final Pose2d BLUE_ALLIANCE_AMP_POSE2D = new Pose2d(2, 8.25, Rotation2d.fromDegrees(90));
-    public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(14.75, 0.75, Rotation2d.fromDegrees(-120));
+    public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(14.75, 0.75, Rotation2d.fromDegrees(-60));
     public static final Pose2d[] MIDLINE_NOTES_STARTING_POSES = new Pose2d[] {
         new Pose2d(8.258, 7.462, new Rotation2d()), new Pose2d(8.258, 5.785, new Rotation2d()),
         new Pose2d(8.258, 4.109, new Rotation2d()), new Pose2d(8.258, 2.432, new Rotation2d()),
@@ -360,6 +365,7 @@ public final class Constants {
     public static final double PICKUP_OFFSET = 1;
     public static final double WING_LINE_X_METERS = 5.8217054 - 1;
     public static final Pose2d[] SHOOTING_POSES = new Pose2d[]{new Pose2d(WING_LINE_X_METERS, 7.004, new Rotation2d()), new Pose2d(WING_LINE_X_METERS, 0.756, new Rotation2d())};
+    public static final Pose2d SUBWOOFER_SHOOTING_POSE = new Pose2d(0.96, 6, new Rotation2d());
   }
 
   public static class AlertConstants {
@@ -370,6 +376,9 @@ public final class Constants {
 
   public static class LEDConstants {
     public static final int LED_PORT = 0;
-    public static final int LED_LENGTH = 60;
+    public static final int LED_LENGTH = 106;
+
+    public static final int LOWER_LEFT_LENGTH = 25;
+    public static final int MID = 21;
   }
 }

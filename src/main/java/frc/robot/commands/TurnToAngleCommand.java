@@ -110,7 +110,6 @@ public class TurnToAngleCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("end? " + end + "and... " + MathUtil.applyDeadband(getError(), DriveConstants.TURN_DEADBAND));
     return end && MathUtil.applyDeadband(getError(), DriveConstants.TURN_DEADBAND) == 0;
   }
 }
