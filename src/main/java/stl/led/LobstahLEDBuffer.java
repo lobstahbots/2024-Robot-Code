@@ -143,8 +143,8 @@ public class LobstahLEDBuffer {
 
     public LobstahLEDBuffer tile(int length) {
         LobstahLEDBuffer tiled = new LobstahLEDBuffer(length);
-        for (int i = 0; i < this.length; i++) {
-            int j = Math.floorMod(i, length);
+        for (int i = 0; i < length; i++) {
+            int j = Math.floorMod(i, this.length);
             tiled.color.setLED(i, color.getLED(j));
             tiled.alpha.buffer[i] = alpha.buffer[j];
         }
