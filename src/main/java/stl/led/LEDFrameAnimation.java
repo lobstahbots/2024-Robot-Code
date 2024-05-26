@@ -5,6 +5,7 @@ package stl.led;
 /**
  * @deprecated Unimplemented
  */
+@Deprecated
 public class LEDFrameAnimation {
     public final LobstahLEDBuffer[] frames;
     public final boolean loop = false;
