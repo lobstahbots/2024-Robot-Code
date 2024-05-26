@@ -20,6 +20,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
 
 /**
@@ -386,5 +387,25 @@ public final class Constants {
 
     public static final int LENGTH_TOTAL = LENGTH_LOWER_LEFT + LENGTH_MID + LENGTH_LOWER_RIGHT
             + LENGTH_UPPER_RIGHT + LENGTH_UPPER_LEFT;
+
+    public static final Color COLOR_LOADING = Color.kWhite;
+    public static final Color COLOR_SUCCESS = new Color(77, 255, 79);
+    public static final Color COLOR_RED = new Color(255, 25, 25);
+    public static final Color COLOR_PINK = new Color(255, 69, 70);
+    public static final Color COLOR_BLUE = new Color(25, 25, 255);
+    public static final Color COLOR_TEAL = new Color(160, 170, 255);
+    public static final Color COLOR_AUTON_1 = new Color(255, 69, 118);
+    public static final Color COLOR_AUTON_2 = new Color(255, 30, 180);
+    public static final Color COLOR_AUTON_3 = new Color(100, 25, 25);
+    public static final Color COLOR_USER_SIGNAL = Color.kWhite;
+
+    public static final Color COLOR_PRIDE_RED = Color.kRed;
+    public static final Color COLOR_PRIDE_ORANGE = new Color(255, 165, 0);
+    public static final Color COLOR_PRIDE_YELLOW = Color.kYellow;
+    public static final Color COLOR_PRIDE_GREEN = Color.kGreen;
+    public static final Color COLOR_PRIDE_BLUE = Color.kBlue;
+    public static final Color COLOR_PRIDE_PURPLE = new Color(128, 0, 128);
+    public static final Color COLOR_TRANS_PINK = new Color(255, 20, 147);
+    public static final Color COLOR_TRANS_TEAL = new Color(0, 128, 128);
   }
 }
