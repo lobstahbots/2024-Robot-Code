@@ -112,24 +112,24 @@ public class LEDs extends SubsystemBase {
             setRobotMode(RobotMode.DISABLED);
         }
 
-        io.setData(LobstahLEDBuffer.layer(LEDConstants.LED_LENGTH,
+        io.setData(LobstahLEDBuffer.layer(LEDConstants.LENGTH_TOTAL,
                  robotMode == RobotMode.DISABLED ? disabledStandby() : null,
                  robotMode == RobotMode.AUTONOMOUS ? autonomous() : null,
                  posessionIndicator(),
                  posessionSignal(),
                 //  shooterReadyIndicator(),
-                 debugColor == null? null : LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, debugColor),
+                 debugColor == null? null : LobstahLEDBuffer.solid(LEDConstants.LENGTH_TOTAL, debugColor),
                  userSignal()
             ).toAdressableLEDBuffer());
     }
 
     LobstahLEDBuffer segments(LobstahLEDBuffer lowerLeft, LobstahLEDBuffer midSegment, LobstahLEDBuffer lowerRight, LobstahLEDBuffer upperRight, LobstahLEDBuffer upperLeft) {
         return LobstahLEDBuffer.concat(
-            lowerLeft == null ? new LobstahLEDBuffer(LEDConstants.LOWER_LEFT_LENGTH) : lowerLeft.crop(LEDConstants.LOWER_LEFT_LENGTH),
-            midSegment == null ? new LobstahLEDBuffer(LEDConstants.MID_SEGMENT_LENGTH) : midSegment.crop(LEDConstants.MID_SEGMENT_LENGTH),
-            lowerRight == null ? new LobstahLEDBuffer(LEDConstants.LOWER_RIGHT_LENGTH) : lowerRight.crop(LEDConstants.LOWER_RIGHT_LENGTH).flip(),
-            upperRight == null ? new LobstahLEDBuffer(LEDConstants.UPPER_RIGHT_LENGTH) : upperRight.crop(LEDConstants.UPPER_RIGHT_LENGTH),
-            upperLeft == null ? new LobstahLEDBuffer(LEDConstants.UPPER_LEFT_LENGTH) : upperLeft.crop(LEDConstants.UPPER_LEFT_LENGTH).flip()
+            lowerLeft == null ? new LobstahLEDBuffer(LEDConstants.LENGTH_LOWER_LEFT) : lowerLeft.crop(LEDConstants.LENGTH_LOWER_LEFT),
+            midSegment == null ? new LobstahLEDBuffer(LEDConstants.LENGTH_MID) : midSegment.crop(LEDConstants.LENGTH_MID),
+            lowerRight == null ? new LobstahLEDBuffer(LEDConstants.LENGTH_LOWER_RIGHT) : lowerRight.crop(LEDConstants.LENGTH_LOWER_RIGHT).flip(),
+            upperRight == null ? new LobstahLEDBuffer(LEDConstants.LENGTH_UPPER_RIGHT) : upperRight.crop(LEDConstants.LENGTH_UPPER_RIGHT),
+            upperLeft == null ? new LobstahLEDBuffer(LEDConstants.LENGTH_UPPER_LEFT) : upperLeft.crop(LEDConstants.LENGTH_UPPER_LEFT).flip()
         );
     }
 
@@ -150,13 +150,13 @@ public class LEDs extends SubsystemBase {
         double t = possessionSignalTimer.get();
         if (t>= 2 || !possession) return null;
 
-        return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(77, 255, 79))
+        return LobstahLEDBuffer.solid(LEDConstants.LENGTH_TOTAL, new Color(77, 255, 79))
             .opacity(1-t/2);
     }
 
     LobstahLEDBuffer posessionIndicator() {
         if (!possession) return null;
-        return prideFlagCycle(3, 10).tile(LEDConstants.LED_LENGTH);
+        return prideFlagCycle(3, 10).tile(LEDConstants.LENGTH_TOTAL);
 
         // return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(255, 25, 25))
         //         .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 10, Timer.getFPGATimestamp() * 10))
@@ -167,7 +167,7 @@ public class LEDs extends SubsystemBase {
 
     LobstahLEDBuffer shooterReadyIndicator() {
         if (!shooterReady) return null;
-        return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(77, 255, 79));
+        return LobstahLEDBuffer.solid(LEDConstants.LENGTH_TOTAL, new Color(77, 255, 79));
     }
 
     static class DisabledStandby {
@@ -187,8 +187,8 @@ public class LEDs extends SubsystemBase {
             double time = Math.min(timer.get() * 5, 1);
             int height1 = (int) (prevHeight1 + (nextHeight1 - prevHeight1) * time);
             int height2 = (int) (prevHeight2 + (nextHeight2 - prevHeight2) * time);
-            return LobstahLEDBuffer.layer(LEDConstants.LED_LENGTH,
-                    LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, color1, 0.5),
+            return LobstahLEDBuffer.layer(LEDConstants.LENGTH_TOTAL,
+                    LobstahLEDBuffer.solid(LEDConstants.LENGTH_TOTAL, color1, 0.5),
                     LobstahLEDBuffer.solid(height2, color2),
                     LobstahLEDBuffer.solid(height1, color1));
         }
@@ -214,25 +214,25 @@ public class LEDs extends SubsystemBase {
     }
 
     LobstahLEDBuffer disconnected() {
-        return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, Color.kWhite)
-                .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 10, AnimationEasing.sine(Timer.getFPGATimestamp(), 3, 0)*10));
+        return LobstahLEDBuffer.solid(LEDConstants.LENGTH_TOTAL, Color.kWhite)
+                .mask(AlphaBuffer.sine(LEDConstants.LENGTH_TOTAL, 10, AnimationEasing.sine(Timer.getFPGATimestamp(), 3, 0)*10));
     }
 
     LobstahLEDBuffer autonomous() {
-        return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(255, 69, 118), 0.5)
-                .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 10, Timer.getFPGATimestamp() * 10))
-                .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(255, 30, 180))
-                        .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 5, Timer.getFPGATimestamp() * 7)))
-                .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, new Color(100, 25, 25)));
+        return LobstahLEDBuffer.solid(LEDConstants.LENGTH_TOTAL, new Color(255, 69, 118), 0.5)
+                .mask(AlphaBuffer.sine(LEDConstants.LENGTH_TOTAL, 10, Timer.getFPGATimestamp() * 10))
+                .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LENGTH_TOTAL, new Color(255, 30, 180))
+                        .mask(AlphaBuffer.sine(LEDConstants.LENGTH_TOTAL, 5, Timer.getFPGATimestamp() * 7)))
+                .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LENGTH_TOTAL, new Color(100, 25, 25)));
     }
 
     LobstahLEDBuffer userSignal() {
         if (userSignal == false) return null;
-        return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, Color.kWhite, 0.5)
-                .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 10, Timer.getFPGATimestamp() * 11))
-                .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, Color.kWhite, 0.7)
-                        .mask(AlphaBuffer.sine(LEDConstants.LED_LENGTH, 5, Timer.getFPGATimestamp() * 6)))
-                .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, Color.kWhite, 0.2));
+        return LobstahLEDBuffer.solid(LEDConstants.LENGTH_TOTAL, Color.kWhite, 0.5)
+                .mask(AlphaBuffer.sine(LEDConstants.LENGTH_TOTAL, 10, Timer.getFPGATimestamp() * 11))
+                .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LENGTH_TOTAL, Color.kWhite, 0.7)
+                        .mask(AlphaBuffer.sine(LEDConstants.LENGTH_TOTAL, 5, Timer.getFPGATimestamp() * 6)))
+                .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LENGTH_TOTAL, Color.kWhite, 0.2));
     }
 
     LobstahLEDBuffer prideFlagCycle(int segmentLength, double speed) {

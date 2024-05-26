@@ -9,7 +9,7 @@ public class LEDsReal implements LEDIO {
 
     public LEDsReal(int port, int length) {
         leds = new AddressableLED(LEDConstants.LED_PORT);
-        leds.setLength(LEDConstants.LED_LENGTH);
+        leds.setLength(LEDConstants.LENGTH_TOTAL);
         leds.start();
     }
 
