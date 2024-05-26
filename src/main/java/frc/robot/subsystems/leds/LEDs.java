@@ -237,7 +237,7 @@ public class LEDs extends SubsystemBase {
 
     LobstahLEDBuffer prideFlagCycle(int segmentLength, double speed) {
         int offset = (int) (Timer.getFPGATimestamp() * speed);
-        return prideFlag(segmentLength).cycle(offset);
+        return prideFlag(segmentLength).prepend(LobstahLEDBuffer.solid(1, Color.kBlack)).cycle(offset);
 
     }
 
@@ -249,9 +249,12 @@ public class LEDs extends SubsystemBase {
             LobstahLEDBuffer.solid(segmentLength, ColorConstants.PRIDE_GREEN),
             LobstahLEDBuffer.solid(segmentLength, ColorConstants.PRIDE_BLUE),
             LobstahLEDBuffer.solid(segmentLength, ColorConstants.PRIDE_PURPLE),
-            LobstahLEDBuffer.solid(2 * segmentLength, ColorConstants.TRANS_PINK),
-            LobstahLEDBuffer.solid(2 * segmentLength, Color.kWhite),
-            LobstahLEDBuffer.solid(2 * segmentLength, ColorConstants.TRANS_TEAL)
-        );
+            LobstahLEDBuffer.solid(1, Color.kBlack),
+            LobstahLEDBuffer.solid(segmentLength, ColorConstants.TRANS_TEAL),
+            LobstahLEDBuffer.solid(segmentLength, ColorConstants.TRANS_PINK),
+            LobstahLEDBuffer.solid(segmentLength, Color.kWhite),
+            LobstahLEDBuffer.solid(segmentLength, ColorConstants.TRANS_PINK),
+            LobstahLEDBuffer.solid(segmentLength, ColorConstants.TRANS_TEAL)
+        ).flip();
     }
 }
