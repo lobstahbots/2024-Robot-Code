@@ -249,7 +249,7 @@ public class LEDs extends SubsystemBase {
             LobstahLEDBuffer.solid(segmentLength, LEDConstants.COLOR_PRIDE_GREEN),
             LobstahLEDBuffer.solid(segmentLength, LEDConstants.COLOR_PRIDE_BLUE),
             LobstahLEDBuffer.solid(segmentLength, LEDConstants.COLOR_PRIDE_PURPLE),
-            LobstahLEDBuffer.solid(segmentLength, LEDConstants.COLOR_TRANS_PINK),
+            LobstahLEDBuffer.solid(2 * segmentLength, LEDConstants.COLOR_TRANS_PINK),
             LobstahLEDBuffer.solid(2 * segmentLength, Color.kWhite),
             LobstahLEDBuffer.solid(2 * segmentLength, LEDConstants.COLOR_TRANS_TEAL)
         );
