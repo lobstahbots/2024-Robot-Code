@@ -72,7 +72,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class RobotContainer {
-    private final LEDs leds = new LEDs(new LEDsReal(LEDConstants.LED_PORT, LEDConstants.LENGTH_TOTAL));
+    private final LEDs leds = new LEDs(new LEDsReal(LEDConstants.LED_PORT, LEDConstants.LengthConstants.TOTAL));
     private final DriveBase driveBase;
     private final Pivot pivot;
     private final Shooter shooter;
