@@ -246,6 +246,10 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     }
   }
 
+  public Pose2d[] getNotePositions() {
+    return photonVision.getNotePositions(getPose());
+  }
+
   @Override
   public void periodic() {
     photonVision.update(getPose());
