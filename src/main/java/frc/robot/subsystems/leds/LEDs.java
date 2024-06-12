@@ -214,8 +214,20 @@ public class LEDs extends SubsystemBase {
     }
 
     LobstahLEDBuffer disconnected() {
-        return LobstahLEDBuffer.solid(LengthConstants.TOTAL, ColorConstants.LOADING)
-                .mask(AlphaBuffer.sine(LengthConstants.TOTAL, 10, AnimationEasing.sine(Timer.getFPGATimestamp(), 3, 0)*10));
+        int bouncyBallLength = 3;
+        int bouncyBallOffset = (int) (AnimationEasing.sine(Timer.getFPGATimestamp(), 1.5, 0) * LengthConstants.MID - bouncyBallLength / 2);
+        LobstahLEDBuffer bouncyBall = LobstahLEDBuffer.solid(3, ColorConstants.LOADING).shift(LengthConstants.MID, bouncyBallOffset);
+
+        int waveLength = 10;
+        LobstahLEDBuffer waves = LobstahLEDBuffer.solid(waveLength, ColorConstants.LOADING)
+                .mask(AlphaBuffer.sine(waveLength, waveLength, AnimationEasing.sine(Timer.getFPGATimestamp(), 3, 0)*10));
+
+        return segments(
+            waves.tile(LengthConstants.LOWER_LEFT),
+            bouncyBall,
+            waves.tile(LengthConstants.LOWER_LEFT),
+            waves.cycle(-LengthConstants.LOWER_RIGHT).tile(LengthConstants.UPPER_RIGHT),
+            waves.cycle(-LengthConstants.LOWER_LEFT).tile(LengthConstants.UPPER_LEFT));
     }
 
     LobstahLEDBuffer autonomous() {
