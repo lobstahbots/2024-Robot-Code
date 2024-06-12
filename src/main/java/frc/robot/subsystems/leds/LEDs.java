@@ -5,7 +5,6 @@ package frc.robot.subsystems.leds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants.*;
@@ -46,6 +45,16 @@ public class LEDs extends SubsystemBase {
     boolean coastMode = false;
     boolean lowBattery = false;
     public Color debugColor = null;
+
+    Timer possessionSignalTimer = new Timer();
+
+    private final Notifier loadingNotifier = new Notifier(() -> {
+        synchronized (this) {
+            io.setData(loading().toAdressableLEDBuffer());
+        }
+    });
+
+    DisabledStandby disabledStandby = new DisabledStandby();
 
     private void setFMSState(ConnectionState value) { connectionState = value; }
 
@@ -112,18 +121,22 @@ public class LEDs extends SubsystemBase {
             setRobotMode(RobotMode.DISABLED);
         }
 
+
         io.setData(LobstahLEDBuffer.layer(LengthConstants.TOTAL,
-                 robotMode == RobotMode.DISABLED ? disabledStandby() : null,
+                robotMode == RobotMode.DISABLED
+                        ? connectionState == ConnectionState.DISCONNECTED ? disconnected()
+                                : disabledStandby.get(ColorConstants.RED, ColorConstants.PINK)
+                        : null,
                  robotMode == RobotMode.AUTONOMOUS ? autonomous() : null,
-                 posessionIndicator(),
-                 posessionSignal(),
+                 possession ? posessionIndicator() : null,
+                 possession ? posessionSignal(possessionSignalTimer.get()) : null,
                 //  shooterReadyIndicator(),
                  debugColor == null? null : LobstahLEDBuffer.solid(LengthConstants.TOTAL, debugColor),
-                 userSignal()
+                 userSignal ? userSignal() : null
             ).toAdressableLEDBuffer());
     }
 
-    LobstahLEDBuffer segments(LobstahLEDBuffer lowerLeft, LobstahLEDBuffer midSegment, LobstahLEDBuffer lowerRight, LobstahLEDBuffer upperRight, LobstahLEDBuffer upperLeft) {
+    static LobstahLEDBuffer segments(LobstahLEDBuffer lowerLeft, LobstahLEDBuffer midSegment, LobstahLEDBuffer lowerRight, LobstahLEDBuffer upperRight, LobstahLEDBuffer upperLeft) {
         return LobstahLEDBuffer.concat(
             lowerLeft == null ? new LobstahLEDBuffer(LengthConstants.LOWER_LEFT) : lowerLeft.crop(LengthConstants.LOWER_LEFT),
             midSegment == null ? new LobstahLEDBuffer(LengthConstants.MID) : midSegment.crop(LengthConstants.MID),
@@ -133,29 +146,19 @@ public class LEDs extends SubsystemBase {
         );
     }
 
-    private final Notifier loadingNotifier = new Notifier(() -> {
-        synchronized (this) {
+    static LobstahLEDBuffer loading() {
             double opacity = AnimationEasing.sine(System.currentTimeMillis(), 1000, 0);
-
             LobstahLEDBuffer buffer = LobstahLEDBuffer.solid(10, ColorConstants.LOADING).mask(AlphaBuffer.sine(10, 20, -10)).opacity(opacity);
-
-            buffer = segments(buffer, null, buffer, null, null);
-
-            io.setData(buffer.toAdressableLEDBuffer());
-        }
-    });
+            return segments(buffer, null, buffer, null, null);
+    }
     
-    Timer possessionSignalTimer = new Timer();
-    LobstahLEDBuffer posessionSignal() {
-        double t = possessionSignalTimer.get();
-        if (t>= 2 || !possession) return null;
-
+    static LobstahLEDBuffer posessionSignal(double t) {
+        if (t>= 2) return null;
         return LobstahLEDBuffer.solid(LengthConstants.TOTAL, ColorConstants.SUCCESS)
             .opacity(1-t/2);
     }
 
-    LobstahLEDBuffer posessionIndicator() {
-        if (!possession) return null;
+    static LobstahLEDBuffer posessionIndicator() {
         return prideFlagCycle(3, 10).tile(LengthConstants.TOTAL);
 
         // return LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, ColorConstants.RED)
@@ -165,8 +168,7 @@ public class LEDs extends SubsystemBase {
         //         .layerAbove(LobstahLEDBuffer.solid(LEDConstants.LED_LENGTH, ColorConstants.RED, 0.25));
     }
 
-    LobstahLEDBuffer shooterReadyIndicator() {
-        if (!shooterReady) return null;
+    static LobstahLEDBuffer shooterReadyIndicator() {
         return LobstahLEDBuffer.solid(LengthConstants.TOTAL, ColorConstants.SUCCESS);
     }
 
@@ -200,20 +202,8 @@ public class LEDs extends SubsystemBase {
             nextHeight2 = (int) (Math.random() * 20);
         }
     }
-    DisabledStandby disabledStandby = new DisabledStandby();
-    LobstahLEDBuffer disabledStandby() {
-        if (connectionState == ConnectionState.DISCONNECTED) {
-            return disconnected();
-        } else if (connectionState == ConnectionState.DS_ONLY) {
-            return disabledStandby.get(ColorConstants.RED, ColorConstants.PINK);
-        } else if (alliance == Alliance.Red) {
-            return disabledStandby.get(ColorConstants.RED, ColorConstants.PINK);
-        } else  {
-            return disabledStandby.get(ColorConstants.BLUE, ColorConstants.TEAL);
-        }
-    }
 
-    LobstahLEDBuffer disconnected() {
+    static LobstahLEDBuffer disconnected() {
         int bouncyBallLength = 3;
         int bouncyBallOffset = (int) (AnimationEasing.sine(Timer.getFPGATimestamp(), 1.5, 0) * LengthConstants.MID - bouncyBallLength / 2);
         LobstahLEDBuffer bouncyBall = LobstahLEDBuffer.solid(3, ColorConstants.LOADING).shift(LengthConstants.MID, bouncyBallOffset);
@@ -230,7 +220,7 @@ public class LEDs extends SubsystemBase {
             waves.cycle(-LengthConstants.LOWER_LEFT).tile(LengthConstants.UPPER_LEFT));
     }
 
-    LobstahLEDBuffer autonomous() {
+    static LobstahLEDBuffer autonomous() {
         return LobstahLEDBuffer.solid(LengthConstants.TOTAL, ColorConstants.AUTON_1, 0.5)
                 .mask(AlphaBuffer.sine(LengthConstants.TOTAL, 10, Timer.getFPGATimestamp() * 10))
                 .layerAbove(LobstahLEDBuffer.solid(LengthConstants.TOTAL, ColorConstants.AUTON_2)
@@ -238,8 +228,7 @@ public class LEDs extends SubsystemBase {
                 .layerAbove(LobstahLEDBuffer.solid(LengthConstants.TOTAL, ColorConstants.AUTON_3));
     }
 
-    LobstahLEDBuffer userSignal() {
-        if (userSignal == false) return null;
+    static LobstahLEDBuffer userSignal() {
         return LobstahLEDBuffer.solid(LengthConstants.TOTAL, ColorConstants.USER_SIGNAL, 0.5)
                 .mask(AlphaBuffer.sine(LengthConstants.TOTAL, 10, Timer.getFPGATimestamp() * 11))
                 .layerAbove(LobstahLEDBuffer.solid(LengthConstants.TOTAL, ColorConstants.USER_SIGNAL, 0.7)
@@ -247,13 +236,13 @@ public class LEDs extends SubsystemBase {
                 .layerAbove(LobstahLEDBuffer.solid(LengthConstants.TOTAL, ColorConstants.USER_SIGNAL, 0.2));
     }
 
-    LobstahLEDBuffer prideFlagCycle(int segmentLength, double speed) {
+    static LobstahLEDBuffer prideFlagCycle(int segmentLength, double speed) {
         int offset = (int) (Timer.getFPGATimestamp() * speed);
         return prideFlag(segmentLength).prepend(LobstahLEDBuffer.solid(1, Color.kBlack)).cycle(offset);
 
     }
 
-    LobstahLEDBuffer prideFlag(int segmentLength) {
+    static LobstahLEDBuffer prideFlag(int segmentLength) {
         return LobstahLEDBuffer.concat(
             LobstahLEDBuffer.solid(segmentLength, ColorConstants.PRIDE_RED),
             LobstahLEDBuffer.solid(segmentLength, ColorConstants.PRIDE_ORANGE),
