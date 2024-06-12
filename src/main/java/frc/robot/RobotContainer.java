@@ -57,6 +57,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.revrobotics.CANSparkMax.IdleMode;
 import frc.robot.subsystems.leds.LEDs;
+import frc.robot.subsystems.leds.LEDsDemo;
 import frc.robot.subsystems.leds.LEDsReal;
 
 import java.util.List;
@@ -72,7 +73,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class RobotContainer {
-    private final LEDs leds = new LEDs(new LEDsReal(LEDConstants.LED_PORT, LEDConstants.LengthConstants.TOTAL));
+    private final LEDs leds = new LEDsDemo(new LEDsReal(LEDConstants.LED_PORT, LEDConstants.LengthConstants.TOTAL));
     private final DriveBase driveBase;
     private final Pivot pivot;
     private final Shooter shooter;
