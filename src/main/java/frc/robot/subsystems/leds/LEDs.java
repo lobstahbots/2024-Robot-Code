@@ -48,7 +48,7 @@ public class LEDs extends SubsystemBase {
 
     Timer possessionSignalTimer = new Timer();
 
-    private final Notifier loadingNotifier = new Notifier(() -> {
+    final Notifier loadingNotifier = new Notifier(() -> {
         synchronized (this) {
             io.setData(loading().toAdressableLEDBuffer());
         }
@@ -56,11 +56,11 @@ public class LEDs extends SubsystemBase {
 
     DisabledStandby disabledStandby = new DisabledStandby();
 
-    private void setFMSState(ConnectionState value) { connectionState = value; }
+    void setFMSState(ConnectionState value) { connectionState = value; }
 
-    private void setAlliance(DriverStation.Alliance value) { alliance = value; }
+    void setAlliance(DriverStation.Alliance value) { alliance = value; }
 
-    private void setRobotMode(RobotMode value) { 
+    void setRobotMode(RobotMode value) { 
         if (value == RobotMode.DISABLED && robotMode == RobotMode.AUTONOMOUS
                 && connectionState == ConnectionState.FMS) {
             triggerTeleopCountdown();
@@ -93,9 +93,9 @@ public class LEDs extends SubsystemBase {
 
     public void setLowBattery(boolean value) { lowBattery = value; }
 
-    private void triggerTeleopCountdown() { }
+    void triggerTeleopCountdown() { }
 
-    private void triggerEndgameSignal() { }
+    void triggerEndgameSignal() { }
 
     public void periodic() {
         loadingNotifier.stop();
