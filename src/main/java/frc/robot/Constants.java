@@ -64,6 +64,7 @@ public final class Constants {
       public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 3;
       public static final int INTAKE_BUTTON_ID = 5;
       public static final int INDEXER_BUTTON_ID = 7;
+      public static final int FRISBEE_BUTTON_ID = 0; // idk which button this is
     }
     public static class OperatorIOConstants {
       public static final int OPERATOR_CONTROLLER_PORT = 1;
@@ -396,5 +397,18 @@ public final class Constants {
 
     public static final int LOWER_LEFT_LENGTH = 25;
     public static final int MID = 21;
+  }
+
+  public static class DemoConstants {
+    public static final int POLE_FIDUCIAL_ID = 1;
+    public static final int FRISBEE_FIDUCIAL_ID = 2;
+
+    public static final double FRISBEE_SHOOT_DELAY = 5;
+    public static final double FRISBEE_INTAKE_DELAY = 1;
+
+    public static final double FRISBEE_SHOOT_SPEED = 0.3;
+    public static final double POLE_SHOOT_SPEED = 0.3;
+    public static final Rotation2d POLE_DISTANCE_TO_ANGLE = new Rotation2d(0.1);
+    public static final Rotation2d POLE_ANGLE_OFFSET = new Rotation2d(0.1);
   }
 }

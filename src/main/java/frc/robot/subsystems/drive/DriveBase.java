@@ -61,6 +61,8 @@ public class DriveBase extends CharacterizableSubsystem {
   private final Vision photonVision;
   private boolean hasSeenTag = false;
 
+  private boolean useVision = true;
+
   private Field2d field;
 
   public DriveBase(GyroIO gyroIO, Vision photonVision, SwerveModuleIO frontLeft, SwerveModuleIO frontRight,
@@ -103,7 +105,11 @@ public class DriveBase extends CharacterizableSubsystem {
    * @return The current estimated pose of the odometry
    */
   public Pose2d getPose() {
-    return swerveOdometry.getEstimatedPosition();
+    return useVision ? swerveOdometry.getEstimatedPosition() : visionLessOdometry.getEstimatedPosition();
+  }
+
+  public void useVision(boolean use) {
+    useVision = use;
   }
 
   /**

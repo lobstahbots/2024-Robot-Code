@@ -75,8 +75,13 @@ public class RobotContainer {
     private final Shooter shooter;
     private final Indexer indexer = new Indexer(new IndexerSparkMax(IndexerConstants.INDEXER_MOTOR_ID));
     private final Intake intake = new Intake(new IntakeIOSparkMax(IntakeConstants.INTAKE_MOTOR_ID));
+    private final DemoGames demoGames;
     private final Joystick driverJoystick = new Joystick(DriverIOConstants.DRIVER_CONTROLLER_PORT);
     private final Joystick operatorJoystick = new Joystick(OperatorIOConstants.OPERATOR_CONTROLLER_PORT);
+
+    // Demo
+    private final JoystickButton frisbeeButton = new JoystickButton(driverJoystick,
+            DriverIOConstants.FRISBEE_BUTTON_ID);
 
     // Driver auto-align
     private final JoystickButton alignToAmpButton = new JoystickButton(driverJoystick,
@@ -130,6 +135,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        Vision vision;
         if (Robot.isReal()) {
             SwerveModuleIOSparkMax frontLeft = new SwerveModuleIOSparkMax(FrontLeftModuleConstants.moduleID,
                     "Front left ", FrontLeftModuleConstants.angleID, FrontLeftModuleConstants.driveID,
@@ -144,8 +150,8 @@ public class RobotContainer {
                     "Back right", BackRightModuleConstants.angleID, BackRightModuleConstants.driveID,
                     BackRightModuleConstants.angleOffset, BackRightModuleConstants.inverted);
 
-            driveBase = new DriveBase(new GyroIONavX(), new Vision(new VisionIOPhoton(), new NoteTrackerIOPhoton()), frontLeft, frontRight,
-                    backLeft, backRight, false);
+            driveBase = new DriveBase(new GyroIONavX(), vision = new Vision(new VisionIOPhoton(), new NoteTrackerIOPhoton()),
+                    frontLeft, frontRight, backLeft, backRight, false);
             pivot = new Pivot(new PivotIOSparkMax(PivotConstants.LEFT_MOTOR_ID, PivotConstants.RIGHT_MOTOR_ID,
                     PivotConstants.ENCODER_CHANNEL));
             shooter = new Shooter(
@@ -156,14 +162,15 @@ public class RobotContainer {
             SwerveModuleIOSim backLeft = new SwerveModuleIOSim(BackLeftModuleConstants.angleOffset);
             SwerveModuleIOSim backRight = new SwerveModuleIOSim(BackRightModuleConstants.angleOffset);
 
-            driveBase = new DriveBase(new GyroIO() {}, new Vision(new VisionIOSim(), new NoteTrackerIOSim()), frontLeft, frontRight, backLeft,
-                    backRight, false);
+            driveBase = new DriveBase(new GyroIO() {}, vision = new Vision(new VisionIOSim(), new NoteTrackerIOSim()), frontLeft,
+                    frontRight, backLeft, backRight, false);
             pivot = new Pivot(new PivotIOSim());
             shooter = new Shooter(new ShooterIOSim());
         }
 
         this.autoFactory = new AutoFactory(driveBase, shooter, intake, pivot, indexer, autoChooser::getResponses);
         this.routineFactory = new RoutineFactory(autoFactory);
+        demoGames = new DemoGames(vision, driveBase, shooter, pivot, indexer);
         registerNamedCommands();
         setDefaultCommands();
         smartDashSetup();
@@ -201,22 +208,24 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
+        frisbeeButton.whileTrue(demoGames.getFrisbeeCommand());
         alignToAmpButton.whileTrue(new TurnToAngleCommand(driveBase,
-                                () -> AlliancePoseMirror.flipRotation(AlliancePoseMirror.mirrorRotation2d(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation())), () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
-                () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
-                                () -> true, false));
+                () -> AlliancePoseMirror.flipRotation(
+                        AlliancePoseMirror.mirrorRotation2d(FieldConstants.BLUE_ALLIANCE_AMP_POSE2D.getRotation())),
+                () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
+                () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS), () -> true, false));
         alignToSourceButton.whileTrue(new TurnToAngleCommand(driveBase,
-                                () -> AlliancePoseMirror.flipRotation(AlliancePoseMirror.mirrorRotation2d(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation())), () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
-                () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
-                                () -> true, false));
+                () -> AlliancePoseMirror.flipRotation(
+                        AlliancePoseMirror.mirrorRotation2d(FieldConstants.BLUE_ALLIANCE_SOURCE_POSE2D.getRotation())),
+                () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
+                () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS), () -> true, false));
         alignToSpeakerButton.whileTrue(new TurnToPointCommand(driveBase, driveBase::getPose,
                 FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D.toPose2d(),
                 () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
                 () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS), () -> DriveConstants.FIELD_CENTRIC,
                 false).alongWith(autoFactory.autoAimHold()));
-        intakeButton.whileTrue(new IntakeNoteCommand(indexer, intake)
-                        .alongWith(new RotatePivotCommand(pivot, 0))
-                        .alongWith(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake))));
+        intakeButton.whileTrue(new IntakeNoteCommand(indexer, intake).alongWith(new RotatePivotCommand(pivot, 0))
+                .alongWith(new InstantCommand(() -> shooter.setIdleMode(NeutralModeValue.Brake))));
         driveIndexButton.whileTrue(new PeriodicConditionalCommand(
                 new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
                 new SpinIndexerCommand(indexer, IndexerConstants.FAST_INDEXER_MOTOR_SPEED),
@@ -233,26 +242,31 @@ public class RobotContainer {
                                 * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR));
         shooterButton.whileTrue(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED, false));
-        unshooterButton.whileTrue(
-                new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED, false));
-        ampButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT)
-                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED, true)));
+        unshooterButton.whileTrue(new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED,
+                ShooterConstants.UNSHOOTER_SPEED, false));
+        ampButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT).alongWith(
+                new SpinShooterCommand(shooter, ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED, true)));
         outtakeButton.whileTrue(new SpinIntakeCommand(intake, IntakeConstants.OUTTAKE_SPEED)
                 .alongWith(new SpinIndexerCommand(indexer, IndexerConstants.SLOW_INDEXER_MOTOR_OUTTAKE_SPEED)));
-        subwooferButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.SUBWOOFER_ANGLE_SETPOINT).alongWith(
-                new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED, false)));
-        wingButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.WING_ANGLE_SETPOINT).alongWith(
-                new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED, false)));
-        podiumButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.PODIUM_ANGLE_SETPOINT).alongWith(
-                new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED, false)));
-        passButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.PASS_ANGLE_SETPOINT)
-                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED, false)));
-        backshotPodium.whileTrue(new RotatePivotCommand(pivot, PivotConstants.BACKSHOT_PODIUM_ANGLE_SETPOINT)
-                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED, false)));
+        subwooferButton.whileTrue(
+                new RotatePivotCommand(pivot, PivotConstants.SUBWOOFER_ANGLE_SETPOINT).alongWith(new SpinShooterCommand(
+                        shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED, false)));
+        wingButton.whileTrue(
+                new RotatePivotCommand(pivot, PivotConstants.WING_ANGLE_SETPOINT).alongWith(new SpinShooterCommand(
+                        shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED, false)));
+        podiumButton.whileTrue(
+                new RotatePivotCommand(pivot, PivotConstants.PODIUM_ANGLE_SETPOINT).alongWith(new SpinShooterCommand(
+                        shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED, false)));
+        passButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.PASS_ANGLE_SETPOINT).alongWith(
+                new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED, false)));
+        backshotPodium.whileTrue(new RotatePivotCommand(pivot, PivotConstants.BACKSHOT_PODIUM_ANGLE_SETPOINT).alongWith(
+                new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED, false)));
         backshotSubwoofer.whileTrue(new RotatePivotCommand(pivot, PivotConstants.BACKSHOT_SUBWOOFER_ANGLE_SETPOINT)
-                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED, false)));
-        sourceButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.SOURCE_PICKUP_ANGLE_SETPOINT).alongWith(
-                new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED, false)));
+                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.PASS_SPEED, ShooterConstants.PASS_SPEED,
+                        false)));
+        sourceButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.SOURCE_PICKUP_ANGLE_SETPOINT)
+                .alongWith(new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED,
+                        ShooterConstants.UNSHOOTER_SPEED, false)));
         userSignalButton.onTrue(new InstantCommand(() -> leds.setUserSignal(true)).ignoringDisable(true))
                 .onFalse(new InstantCommand(() -> leds.setUserSignal(false)).ignoringDisable(true));
     }
@@ -260,7 +274,7 @@ public class RobotContainer {
     public boolean getOperatorConnected() {
         return operatorJoystick.isConnected();
     }
- 
+
     public boolean getDriverConnected() {
         return driverJoystick.isConnected();
     }
@@ -280,7 +294,8 @@ public class RobotContainer {
         autoChooser.addRoutine("Drive", List.of(), autoFactory::getDriveAuto);
         autoChooser.addRoutine("Score Preload", List.of(), autoFactory::getScoreAuto);
         autoChooser.addRoutine("Score Preload And Drive", List.of(), autoFactory::getScoreAndDriveAuto);
-        autoChooser.addRoutine("Score Preload and Drive Out (Amp Side)", List.of(), autoFactory::getScoreAndDriveAutoAmpSide);
+        autoChooser.addRoutine("Score Preload and Drive Out (Amp Side)", List.of(),
+                autoFactory::getScoreAndDriveAutoAmpSide);
         autoChooser.addRoutine("2 Note Subwoofer Center Auto", List.of(), autoFactory::getTwoNote);
         autoChooser.addRoutine("Cleanup Auto", List.of(), routineFactory::getCleanup);
 
