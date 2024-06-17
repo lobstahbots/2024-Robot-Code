@@ -5,12 +5,10 @@
 package frc.robot;
 
 import frc.robot.AutoFactory.CharacterizationRoutine;
-import frc.robot.AutoFactory.PathType;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LEDConstants;
-import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
@@ -22,13 +20,11 @@ import frc.robot.Constants.IOConstants.OperatorIOConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.auto.AutonSelector;
 import frc.robot.auto.AutonSelector.AutoQuestion;
-import frc.robot.commands.CenterNoteCommand;
 import frc.robot.commands.IntakeNoteCommand;
 import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.SpinIndexerCommand;
 import frc.robot.commands.SpinIntakeCommand;
 import frc.robot.commands.SpinShooterCommand;
-import frc.robot.commands.StopIntakeCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.TurnToPointCommand;
@@ -65,7 +61,6 @@ import java.util.List;
 import java.util.Map;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;

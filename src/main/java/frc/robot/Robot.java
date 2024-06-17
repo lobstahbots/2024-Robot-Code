@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.SimConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.networkalerts.Alert;
 import frc.robot.networkalerts.Alert.AlertType;
 
@@ -77,13 +78,14 @@ public class Robot extends LoggedRobot {
         URCL.start();
         Logger.start();
 
-        // PortForwarder.add(5801, "photonvision1.local", 5800);
-        // PortForwarder.add(5802, "photonvision2.local", 5800);
-        // PortForwarder.add(1183, "10.2.46.11", 1183);
-        // PortForwarder.add(1184, "10.2.46.11", 1184);
-        // PortForwarder.add(1189, "10.2.46.12", 1189);
-        // PortForwarder.add(1190, "10.2.46.12", 1190);
-
+        if (VisionConstants.PORT_FORWARD) {
+            PortForwarder.add(5801, "photonvision1.local", 5800);
+            PortForwarder.add(5802, "photonvision2.local", 5800);
+            PortForwarder.add(1183, "10.2.46.11", 1183);
+            PortForwarder.add(1184, "10.2.46.11", 1184);
+            PortForwarder.add(1189, "10.2.46.12", 1189);
+            PortForwarder.add(1190, "10.2.46.12", 1190);
+        }
         // Logger.getInstance().disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
 
         m_robotContainer = new RobotContainer();
@@ -110,7 +112,8 @@ public class Robot extends LoggedRobot {
             canAlert.set(true);
             canAlert.setText(String.format("CAN error: %d receive errors, %d transmit errors, %d%% utilization",
                     canStatus.receiveErrorCount, canStatus.transmitErrorCount, canStatus.percentBusUtilization));
-        } else canAlert.set(false);
+        } else
+            canAlert.set(false);
     }
 
     /** This function is called once each time the robot enters Disabled mode. */
@@ -129,9 +132,7 @@ public class Robot extends LoggedRobot {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         // schedule the autonomous command (example)
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.schedule();
-        }
+        if (m_autonomousCommand != null) { m_autonomousCommand.schedule(); }
 
         m_robotContainer.setIdleMode(IdleMode.kBrake, NeutralModeValue.Brake);
     }
@@ -146,9 +147,7 @@ public class Robot extends LoggedRobot {
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.cancel();
-        }
+        if (m_autonomousCommand != null) { m_autonomousCommand.cancel(); }
 
         m_robotContainer.setIdleMode(IdleMode.kBrake, NeutralModeValue.Coast);
     }

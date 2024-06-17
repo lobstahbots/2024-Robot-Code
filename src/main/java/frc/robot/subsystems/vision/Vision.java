@@ -2,7 +2,6 @@ package frc.robot.subsystems.vision;
 
 import java.util.List;
 import java.util.Optional;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.Vector;

@@ -340,6 +340,8 @@ public final class Constants {
     public static final double NOTE_FPS = 20;
     public static final double NOTE_CAMERA_LATENCY_STDEV_MS = 5;
     public static final double NOTE_HORIZONTAL_FOV_DEG = 62.14;
+
+    public static final boolean PORT_FORWARD = false;
   }
 
   public static class IndexerConstants {
