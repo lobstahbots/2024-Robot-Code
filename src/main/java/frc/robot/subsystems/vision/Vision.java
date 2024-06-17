@@ -16,7 +16,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.VisionConstants;
-import stl.math.LobstahMath;
 
 public class Vision extends SubsystemBase {
     private final VisionIO io;
@@ -24,7 +23,6 @@ public class Vision extends SubsystemBase {
     private final NoteTrackerIO trackerIO;
     private final NoteTrackerIOInputsAutoLogged trackerInputs = new NoteTrackerIOInputsAutoLogged();
     private Pose2d robotPose = new Pose2d();
-    private boolean hasSeenTag = false;
 
     public Vision(VisionIO io, NoteTrackerIO trackerIO) {
         this.io = io;
@@ -46,20 +44,18 @@ public class Vision extends SubsystemBase {
         Vector<N3> frontStdev = null;
         Vector<N3> rearStdev = null;
 
+        if(inputs.altEstimatedFrontPose != null && inputs.altEstimatedFrontPose.getX() == 0 && inputs.altEstimatedFrontPose.getY() == 0) inputs.altEstimatedFrontPose = null;
+        if(inputs.altEstimatedRearPose != null && inputs.altEstimatedRearPose.getX() == 0 && inputs.altEstimatedRearPose.getY() == 0) inputs.altEstimatedRearPose = null;
+
+
         if (inputs.visibleFrontFiducialIDs.length > 0) {
             // Select pose if ambiguity is low enough or if closest to robot pose, reject if reprojection error > 0.4 * alternative pose reprojection error
-            if (Math.abs(inputs.bestEstimatedFrontPose.toPose2d().getRotation().minus(odometryPose.getRotation())
-                    .getRadians()) <= Math
-                            .abs(inputs.altEstimatedFrontPose.toPose2d().getRotation().minus(odometryPose.getRotation())
-                                    .getRadians())) {
+            if (inputs.bestEstimatedFrontPose != null && ( inputs.altEstimatedFrontPose == null || Math.abs(inputs.bestEstimatedFrontPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians()) <= Math.abs(inputs.altEstimatedFrontPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians())))  {
                 resolvedFrontPose = inputs.bestEstimatedFrontPose;
                 resolvedFrontReprojErr = inputs.bestFrontReprojErr;
             }
             // Otherwise, select alt pose if ambiguity is high enough and alt solution is closest to robot pose, reject if reprojection error > 0.4 * best pose reprojection error
-            else if (Math.abs(inputs.altEstimatedFrontPose.toPose2d().getRotation().minus(odometryPose.getRotation())
-                    .getRadians()) <= Math
-                            .abs(inputs.bestEstimatedFrontPose.toPose2d().getRotation()
-                                    .minus(odometryPose.getRotation()).getRadians())) {
+            else if (inputs.altEstimatedFrontPose != null && (inputs.bestEstimatedFrontPose == null || Math.abs(inputs.altEstimatedFrontPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians()) <= Math.abs(inputs.bestEstimatedFrontPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians()))) {
                 resolvedFrontPose = inputs.altEstimatedFrontPose;
                 resolvedFrontReprojErr = inputs.altFrontReprojErr;
             }
@@ -78,19 +74,13 @@ public class Vision extends SubsystemBase {
 
         if (inputs.visibleRearFiducialIDs.length > 0) {
             // Select pose if ambiguity is low enough or if closest to robot pose, reject if reprojection error > 0.4 * alternative pose reprojection error
-            if (Math.abs(inputs.bestEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation())
-                    .getRadians()) <= Math
-                            .abs(inputs.altEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation())
-                                    .getRadians())) {
+            if (inputs.bestEstimatedRearPose != null && (inputs.altEstimatedRearPose == null || Math.abs(inputs.bestEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians())  <= Math.abs(inputs.altEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians()))) {
                 resolvedRearPose = inputs.bestEstimatedRearPose;
                 resolvedRearReprojErr = inputs.bestRearReprojErr;
                 Logger.recordOutput("Seen Rear", true);
             }
             // Otherwise, select alt pose if ambiguity is high enough and alt solution is closest to robot pose, reject if reprojection error > 0.4 * best pose reprojection error
-            else if (Math.abs(inputs.altEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation())
-                    .getRadians()) <= Math
-                            .abs(inputs.bestEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation())
-                                    .getRadians())) {
+            else if (inputs.altEstimatedRearPose != null && (inputs.bestEstimatedRearPose == null || Math.abs(inputs.altEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians())  <= Math.abs(inputs.bestEstimatedRearPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRadians()))) {
                 resolvedRearPose = inputs.altEstimatedRearPose;
                 resolvedRearReprojErr = inputs.altRearReprojErr;
                 Logger.recordOutput("Seen Rear", true);

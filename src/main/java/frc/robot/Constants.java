@@ -209,7 +209,7 @@ public final class Constants {
     public static final int LOWER_SHOOTER_ID = 32;
     public static final double CURRENT_LIMIT = 40;
     public static final double SHOOT_TIME = 2; // in seconds
-    public static final double SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR = 0.75;
+    public static final double SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR = 0.9;
 
     public static final double PID_P = 0.05;
     public static final double PID_I = 0;
@@ -270,9 +270,14 @@ public final class Constants {
     public static final int ENCODER_CHANNEL = 3;
 
     public static final double MAX_PIVOT_ERROR = 5;
-    public static final double AMP_ANGLE_SETPOINT = 115;
-    public static final double SOURCE_PICKUP_ANGLE_SETPOINT = 115;
-    public static final double SUBWOOFER_ANGLE_SETPOINT = 40;
+    public static final double AMP_ANGLE_SETPOINT = 113;
+    public static final double SOURCE_PICKUP_ANGLE_SETPOINT = 106;
+    public static final double SUBWOOFER_ANGLE_SETPOINT = 38;
+    public static final double WING_ANGLE_SETPOINT = 9.5;
+    public static final double PODIUM_ANGLE_SETPOINT = 21;
+    public static final double PASS_ANGLE_SETPOINT = 26;
+    public static final double BACKSHOT_PODIUM_ANGLE_SETPOINT = Units.radiansToDegrees(1.77);
+    public static final double BACKSHOT_SUBWOOFER_ANGLE_SETPOINT = Units.radiansToDegrees(2.22);
     public static final double GROUND_PICKUP_ANGLE = 0;
     public static final double INPUT_DEADBAND = 0.1;
     public static final InterpolatingDoubleTreeMap shotAngleMap = new InterpolatingDoubleTreeMap();
@@ -340,12 +345,9 @@ public final class Constants {
   public static class IndexerConstants {
     public static final int INDEXER_CURRENT_LIMIT = 40;
     public static final int INDEXER_MOTOR_ID = 44;
-    public static final double FAST_INDEXER_MOTOR_SPEED = -0.9;
-    public static final double SLOW_INDEXER_MOTOR_SPEED = 1;
+    public static final double FAST_INDEXER_MOTOR_SPEED = -1;
+    public static final double SLOW_INDEXER_MOTOR_OUTTAKE_SPEED = 0.25;
     public static final double DEBOUNCE_TIME = 0.05;
-    public enum IndexerState {
-      NoNote, MovingInIndexer, InShooter, InIndexer
-    }
   }
 
   public static class TempConstants {
@@ -358,7 +360,7 @@ public final class Constants {
     public static final Pose3d BLUE_ALLIANCE_SPEAKER_POSE3D = new Pose3d(0.225, 5.55, 2.1,
         new Rotation3d(0, 0, Units.degreesToRadians(180)));
     public static final Pose2d BLUE_ALLIANCE_AMP_POSE2D = new Pose2d(2, 8.25, Rotation2d.fromDegrees(90));
-    public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(14.75, 0.75, Rotation2d.fromDegrees(-120));
+    public static final Pose2d BLUE_ALLIANCE_SOURCE_POSE2D = new Pose2d(14.75, 0.75, Rotation2d.fromDegrees(-60));
     public static final Pose2d[] MIDLINE_NOTES_STARTING_POSES = new Pose2d[] {
         new Pose2d(8.258, 7.462, new Rotation2d()), new Pose2d(8.258, 5.785, new Rotation2d()),
         new Pose2d(8.258, 4.109, new Rotation2d()), new Pose2d(8.258, 2.432, new Rotation2d()),
@@ -374,6 +376,7 @@ public final class Constants {
     public static final double PICKUP_OFFSET = 1;
     public static final double WING_LINE_X_METERS = 5.8217054 - 1;
     public static final Pose2d[] SHOOTING_POSES = new Pose2d[]{new Pose2d(WING_LINE_X_METERS, 7.004, new Rotation2d()), new Pose2d(WING_LINE_X_METERS, 0.756, new Rotation2d())};
+    public static final Pose2d SUBWOOFER_SHOOTING_POSE = new Pose2d(0.96, 6, new Rotation2d());
 
     public static final double NOTE_RADIUS = Units.inchesToMeters(6);
     public static final double NOTE_THICKNESS_RADIUS = Units.inchesToMeters(1);
@@ -387,6 +390,9 @@ public final class Constants {
 
   public static class LEDConstants {
     public static final int LED_PORT = 0;
-    public static final int LED_LENGTH = 60;
+    public static final int LED_LENGTH = 106;
+
+    public static final int LOWER_LEFT_LENGTH = 25;
+    public static final int MID = 21;
   }
 }

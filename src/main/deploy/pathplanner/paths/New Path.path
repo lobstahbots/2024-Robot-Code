@@ -11,22 +11,24 @@
         "x": 2.8286222286730247,
         "y": -0.15644617003519629
       },
-      "isLocked": false
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.521825900794659,
-        "y": 0.6871076599296062
+        "x": 1.5166906458380391,
+        "y": 5.506871636580644
       },
       "prevControl": {
-        "x": 4.521825900794659,
-        "y": 1.6871076599295993
+        "x": 0.5166906458380391,
+        "y": 6.506871636580637
       },
       "nextControl": {
-        "x": 6.521825900794657,
-        "y": -0.3128923400703938
+        "x": 2.5166906458380374,
+        "y": 4.506871636580644
       },
-      "isLocked": false
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -41,7 +43,8 @@
         "x": 7.726296309735476,
         "y": 6.04082151021445
       },
-      "isLocked": false
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -56,7 +59,8 @@
         "x": 6.960457563772264,
         "y": 1.760713378569613
       },
-      "isLocked": false
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -71,7 +75,8 @@
         "x": 9.762568489422694,
         "y": 3.4570104140208295
       },
-      "isLocked": false
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -86,7 +91,8 @@
         "x": 7.695877481040677,
         "y": -0.5475389165064048
       },
-      "isLocked": false
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -98,7 +104,8 @@
         "y": 2.2169958089916175
       },
       "nextControl": null,
-      "isLocked": false
+      "isLocked": false,
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -112,9 +119,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0
+    "rotation": 0,
+    "rotateFast": false
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": null
+  "previewStartingState": null,
+  "useDefaultConstraints": false
 }

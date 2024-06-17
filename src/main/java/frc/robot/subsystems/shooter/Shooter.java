@@ -66,6 +66,10 @@ public class Shooter extends SubsystemBase {
     io.setShooterSpeed(outputUpper, outputLower);
   }
 
+  public void setShooterSpeedRaw(double upperShooterMotorSpeed, double lowerShooterMotorSpeed) {
+    io.setShooterSpeed(upperShooterMotorSpeed, lowerShooterMotorSpeed);
+  }
+
   public void resetControllerError(double upperSpeed, double lowerSpeed) {
     upperController.reset(upperSpeed);
     lowerController.reset(lowerSpeed);

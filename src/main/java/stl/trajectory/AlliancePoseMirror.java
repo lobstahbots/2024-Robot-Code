@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
+import stl.math.LobstahMath;
 
 /** Add your docs here. */
 public class AlliancePoseMirror {
@@ -106,6 +107,13 @@ public class AlliancePoseMirror {
     } else {
       return pose;
     }
+  }
+
+  public static Rotation2d flipRotation(Rotation2d rotation) {
+    if (isRedAlliance()) {
+        return LobstahMath.flipRotation(rotation);
+    } 
+    return rotation;
   }
 
   /**
