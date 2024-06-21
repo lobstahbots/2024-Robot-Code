@@ -378,10 +378,11 @@ public class AutoFactory {
                 .findFirst();
         if (selectedNoteOptional.isEmpty()) return new InstantCommand();
 
-        var selectedNote = selectedNoteOptional.get();
-
-        return new TurnToPointCommand(driveBase, driveBase::getPose, selectedNote, 0, 0, true, true)
-                .andThen(new IntakeNoteCommand(indexer, intake).deadlineWith(getPathFindToPoseCommand(selectedNote)));
+        var noteOffset = selectedNoteOptional.get().minus(driveBase.getPose());
+        noteOffset = noteOffset.times(1 + FieldConstants.NOTE_AUTO_PICKUP_OVERSHOOT / noteOffset.getTranslation().getNorm());
+        var notePickupPos = driveBase.getPose().plus(noteOffset);
+        return new TurnToPointCommand(driveBase, driveBase::getPose, notePickupPos, 0, 0, true, true)
+                .andThen(new IntakeNoteCommand(indexer, intake).deadlineWith(getPathFindToPoseCommand(notePickupPos)));
     }
 
     public enum CharacterizationRoutine {

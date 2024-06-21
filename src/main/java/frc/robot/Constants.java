@@ -380,6 +380,8 @@ public final class Constants {
 
     public static final double NOTE_RADIUS = Units.inchesToMeters(6);
     public static final double NOTE_THICKNESS_RADIUS = Units.inchesToMeters(1);
+
+    public static final double NOTE_AUTO_PICKUP_OVERSHOOT = Units.feetToMeters(1);
   }
 
   public static class AlertConstants {
