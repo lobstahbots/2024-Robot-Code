@@ -248,9 +248,13 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     }
   }
 
+  public Pose2d[] getNotePositions() {
+    return photonVision.getNotePositions(getPose());
+  }
+
   @Override
   public void periodic() {
-
+    photonVision.update(getPose());
     if (Robot.isSimulation()) {
       var twist = DriveConstants.KINEMATICS.toTwist2d(getPositions());
       simRotation = gyroInputs.yawPosition.plus(Rotation2d.fromDegrees(twist.dtheta));
@@ -341,8 +345,6 @@ public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
           FieldConstants.NOTES_SIM_POSES[i] = FieldConstants.BLUE_ALLIANCE_SPEAKER_POSE3D;
         }
       }
-
-      Logger.recordOutput("Notes", FieldConstants.NOTES_SIM_POSES);
     }
   }
 }

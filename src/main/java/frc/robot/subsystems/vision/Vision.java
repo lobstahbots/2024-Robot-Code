@@ -2,23 +2,31 @@ package frc.robot.subsystems.vision;
 
 import java.util.List;
 import java.util.Optional;
-
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.VisionConstants;
 
 public class Vision extends SubsystemBase {
     private final VisionIO io;
     private final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
+    private final NoteTrackerIO trackerIO;
+    private final NoteTrackerIOInputsAutoLogged trackerInputs = new NoteTrackerIOInputsAutoLogged();
     private Pose2d robotPose = new Pose2d();
 
-    public Vision(VisionIO io) {
+    public Vision(VisionIO io, NoteTrackerIO trackerIO) {
         this.io = io;
+        this.trackerIO = trackerIO;
     }
 
     /**
@@ -51,15 +59,14 @@ public class Vision extends SubsystemBase {
                 resolvedFrontPose = inputs.altEstimatedFrontPose;
                 resolvedFrontReprojErr = inputs.altFrontReprojErr;
             }
-                frontStdev = VisionConstants.BASE_STDEV
-                        .times(Math.pow(resolvedFrontReprojErr, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with reprojection error
-                                * Math.exp(1 / inputs.visibleFrontFiducialIDs.length)
-                                * Math.pow(inputs.visibleFrontFiducialIDs.length,
-                                        VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
-                                * Math.pow(inputs.frontTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE)
-                                * Math.log(2) / Math.log(inputs.frontTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
-                        );
-            
+            frontStdev = VisionConstants.BASE_STDEV
+                    .times(Math.pow(resolvedFrontReprojErr, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with reprojection error
+                            * Math.exp(1 / inputs.visibleFrontFiducialIDs.length)
+                            * Math.pow(inputs.visibleFrontFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
+                            * Math.pow(inputs.frontTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE)
+                            * Math.log(2) / Math.log(inputs.frontTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
+                    );
+
             Logger.recordOutput("Best Front Pose", inputs.bestEstimatedFrontPose);
             Logger.recordOutput("Alt Front Pose", inputs.altEstimatedFrontPose);
             Logger.recordOutput("Resolved front", resolvedFrontPose.toPose2d());
@@ -77,28 +84,28 @@ public class Vision extends SubsystemBase {
                 resolvedRearPose = inputs.altEstimatedRearPose;
                 resolvedRearReprojErr = inputs.altRearReprojErr;
                 Logger.recordOutput("Seen Rear", true);
-            } 
+            }
             rearStdev = VisionConstants.BASE_STDEV
-                        .times(Math.pow(resolvedRearReprojErr, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with reprojection error
-                                * Math.exp(1 / inputs.visibleRearFiducialIDs.length)
-                                * Math.pow(inputs.visibleRearFiducialIDs.length,
-                                        VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
-                                * Math.pow(inputs.rearTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE)
-                                * Math.log(2) / Math.log(inputs.rearTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
-                        );
+                    .times(Math.pow(resolvedRearReprojErr, VisionConstants.AMBIGUITY_TO_STDEV_EXP) // Start with reprojection error
+                            * Math.exp(1 / inputs.visibleRearFiducialIDs.length)
+                            * Math.pow(inputs.visibleRearFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
+                            * Math.pow(inputs.rearTotalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE)
+                            * Math.log(2) / Math.log(inputs.rearTotalArea + 1) // Multiply by the scaling for the area of the AprilTags
+                    );
             Logger.recordOutput("Best Rear Pose", inputs.bestEstimatedRearPose);
             Logger.recordOutput("Alt Rear Pose", inputs.altEstimatedRearPose);
             Logger.recordOutput("Resolved Rear", resolvedRearPose);
         }
 
-        if(resolvedFrontPose != null && resolvedFrontPose.getX() == 0 && resolvedFrontPose.getY() == 0) resolvedFrontPose = null;
-        if(resolvedRearPose != null && resolvedRearPose.getX() == 0 && resolvedRearPose.getY() == 0) resolvedRearPose = null;
+        if (resolvedFrontPose != null && resolvedFrontPose.getX() == 0 && resolvedFrontPose.getY() == 0)
+            resolvedFrontPose = null;
+        if (resolvedRearPose != null && resolvedRearPose.getX() == 0 && resolvedRearPose.getY() == 0)
+            resolvedRearPose = null;
 
-        Poses poses = new Poses(Optional.ofNullable(resolvedFrontPose),
-                Optional.ofNullable(resolvedRearPose), Optional.ofNullable(frontStdev),
-                Optional.ofNullable(rearStdev));
+        Poses poses = new Poses(Optional.ofNullable(resolvedFrontPose), Optional.ofNullable(resolvedRearPose),
+                Optional.ofNullable(frontStdev), Optional.ofNullable(rearStdev));
 
-        Logger.recordOutput("ront pose there?" , poses.frontPose.isPresent());
+        Logger.recordOutput("ront pose there?", poses.frontPose.isPresent());
 
         return poses;
     }
@@ -158,10 +165,35 @@ public class Vision extends SubsystemBase {
         return inputs.visibleRearFiducialIDs;
     }
 
+    public Pose2d[] getNotePositions(Pose2d robotPose) {
+        int length = trackerInputs.areas.length;
+        Pose2d[] res = new Pose2d[length];
+        for (int i = 0; i < length; i++) {
+            var horizontalWidth = (trackerInputs.maxXs[i] - trackerInputs.minXs[i]) / VisionConstants.NOTE_CAMERA_RES_WIDTH;
+            var hypotDistance = 2 * (FieldConstants.NOTE_RADIUS + FieldConstants.NOTE_THICKNESS_RADIUS)
+                    / horizontalWidth / Units.degreesToRadians(VisionConstants.NOTE_HORIZONTAL_FOV_DEG);
+            Logger.recordOutput("HypotDistance"+i, hypotDistance);
+            var groundDistance = Math.sqrt(Math.pow(hypotDistance, 2) - Math.pow(VisionConstants.ROBOT_TO_NOTE_CAMERA.getZ(), 2));
+            Logger.recordOutput("GroundDistance"+i, groundDistance);
+            var centerX = (trackerInputs.maxXs[i] + trackerInputs.minXs[i] - VisionConstants.NOTE_CAMERA_RES_WIDTH) / 2;
+            Logger.recordOutput("centerX"+i, centerX);
+            var relativeCenterPoint = -centerX / (VisionConstants.NOTE_CAMERA_RES_WIDTH / 2);
+            Logger.recordOutput("centerRatio"+i, relativeCenterPoint);
+            var radAlong = Rotation2d.fromDegrees(relativeCenterPoint * VisionConstants.NOTE_HORIZONTAL_FOV_DEG / 2);
+            Logger.recordOutput("Angle"+i, radAlong.getDegrees());
+            res[i] = robotPose.plus(new Transform2d(new Translation2d(groundDistance, radAlong.plus(robotPose.getRotation())), new Rotation2d(0)));
+        }
+        return res;
+    }
+
     public void periodic() {
         io.updateInputs(inputs, new Pose3d(robotPose));
+        trackerIO.updateInputs(trackerInputs, robotPose);
+        Logger.recordOutput("Notes", getNotePositions(robotPose));
         Logger.processInputs("PhotonVision", inputs);
+        Logger.processInputs("NoteTracker", trackerInputs);
         io.periodic();
+        trackerIO.periodic();
     }
 
     public record Poses(Optional<Pose3d> frontPose, Optional<Pose3d> rearPose, Optional<Vector<N3>> frontStdev,

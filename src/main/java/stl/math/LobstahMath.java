@@ -4,6 +4,10 @@
 
 package stl.math;
 
+import java.util.List;
+
+import org.photonvision.targeting.TargetCorner;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -140,4 +144,19 @@ public class LobstahMath {
     return firstPose.minus(secondPose).getTranslation().getNorm();
   }
 
+  public static record Rectangle(double minX, double minY, double maxX, double maxY) {}
+
+  public static Rectangle getBoundaries(List<TargetCorner> corners) {
+    double minX = corners.get(0).x;
+    double maxX = minX;
+    double minY = corners.get(0).y;
+    double maxY = minY;
+    for (var corner : corners) {
+        minX = Math.min(minX, corner.x);
+        maxX = Math.max(maxX, corner.x);
+        minY = Math.min(minY, corner.y);
+        maxY = Math.max(maxY, corner.y);
+    }
+    return new Rectangle(minX, minY, maxX, maxY);
+  }
 }

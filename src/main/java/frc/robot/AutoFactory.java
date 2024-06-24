@@ -2,9 +2,11 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -34,6 +36,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.IntakeNoteCommand;
 import frc.robot.commands.RotatePivotCommand;
 import frc.robot.commands.SpinIndexerCommand;
 import frc.robot.commands.SpinIntakeCommand;
@@ -365,6 +368,21 @@ public class AutoFactory {
 
         return autoCommand;
 
+    }
+
+    public Command autoPickupNote() {
+        Pose2d[] notePositions = driveBase.getNotePositions();
+        Pose2d pose = driveBase.getPose();
+        var selectedNoteOptional = Stream.of(notePositions)
+                .sorted(Comparator.comparingDouble(notePose -> notePose.minus(pose).getTranslation().getNorm()))
+                .findFirst();
+        if (selectedNoteOptional.isEmpty()) return new InstantCommand();
+
+        var noteOffset = selectedNoteOptional.get().minus(driveBase.getPose());
+        noteOffset = noteOffset.times(1 + FieldConstants.NOTE_AUTO_PICKUP_OVERSHOOT / noteOffset.getTranslation().getNorm());
+        var notePickupPos = driveBase.getPose().plus(noteOffset);
+        return new TurnToPointCommand(driveBase, driveBase::getPose, notePickupPos, 0, 0, true, true)
+                .andThen(new IntakeNoteCommand(indexer, intake).deadlineWith(getPathFindToPoseCommand(notePickupPos)));
     }
 
     public enum CharacterizationRoutine {
