@@ -40,10 +40,12 @@ public class LEDs extends SubsystemBase {
     boolean ampSignal = false;
     boolean userSignal = false;
     boolean driveOverheated = false;
-    boolean otherSubsytemOverheated = false;
+    boolean intakeOverheated = false;
+    boolean pivotOverheated = false;
+    boolean shooterOverheated = false;
     boolean tipped = false;
-    boolean coastMode = false;
     boolean lowBattery = false;
+    boolean coastMode = false;
     public Color debugColor = null;
 
     Timer possessionSignalTimer = new Timer();
@@ -85,7 +87,7 @@ public class LEDs extends SubsystemBase {
 
     public void setDriveOverheated(boolean value) { driveOverheated = value; }
 
-    public void setOtherSubsystemOverheated(boolean value) { otherSubsytemOverheated = value; }
+    public void setOtherSubsystemOverheated(boolean value) { shooterOverheated = value; }
 
     public void setTipped(boolean value) { tipped = value; }
 
