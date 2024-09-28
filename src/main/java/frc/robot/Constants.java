@@ -402,14 +402,14 @@ public final class Constants {
         public static final Color AUTON_3 = new Color(100, 25, 25);
         public static final Color USER_SIGNAL = Color.kWhite;
 
-        public static final Color PRIDE_RED = new Color("#e40203");
-        public static final Color PRIDE_ORANGE = new Color("#ff8b00");
-        public static final Color PRIDE_YELLOW = new Color("#feed00");
-        public static final Color PRIDE_GREEN = new Color("#008026");
-        public static final Color PRIDE_BLUE = new Color("#004dff");
-        public static final Color PRIDE_PURPLE = new Color("#750686");
-        public static final Color TRANS_PINK = new Color("#f5a8b8");
-        public static final Color TRANS_TEAL = new Color("#5bcefa");
+        public static final Color PRIDE_RED = Color.kRed;
+        public static final Color PRIDE_ORANGE = Color.kOrangeRed;
+        public static final Color PRIDE_YELLOW = Color.kYellow;
+        public static final Color PRIDE_GREEN = Color.kGreen;
+        public static final Color PRIDE_BLUE = Color.kBlue;
+        public static final Color PRIDE_PURPLE = Color.kPurple;
+        public static final Color TRANS_PINK = Color.kDeepPink;
+        public static final Color TRANS_TEAL = new Color(0.15, 0.3, 1.0);
     }
   }
 }
