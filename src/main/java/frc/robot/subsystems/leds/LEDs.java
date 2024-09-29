@@ -127,14 +127,19 @@ public class LEDs extends SubsystemBase {
                         ? connectionState == ConnectionState.DISCONNECTED ? disconnected()
                                 : disabledStandby.get(ColorConstants.RED, ColorConstants.PINK)
                         : null,
-                 robotMode == RobotMode.AUTONOMOUS ? autonomous() : null,
-                 possession ? posessionIndicator() : null,
-                 possession ? posessionSignal(possessionSignalTimer.get()) : null,
+                // LobstahLEDBuffer.solid(10, Color.kRed).append(LobstahLEDBuffer.solid(10, new Color("#FF5555"))).cycle((int)(10 * Timer.getFPGATimestamp())).tile(LengthConstants.TOTAL),
+                LobstahLEDBuffer.solid(LengthConstants.TOTAL, new Color("#FF5555"), 0.5)
+                    .mask(AlphaBuffer.sine(LengthConstants.TOTAL, 10, Timer.getFPGATimestamp() * 20))
+                    .layerAbove(LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kRed)),
+                robotMode == RobotMode.AUTONOMOUS ? autonomous() : null,
+                possession ? posessionIndicator() : null,
+                //  possession ? posessionSignal(possessionSignalTimer.get()) : null,
                 //  shooterReadyIndicator(),
-                 debugColor == null? null : LobstahLEDBuffer.solid(LengthConstants.TOTAL, debugColor),
-                 userSignal ? userSignal() : null
+                debugColor == null? null : LobstahLEDBuffer.solid(LengthConstants.TOTAL, debugColor),
+                // userSignal ? userSignal() : null
+                userSignal ? prideFlagCycle(3, 20).tile(LengthConstants.TOTAL) : null
             ).toAdressableLEDBuffer());
-    }
+    }   
 
     static LobstahLEDBuffer segments(LobstahLEDBuffer lowerLeft, LobstahLEDBuffer midSegment, LobstahLEDBuffer lowerRight, LobstahLEDBuffer upperRight, LobstahLEDBuffer upperLeft) {
         return LobstahLEDBuffer.concat(
