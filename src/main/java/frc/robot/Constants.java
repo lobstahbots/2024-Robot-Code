@@ -70,6 +70,7 @@ public final class Constants {
       public static final int OPERATOR_CONTROLLER_PORT = 1;
       public static final int INDEXER_BUTTON_ID = 1;
       public static final int SHOOTER_BUTTON_ID = 6;
+      public static final int SLOW_SHOOTER_BUTTON_ID = 8;
       public static final int UNSHOOTER_BUTTON_ID = 5;
       public static final int OUTTAKE_BUTTON_ID = 3;
       public static final int AMP_BUTTON_ID = 4;

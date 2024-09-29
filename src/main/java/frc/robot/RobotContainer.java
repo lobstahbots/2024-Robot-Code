@@ -62,6 +62,8 @@ import frc.robot.subsystems.leds.LEDsReal;
 import java.util.List;
 import java.util.Map;
 
+import javax.print.attribute.standard.JobPrioritySupported;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
@@ -95,6 +97,8 @@ public class RobotContainer {
     // Flywheel
     private final JoystickButton shooterButton = new JoystickButton(operatorJoystick,
             OperatorIOConstants.SHOOTER_BUTTON_ID);
+    private final JoystickButton slowShooterButton = new JoystickButton(operatorJoystick,
+            OperatorIOConstants.SLOW_SHOOTER_BUTTON_ID);
     private final JoystickButton unshooterButton = new JoystickButton(operatorJoystick,
             OperatorIOConstants.UNSHOOTER_BUTTON_ID);
 
@@ -237,6 +241,9 @@ public class RobotContainer {
                                 * ShooterConstants.SHOOTING_FLYWHEEL_VELOCITY_DEADBAND_FACTOR));
         shooterButton.whileTrue(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED, false));
+        slowShooterButton.whileTrue(
+                new SpinShooterCommand(shooter, ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED, false)
+        );
         unshooterButton.whileTrue(
                 new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED, false));
         ampButton.whileTrue(new RotatePivotCommand(pivot, PivotConstants.AMP_ANGLE_SETPOINT)
