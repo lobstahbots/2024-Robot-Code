@@ -242,7 +242,7 @@ public class RobotContainer {
         shooterButton.whileTrue(
                 new SpinShooterCommand(shooter, ShooterConstants.SHOOTER_SPEED, ShooterConstants.SHOOTER_SPEED, false));
         slowShooterButton.whileTrue(
-                new SpinShooterCommand(shooter, ShooterConstants.AMP_SPEED, ShooterConstants.AMP_SPEED, false)
+                new SpinShooterCommand(shooter, ShooterConstants.SLOW_SHOOTER_SPEED, ShooterConstants.SLOW_SHOOTER_SPEED, false)
         );
         unshooterButton.whileTrue(
                 new SpinShooterCommand(shooter, ShooterConstants.UNSHOOTER_SPEED, ShooterConstants.UNSHOOTER_SPEED, false));

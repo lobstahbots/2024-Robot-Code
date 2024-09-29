@@ -203,6 +203,7 @@ public final class Constants {
 
   public static class ShooterConstants {
     public static final double SHOOTER_SPEED = -1;
+    public static final double SLOW_SHOOTER_SPEED = -0.25;
     public static final double UNSHOOTER_SPEED = 0.5;
     public static final double SPIN_UP_SPEED = 0;
     public static final double PASS_SPEED = -0.6;
