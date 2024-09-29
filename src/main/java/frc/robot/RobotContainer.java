@@ -178,9 +178,10 @@ public class RobotContainer {
         // indexer.setDefaultCommand(new CenterNoteCommand(indexer).unless(() -> !indexer.flywheelBeamBroken() && !indexer.intakeBeamBroken()));
         indexer.setDefaultCommand(new SpinIndexerCommand(indexer, 0));
         driveBase.setDefaultCommand(new SwerveDriveCommand(driveBase,
-                () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
-                () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
-                () -> -driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS), () -> DriveConstants.FIELD_CENTRIC));
+                () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS) * 0.3,
+                () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS) * 0.3,
+                () -> -driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS) * 0.7,
+                () -> DriveConstants.FIELD_CENTRIC));
         pivot.setDefaultCommand(
                 new RotatePivotCommand(pivot,
                         () -> pivot.getPosition().getDegrees() + -20 * MathUtil.applyDeadband(
