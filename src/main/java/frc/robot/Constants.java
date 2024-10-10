@@ -62,8 +62,8 @@ public final class Constants {
       public static final int ALIGN_TO_AMP_BUTTON_ID = 4;
       public static final int ALIGN_TO_SOURCE_BUTTON_ID = 7;
       public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 6;
-      public static final int INTAKE_BUTTON_ID = 3;
-      public static final int INDEXER_BUTTON_ID = 2;
+      public static final int INTAKE_BUTTON_ID = 5;
+      public static final int INDEXER_BUTTON_ID = 7;
     }
     public static class OperatorIOConstants {
       public static final int OPERATOR_CONTROLLER_PORT = 1;
