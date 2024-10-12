@@ -20,6 +20,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
 
 /**
@@ -392,9 +393,39 @@ public final class Constants {
 
   public static class LEDConstants {
     public static final int LED_PORT = 0;
-    public static final int LED_LENGTH = 106;
+    
+    public static class LengthConstants {
+        // LOWER_LEFT MID_SEGMENT LOWER_RIGHT UPPER_RIGHT UPPER_LEFT
+        public static final int LOWER_LEFT = 23;
+        public static final int MID = 21;
+        public static final int LOWER_RIGHT = 24;
+        public static final int UPPER_RIGHT = 18;
+        public static final int UPPER_LEFT = 16;
 
-    public static final int LOWER_LEFT_LENGTH = 25;
-    public static final int MID = 21;
+        public static final int TOTAL = LOWER_LEFT + MID + LOWER_RIGHT
+                + UPPER_RIGHT + UPPER_LEFT;
+    }
+
+    public static class ColorConstants {
+        public static final Color LOADING = Color.kWhite;
+        public static final Color SUCCESS = new Color(77, 255, 79);
+        public static final Color RED = new Color(255, 25, 25);
+        public static final Color PINK = new Color(255, 69, 70);
+        public static final Color BLUE = new Color(25, 25, 255);
+        public static final Color TEAL = new Color(160, 170, 255);
+        public static final Color AUTON_1 = new Color(255, 69, 118);
+        public static final Color AUTON_2 = new Color(255, 30, 180);
+        public static final Color AUTON_3 = new Color(100, 25, 25);
+        public static final Color USER_SIGNAL = Color.kWhite;
+
+        public static final Color PRIDE_RED = Color.kRed;
+        public static final Color PRIDE_ORANGE = Color.kOrangeRed;
+        public static final Color PRIDE_YELLOW = Color.kYellow;
+        public static final Color PRIDE_GREEN = Color.kGreen;
+        public static final Color PRIDE_BLUE = Color.kBlue;
+        public static final Color PRIDE_PURPLE = Color.kPurple;
+        public static final Color TRANS_PINK = Color.kDeepPink;
+        public static final Color TRANS_TEAL = new Color(0.15, 0.3, 1.0);
+    }
   }
 }

@@ -6,6 +6,7 @@ import java.util.function.Function;
 /**
  * @deprecated Unimplemented
  */
+@Deprecated
 public class CachedLEDAnimation extends LEDFrameAnimation {
     public CachedLEDAnimation(int length, Function<Integer, LobstahLEDBuffer> frameGenerator) {
         super(new LobstahLEDBuffer[length]);
