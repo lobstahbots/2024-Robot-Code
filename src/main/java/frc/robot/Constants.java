@@ -58,7 +58,7 @@ public final class Constants {
       public static final int DRIVER_CONTROLLER_PORT = 0;
       public static final int STRAFE_X_AXIS = 0;
       public static final int STRAFE_Y_AXIS = 1;
-      public static final int ROTATION_AXIS = 4;
+      public static final int ROTATION_AXIS = 2;
       public static final int ALIGN_TO_AMP_BUTTON_ID = 4;
       public static final int ALIGN_TO_SOURCE_BUTTON_ID = 7;
       public static final int ALIGN_TO_SPEAKER_BUTTON_ID = 6;
